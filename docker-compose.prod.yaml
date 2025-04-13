@@ -1,0 +1,80 @@
+volumes:
+  arena-book-db-prod:
+    driver: local
+  uploads:
+    driver: local
+
+services:
+  postgres:
+    image: postgis/postgis:16-3.4-alpine
+    container_name: arena-book-postgres-prod
+    ports:
+      - 5435:5432
+    volumes:
+      - arena-book-db-prod:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    networks:
+      - arenaServerNetwork
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+  adminer:
+    image: adminer
+    container_name: arena-book-adminer-prod
+    restart: always
+    ports:
+      - ${ADMINER_PORT}:8080
+    networks:
+      - traefikNetwork
+      - arenaServerNetwork
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  backend:
+    build:
+      context: .
+      dockerfile: production.Dockerfile
+    container_name: arena-book-server
+    ports:
+      - ${APP_PORT}:5001
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgres://root:secret@postgres:5432/arena-book-db-prod
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.arenabookbackend.rule=Host(`api-tachkila.genydev.com`)"
+      - "traefik.http.routers.arenabookbackend.entrypoints=websecure"
+      - "traefik.http.routers.arenabookbackend.tls=true"
+      - "traefik.http.routers.arenabookbackend.tls.certresolver=le"
+      - "traefik.http.routers.arenabookbackend.tls.domains[0].main=api-tachkila.genydev.com"
+      - "traefik.http.middlewares.arenabookbackend-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.arenabookbackend.middlewares=arenabookbackend-redirect"
+    networks:
+      - traefikNetwork
+      - arenaServerNetwork
+    volumes:
+      - uploads:/app/uploads
+      - "~/shared_vps/traefik/certs:/letsencrypt"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+networks:
+  traefikNetwork:
+    external: true
+  arenaServerNetwork:
+    internal: true

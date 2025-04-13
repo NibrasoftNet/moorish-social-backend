@@ -1,0 +1,69 @@
+services:
+  postgres:
+    image: postgis/postgis:16-3.4-alpine
+    container_name: arena-book-postgres-prod
+    ports:
+      - ${DATABASE_PORT}:5432
+    volumes:
+      - arena-book-db-prod:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready", "-q", "-d", "${DATABASE_NAME}", "-U", "${DATABASE_USERNAME}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - internal-network
+
+  maildev:
+    build:
+      context: .
+      dockerfile: maildev.Dockerfile
+    ports:
+      - ${MAIL_CLIENT_PORT}:1080
+      - ${MAIL_PORT}:1025
+    container_name: arena-book-maildev
+    networks:
+      - internal-network
+
+  adminer:
+    image: adminer
+    container_name: arena-book-adminer-prod
+    restart: always
+    ports:
+      - ${ADMINER_PORT}:8080
+    networks:
+      - internal-network
+
+  backend:
+    container_name: arena-book-nestjs-server
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    ports:
+      - ${APP_PORT}:5001
+    depends_on:
+      postgres :
+        condition: service_healthy
+    links:
+      - postgres
+    environment:
+      DATABASE_URL: postgres://root:secret@postgres:5432/arena-book-db-prod
+    healthcheck:
+      test: [ "CMD", "node", "-e", "require('http').get('http://localhost:5001/api/v1/health/info', (res) => { if (res.statusCode === 200) process.exit(0); else process.exit(1); }).on('error', () => process.exit(1));" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - internal-network
+
+volumes:
+  arena-book-db-prod:
+
+networks:
+  internal-network:
+    internal: true
+    driver: bridge
