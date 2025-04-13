@@ -1,8 +1,8 @@
-# Scocer book API
+# Weavers social API
 
 ## Description
 
-Docker API developed with NestJS 10.2.*
+Docker API developed with NestJS 11.0.*
 
 ## Instruction
 

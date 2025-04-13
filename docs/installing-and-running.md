@@ -15,8 +15,8 @@
 1. Clone repository
 
    ```bash
-   git clone --depth 1 https://github.com/NibrasoftNet/soccer-book-server
-   cd soccer-book-server/
+   git clone --depth 1 https://github.com/NibrasoftNet/weavers-social-backend
+   cd weavers-social-backend/
    ```
 
 2. Go to folder, and copy `env.example` as `.env`.
