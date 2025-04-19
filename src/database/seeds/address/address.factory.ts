@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { Address } from '../../../address/entities/address.entity';
+import { AddressEntity } from '../../../address/entities/address.entity';
 import { fakerFR } from '@faker-js/faker';
 
 @Injectable()
 export class AddressFactory {
-  generateRandom(): Address {
+  generateRandom(): AddressEntity {
     return {
       country: 'Tunisia',
       city: fakerFR.location.county(),
       longitude: fakerFR.location.longitude(),
       latitude: fakerFR.location.latitude(),
       street: fakerFR.location.street(),
-    } as Address;
+    } as AddressEntity;
   }
 }

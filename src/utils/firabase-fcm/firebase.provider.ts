@@ -1,6 +1,6 @@
 import * as firebaseAdmin from 'firebase-admin';
 import { ConfigService } from '@nestjs/config';
-import { Provider } from '@nestjs/common';
+import { HttpException, HttpStatus, Provider } from '@nestjs/common';
 
 export const FirebaseProvider: Provider = {
   provide: 'FIREBASE_ADMIN',
@@ -23,7 +23,15 @@ export const FirebaseProvider: Provider = {
         }),
       });
     } catch (error) {
-      throw new Error(`Firebase initialization failed: ${error.message}`);
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          errors: {
+            firebase: `Firebase initialization failed: ${error.message}`,
+          },
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   },
   inject: [ConfigService],

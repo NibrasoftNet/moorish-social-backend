@@ -23,12 +23,13 @@ import { RolesGuard } from '../roles/roles.guard';
 import { NullableType } from '../utils/types/nullable.type';
 import { ApiPaginationQuery, Paginate, PaginateQuery } from 'nestjs-paginate';
 import { Roles } from '../roles/roles.decorator';
-import { RoleCodeEnum } from '@/enums/role/roles.enum';
+import { RoleCodeEnum } from '@/enums/roles.enum';
 import { PaginatedDto } from '../utils/serialization/paginated.dto';
 import { chatPaginationConfig } from './config/chat-pagination-config';
 import { Mapper } from 'automapper-core';
 import { UpdateChatDto } from '@/domains/chat/update-chat.dto';
 import { DeleteResult } from 'typeorm';
+import { AuthRequest } from '../utils/types/auth-request.type';
 
 @ApiTags('Chat')
 @ApiBearerAuth()
@@ -45,7 +46,7 @@ export class ChatController {
   @HttpCode(HttpStatus.CREATED)
   @Post('group')
   async createGroup(
-    @Request() request,
+    @Request() request: AuthRequest,
     @Body() createGroupChatDto: CreateGroupDto,
   ): Promise<Chat> {
     return await this.chatService.createGroup(request.user, createGroupChatDto);
@@ -63,18 +64,18 @@ export class ChatController {
   }
 
   @ApiPaginationQuery(chatPaginationConfig)
-  @Roles(RoleCodeEnum.TENANT, RoleCodeEnum.USER)
+  @Roles(RoleCodeEnum.TENANTADMIN, RoleCodeEnum.USER)
   @HttpCode(HttpStatus.OK)
   @Get('all/me')
   async findAllMe(
-    @Request() request,
+    @Request() request: AuthRequest,
     @Paginate() query: PaginateQuery,
   ): Promise<PaginatedDto<Chat, ChatDto>> {
     const chats = await this.chatService.findAllMe(request.user, query);
     return new PaginatedDto<Chat, ChatDto>(this.mapper, chats, Chat, ChatDto);
   }
 
-  @Roles(RoleCodeEnum.TENANT, RoleCodeEnum.USER)
+  @Roles(RoleCodeEnum.TENANTADMIN, RoleCodeEnum.USER)
   @UseInterceptors(MapInterceptor(Chat, ChatDto))
   @HttpCode(HttpStatus.OK)
   @Get(':id')
@@ -82,7 +83,7 @@ export class ChatController {
     return await this.chatService.findOne({ id });
   }
 
-  @Roles(RoleCodeEnum.TENANT, RoleCodeEnum.USER)
+  @Roles(RoleCodeEnum.TENANTADMIN, RoleCodeEnum.USER)
   @UseInterceptors(MapInterceptor(Chat, ChatDto))
   @HttpCode(HttpStatus.OK)
   @Put(':id')
@@ -93,7 +94,7 @@ export class ChatController {
     return await this.chatService.update(id, updateChatDto);
   }
 
-  @Roles(RoleCodeEnum.TENANT, RoleCodeEnum.USER)
+  @Roles(RoleCodeEnum.TENANTADMIN, RoleCodeEnum.USER)
   @HttpCode(HttpStatus.OK)
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<DeleteResult> {

@@ -6,7 +6,7 @@ import {
   Repository,
   UpdateResult,
 } from 'typeorm';
-import { UserTenant } from './entities/user-tenant.entity';
+import { UserTenantEntity } from './entities/user-tenant.entity';
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { FilesService } from '../files/files.service';
 import { WinstonLoggerService } from '../logger/winston-logger.service';
@@ -16,20 +16,24 @@ import { CreateUserTenantDto } from '@/domains/user-tenant/create-user-tenant.dt
 import { usersTenantPaginationConfig } from './configs/users-tenant-pagination.config';
 import { plainToClass } from 'class-transformer';
 import { Status } from '../statuses/entities/status.entity';
-import { StatusCodeEnum } from '@/enums/status/statuses.enum';
-import { RoleCodeEnum } from '@/enums/role/roles.enum';
+import { StatusCodeEnum } from '@/enums/statuses.enum';
+import { RoleCodeEnum } from '@/enums/roles.enum';
 import { Role } from '../roles/entities/role.entity';
-import { MulterFile } from 'fastify-file-interceptor';
+import { JwtPayloadType } from '../auth/strategies/types/jwt-payload.type';
+import { CompanyEntity } from '../company/entities/company.entity';
+import { nanoid } from 'nanoid';
 
 @Injectable()
 export class UsersTenantService {
   constructor(
-    @InjectRepository(UserTenant)
-    private usersTenantRepository: Repository<UserTenant>,
+    @InjectRepository(UserTenantEntity)
+    private usersTenantRepository: Repository<UserTenantEntity>,
     private fileService: FilesService,
     private readonly logger: WinstonLoggerService,
   ) {}
-  async create(createProfileDto: CreateUserTenantDto): Promise<UserTenant> {
+  async create(
+    createProfileDto: CreateUserTenantDto,
+  ): Promise<UserTenantEntity> {
     const admin = this.usersTenantRepository.create(createProfileDto);
     admin.status = plainToClass(Status, {
       id: StatusCodeEnum.ACTIVE,
@@ -37,16 +41,18 @@ export class UsersTenantService {
     });
 
     admin.role = plainToClass(Role, {
-      id: RoleCodeEnum.TENANT,
-      code: RoleCodeEnum.TENANT,
+      id: RoleCodeEnum.TENANTADMIN,
+      code: RoleCodeEnum.TENANTADMIN,
     });
+
+    admin.tenantId = nanoid();
 
     return await this.usersTenantRepository.save(admin);
   }
 
   async findManyWithPagination(
     query: PaginateQuery,
-  ): Promise<Paginated<UserTenant>> {
+  ): Promise<Paginated<UserTenantEntity>> {
     return await paginate(
       query,
       this.usersTenantRepository,
@@ -55,9 +61,9 @@ export class UsersTenantService {
   }
 
   async findOne(
-    fields: FindOptionsWhere<UserTenant>,
-    relations?: FindOptionsRelations<UserTenant>,
-  ): Promise<NullableType<UserTenant>> {
+    fields: FindOptionsWhere<UserTenantEntity>,
+    relations?: FindOptionsRelations<UserTenantEntity>,
+  ): Promise<NullableType<UserTenantEntity>> {
     return await this.usersTenantRepository.findOne({
       where: fields,
       relations,
@@ -65,9 +71,9 @@ export class UsersTenantService {
   }
 
   async findOneOrFail(
-    fields: FindOptionsWhere<UserTenant>,
-    relations?: FindOptionsRelations<UserTenant>,
-  ): Promise<UserTenant> {
+    fields: FindOptionsWhere<UserTenantEntity>,
+    relations?: FindOptionsRelations<UserTenantEntity>,
+  ): Promise<UserTenantEntity> {
     return this.usersTenantRepository.findOneOrFail({
       where: fields,
       relations,
@@ -77,25 +83,25 @@ export class UsersTenantService {
   async update(
     id: string,
     updateUserDto: AuthUpdateDto,
-    file?: MulterFile | Express.MulterS3.File,
-  ): Promise<UserTenant> {
+    file?: Express.Multer.File | Express.MulterS3.File,
+  ): Promise<UserTenantEntity> {
     const user = await this.findOneOrFail({ id });
     Object.assign(user, updateUserDto);
     if (!!file) {
-      user.photo = user?.photo?.id
-        ? await this.fileService.updateFile(user?.photo?.id, file)
+      user.image = user?.image?.id
+        ? await this.fileService.updateFile(user?.image?.id, file)
         : await this.fileService.uploadFile(file);
     }
     return this.usersTenantRepository.save(user);
   }
 
-  async softDelete(id: UserTenant['id']): Promise<UpdateResult> {
+  async softDelete(id: UserTenantEntity['id']): Promise<UpdateResult> {
     return await this.usersTenantRepository.softDelete(id);
   }
 
   async restoreUserByEmail(
-    email: UserTenant['email'],
-  ): Promise<UserTenant | null> {
+    email: UserTenantEntity['email'],
+  ): Promise<UserTenantEntity | null> {
     // Find the user by email, including soft-deleted ones
     const user = await this.usersTenantRepository.findOne({
       withDeleted: true,
@@ -128,7 +134,7 @@ export class UsersTenantService {
     return result.map((user) => user.notificationsToken) as string[];
   }
 
-  async findAllUsersByIds(userIds: number[]): Promise<Array<UserTenant>> {
+  async findAllUsersByIds(userIds: number[]): Promise<Array<UserTenantEntity>> {
     const stopWatching = this.logger.watch('users-findAllUsersByIds', {
       description: `Find All Users By Ids`,
       class: UsersTenantService.name,
@@ -143,5 +149,20 @@ export class UsersTenantService {
     const users = await queryBuilder.getMany();
     stopWatching();
     return users;
+  }
+
+  async addCompanyToTenant(
+    userJwtPayload: JwtPayloadType,
+    company: CompanyEntity,
+  ): Promise<UserTenantEntity> {
+    this.logger.watch('users-addCompanyToTenant', {
+      description: `Add company to tenant`,
+      class: UsersTenantService.name,
+      function: 'addCompanyToTenant',
+    });
+
+    const tenant = await this.findOneOrFail({ id: userJwtPayload.id });
+    tenant.company = company;
+    return await this.usersTenantRepository.save(tenant);
   }
 }

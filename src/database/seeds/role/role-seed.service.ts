@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from '../../../roles/entities/role.entity';
 import { Repository } from 'typeorm';
-import { RoleCodeEnum } from '@/enums/role/roles.enum';
+import { RoleCodeEnum } from '@/enums/roles.enum';
 
 @Injectable()
 export class RoleSeedService {
@@ -14,16 +14,16 @@ export class RoleSeedService {
   async run() {
     const countUser = await this.repository.count({
       where: {
-        id: RoleCodeEnum.TENANT,
+        id: RoleCodeEnum.TENANTADMIN,
       },
     });
 
     if (!countUser) {
       await this.repository.save(
         this.repository.create({
-          id: RoleCodeEnum.TENANT,
+          id: RoleCodeEnum.TENANTADMIN,
           name: 'ADMIN',
-          code: RoleCodeEnum.TENANT,
+          code: RoleCodeEnum.TENANTADMIN,
         }),
       );
     }

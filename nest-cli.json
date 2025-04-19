@@ -16,6 +16,11 @@
       {
         "include": "mail/templates/**/*",
         "watchAssets": true
+      },
+      {
+        "include": "src/utils/**/*.svg",
+        "outDir": "dist/utils",
+        "watchAssets": true
       }
     ]
   }

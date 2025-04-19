@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 import EntityHelper from '../../utils/entities/entity-helper';
 import { AutoMap } from 'automapper-classes';
-import { StatusCodeEnum } from '@/enums/status/statuses.enum';
+import { StatusCodeEnum } from '@/enums/statuses.enum';
 
 @Entity()
 export class Status extends EntityHelper {

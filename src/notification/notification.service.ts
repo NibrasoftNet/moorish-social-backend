@@ -90,35 +90,6 @@ export class NotificationService {
     return savedNotification;
   }
 
-  async sendImmediateNotification(notification: Notification) {
-    const message = await this.createNotificationMessage(notification);
-    await this.graphileWorker.addJob(
-      'notification',
-      {
-        message: message,
-        notificationId: notification.id,
-      },
-      {
-        maxAttempts: 3,
-      },
-    );
-  }
-
-  async sendPunctualNotification(notification: Notification) {
-    const message = await this.createNotificationMessage(notification);
-    await this.graphileWorker.addJob(
-      'notification',
-      {
-        message: message,
-        notificationId: notification.id,
-      },
-      {
-        maxAttempts: 3,
-        runAt: new Date(notification.punctualSendDate as Date),
-      },
-    );
-  }
-
   async findAllPaginated(
     query: PaginateQuery,
   ): Promise<Paginated<Notification>> {
@@ -232,6 +203,35 @@ export class NotificationService {
     return await this.notificationsRepository.delete(id);
   }
 
+  async sendImmediateNotification(notification: Notification) {
+    const message = await this.createNotificationMessage(notification);
+    await this.graphileWorker.addJob(
+      'notification',
+      {
+        message: message,
+        notificationId: notification.id,
+      },
+      {
+        maxAttempts: 3,
+      },
+    );
+  }
+
+  async sendPunctualNotification(notification: Notification) {
+    const message = await this.createNotificationMessage(notification);
+    await this.graphileWorker.addJob(
+      'notification',
+      {
+        message: message,
+        notificationId: notification.id,
+      },
+      {
+        maxAttempts: 3,
+        runAt: new Date(notification.punctualSendDate as Date),
+      },
+    );
+  }
+
   async sendProgrammedNotifications(notificationId: string, sendAt: Date) {
     const notification = await this.findOneOrFail(
       { id: notificationId },
@@ -309,9 +309,9 @@ export class NotificationService {
   ): Promise<string[] | User[]> {
     if (!notification.forAllUsers) {
       return onlyTokens
-        ? (notification.users.map(
-            (item) => item.notificationsToken,
-          ) as string[])
+        ? (notification.users
+            .map((item) => item.notificationsToken)
+            .filter((token) => token !== null) as string[])
         : (notification.users.map((item) => item) as User[]);
     }
     return onlyTokens

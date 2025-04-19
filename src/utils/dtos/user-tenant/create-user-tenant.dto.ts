@@ -1,7 +1,6 @@
 import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsDateString,
   IsEmail,
   IsNotEmpty,
   IsOptional,
@@ -13,11 +12,11 @@ import { lowerCaseTransformer } from '../../transformers/lower-case.transformer'
 import { IsNotExist } from '../../validators/is-not-exists.validator';
 
 export class CreateUserTenantDto {
-  @ApiProperty({ example: 'test1@example.com' })
+  @ApiProperty({ example: 'test1@tenant.com' })
   @Transform(lowerCaseTransformer)
   @IsNotEmpty()
   @Validate(IsNotExist, [
-    'UserTenant',
+    'UserTenantEntity',
     'email',
     'validation.emailAlreadyExists',
   ])
@@ -27,14 +26,14 @@ export class CreateUserTenantDto {
   @ApiProperty({ example: 'John' })
   @IsString()
   @IsNotEmpty()
-  userName: string;
+  firstName: string;
 
-  @ApiProperty({ example: '0021655456398' })
+  @ApiProperty({ example: 'Doe' })
   @IsString()
   @IsNotEmpty()
-  whatsApp: string;
+  lastName: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'H@mza12345' })
   @IsOptional()
   @IsStrongPassword({
     minLength: 5,
@@ -45,8 +44,8 @@ export class CreateUserTenantDto {
   })
   password?: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsDateString()
-  subscriptionExpiryDate: Date;
+  @ApiProperty({ example: '0021655456398' })
+  @IsOptional()
+  @IsString()
+  whatsApp?: string;
 }

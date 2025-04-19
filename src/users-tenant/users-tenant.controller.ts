@@ -23,18 +23,18 @@ import { Paginate, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate';
 import { InjectMapper, MapInterceptor } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import { PaginatedDto } from '../utils/serialization/paginated.dto';
-import { RoleCodeEnum } from '@/enums/role/roles.enum';
-import { UserTenant } from './entities/user-tenant.entity';
+import { RoleCodeEnum } from '@/enums/roles.enum';
+import { UserTenantEntity } from './entities/user-tenant.entity';
 import { usersTenantPaginationConfig } from './configs/users-tenant-pagination.config';
 import { UserTenantDto } from '@/domains/user-tenant/user-tenant.dto';
 import { CreateUserTenantDto } from '@/domains/user-tenant/create-user-tenant.dto';
 import { UpdateUserTenantDto } from '@/domains/user-tenant/update-user-tenant.dto';
 
 @ApiBearerAuth()
-@ApiTags('Admin-Tenant')
+@ApiTags('User Tenants')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
-  path: 'user-tenants',
+  path: 'users-tenant',
   version: '1',
 })
 export class UsersTenantController {
@@ -46,10 +46,10 @@ export class UsersTenantController {
   @Roles(RoleCodeEnum.SUPERADMIN)
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @UseInterceptors(MapInterceptor(UserTenant, UserTenantDto))
+  @UseInterceptors(MapInterceptor(UserTenantEntity, UserTenantDto))
   async create(
     @Body() createProfileDto: CreateUserTenantDto,
-  ): Promise<UserTenant> {
+  ): Promise<UserTenantEntity> {
     return await this.usersTenantService.create(createProfileDto);
   }
 
@@ -57,12 +57,14 @@ export class UsersTenantController {
   @Get()
   @HttpCode(HttpStatus.OK)
   @PaginatedSwaggerDocs(UserTenantDto, usersTenantPaginationConfig)
-  async findAllPaginated(@Paginate() query: PaginateQuery) {
+  async findAllPaginated(
+    @Paginate() query: PaginateQuery,
+  ): Promise<PaginatedDto<UserTenantEntity, UserTenantDto>> {
     const users = await this.usersTenantService.findManyWithPagination(query);
-    return new PaginatedDto<UserTenant, UserTenantDto>(
+    return new PaginatedDto<UserTenantEntity, UserTenantDto>(
       this.mapper,
       users,
-      UserTenant,
+      UserTenantEntity,
       UserTenantDto,
     );
   }
@@ -70,19 +72,21 @@ export class UsersTenantController {
   @Roles(RoleCodeEnum.SUPERADMIN)
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  @UseInterceptors(MapInterceptor(UserTenant, UserTenantDto))
-  async findOne(@Param('id') id: string): Promise<NullableType<UserTenant>> {
+  @UseInterceptors(MapInterceptor(UserTenantEntity, UserTenantDto))
+  async findOne(
+    @Param('id') id: string,
+  ): Promise<NullableType<UserTenantEntity>> {
     return await this.usersTenantService.findOne({ id });
   }
 
   @Roles(RoleCodeEnum.SUPERADMIN)
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
-  @UseInterceptors(MapInterceptor(UserTenant, UserTenantDto))
+  @UseInterceptors(MapInterceptor(UserTenantEntity, UserTenantDto))
   async update(
     @Param('id', ParseIntPipe) id: string,
     @Body() updateProfileDto: UpdateUserTenantDto,
-  ): Promise<UserTenant> {
+  ): Promise<UserTenantEntity> {
     return await this.usersTenantService.update(id, updateProfileDto);
   }
 

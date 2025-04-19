@@ -8,6 +8,6 @@ export class AuthAdminForgotPasswordDto {
   @ApiProperty()
   @Transform(lowerCaseTransformer)
   @IsEmail()
-  @Validate(IsExist, ['UserAdmin', 'email', 'validation.emailNotExists'])
+  @Validate(IsExist, ['UserTenantEntity', 'email', 'validation.emailNotExists'])
   email: string;
 }

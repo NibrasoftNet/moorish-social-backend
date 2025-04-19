@@ -3,7 +3,7 @@ import EntityHelper from '../../utils/entities/entity-helper';
 import { AutoMap } from 'automapper-classes';
 
 @Entity()
-export class Address extends EntityHelper {
+export class AddressEntity extends EntityHelper {
   @AutoMap()
   @PrimaryGeneratedColumn('uuid')
   id: string;

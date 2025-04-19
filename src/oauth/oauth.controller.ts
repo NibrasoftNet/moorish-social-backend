@@ -1,10 +1,7 @@
 import { Controller, Get, Res, UseGuards } from '@nestjs/common';
-import { OauthService } from './oauth.service';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
 import { CurrentUser } from 'src/auth/decorator/current-user.decorator';
-import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
-import { AllConfigType } from '../config/config.type';
 import { OAuthGoogleResponseDto } from '../auth/dto/oAuth-google-response.dto';
 
 @Controller({
@@ -12,11 +9,7 @@ import { OAuthGoogleResponseDto } from '../auth/dto/oAuth-google-response.dto';
   version: '1',
 })
 export class OauthController {
-  constructor(
-    private readonly oauthGoogleService: OauthService,
-    private readonly usersService: UsersService,
-    private readonly configService: ConfigService<AllConfigType>,
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
   @Get()
   @UseGuards(GoogleAuthGuard)
   loginGoogle() {}
@@ -31,7 +24,7 @@ export class OauthController {
       email: user.emails[0].value,
     });
     if (!existUser) {
-      console.log('aswer', user);
+      console.log('aswer', user, response);
     }
   }
 }

@@ -24,11 +24,6 @@ import { AuthGuard } from '@nestjs/passport';
 import { FilesService } from './files.service';
 import { DeleteResult } from 'typeorm';
 import { FileEntity } from './entities/file.entity';
-import {
-  FileFastifyInterceptor,
-  FilesFastifyInterceptor,
-  MulterFile,
-} from 'fastify-file-interceptor';
 import { createReadStream } from 'fs';
 import { join } from 'path';
 import * as mime from 'mime-types';
@@ -36,6 +31,7 @@ import { MapInterceptor } from 'automapper-nestjs';
 import { FileDto } from '@/domains/files/file.dto';
 import { NullableType } from '../utils/types/nullable.type';
 import { PresignedUrlResponseDto } from '@/domains/files/presign-url-response.dto';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Files')
 @ApiBearerAuth()
@@ -60,10 +56,12 @@ export class FilesController {
       },
     },
   })
-  @UseInterceptors(FileFastifyInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file'))
   @UseInterceptors(MapInterceptor(FileEntity, FileDto))
   @HttpCode(HttpStatus.CREATED)
-  async uploadFile(@UploadedFile() file: MulterFile | Express.MulterS3.File) {
+  async uploadFile(
+    @UploadedFile() file: Express.Multer.File | Express.MulterS3.File,
+  ) {
     return this.filesService.uploadFile(file);
   }
 
@@ -82,12 +80,12 @@ export class FilesController {
       },
     },
   })
-  @UseInterceptors(FilesFastifyInterceptor('files', 10))
+  @UseInterceptors(FilesInterceptor('files', 10))
   @UseInterceptors(MapInterceptor(FileEntity, FileDto, { isArray: true }))
   @HttpCode(HttpStatus.CREATED)
   @Post('upload-multiple')
   async uploadMultipleFiles(
-    @UploadedFiles() files: Array<MulterFile | Express.MulterS3.File>,
+    @UploadedFiles() files: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<FileEntity[]> {
     return this.filesService.uploadMultipleFiles(files);
   }
@@ -129,7 +127,7 @@ export class FilesController {
    * Update a file in storage and database
    * @returns {Promise<FileEntity>} updated file
    * @param id
-   * @param file {MulterFile | Express.MulterS3.File} file to update
+   * @param file {Express.Multer.File | Express.MulterS3.File} file to update
    */
   @ApiOperation({
     summary: 'Update a file in storage and database',
@@ -150,11 +148,11 @@ export class FilesController {
     },
   })
   @UseGuards(AuthGuard('jwt'))
-  @UseInterceptors(FileFastifyInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file'))
   @HttpCode(HttpStatus.OK)
   async updateFile(
     @Param('id') id: string,
-    @UploadedFile() file: MulterFile | Express.MulterS3.File,
+    @UploadedFile() file: Express.Multer.File | Express.MulterS3.File,
   ): Promise<FileEntity> {
     return this.filesService.updateFile(id, file);
   }

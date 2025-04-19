@@ -15,7 +15,7 @@ export class ImageExistsInS3Validator implements ValidatorConstraintInterface {
       return await this.awsS3Service.checkIfFileExistsInS3(imageUrl);
     } catch (error) {
       throw new HttpException(
-        `{"s3": "Fail to check if file exists in s3"}`,
+        `{"s3": "Fail to check if file exists in s3 ${error}"}`,
         HttpStatus.PRECONDITION_FAILED,
       );
     }

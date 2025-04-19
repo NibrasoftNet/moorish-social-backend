@@ -20,15 +20,10 @@ import { ResponseInterceptor } from './utils/interceptors/response.interceptor';
 import { WinstonLoggerService } from './logger/winston-logger.service';
 import { HttpExceptionFilter } from './utils/exceptions/http-exception.filter';
 import { WorkerService } from 'nestjs-graphile-worker';
-import {
-  FastifyAdapter,
-  NestFastifyApplication,
-} from '@nestjs/platform-fastify';
 import { RolesSerializerInterceptor } from './utils/interceptors/role.serializer.interceptor';
-import { contentParser } from 'fastify-file-interceptor';
-import { SwaggerAuthService } from './swagger-auth.service';
+import { apiReference } from '@scalar/nestjs-api-reference';
 
-const logger = new Logger('Soccer-main');
+const logger = new Logger('Weavers-social');
 const whitelist = [
   'http://localhost:5000',
   'http://localhost:5001',
@@ -36,21 +31,17 @@ const whitelist = [
   'http://127.0.0.1:5001',
   'http://147.79.117.125:5000',
   'http://147.79.117.125:5001',
-  'https://api-tachkila.genydev.com',
-  'https://api-tachkila.genydev.com',
-  'https://dashboard-tachkila.genydev.com',
+  'https://api-weavers.nibrasoft.com',
+  'https://dashboard-weavers.nibrasoft.com',
 ];
 
 async function bootstrap() {
   initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
 
-  const app = await NestFactory.create<NestFastifyApplication>(
-    AppModule,
-    new FastifyAdapter(),
-    {
-      abortOnError: true,
-    },
-  );
+  const app = await NestFactory.create(AppModule, {
+    cors: true,
+    abortOnError: true,
+  });
   useContainer(app.select(AppModule), {
     fallbackOnErrors: true, // fallbackOnErrors must be true
   });
@@ -64,7 +55,7 @@ async function bootstrap() {
       }
       if (
         whitelist.includes(origin) || // Checks your whitelist
-        !!origin.match(/soccer-book\.com$/) // Overall check for your domain
+        !!origin.match(/weavers\.com$/) // Overall check for your domain
       ) {
         logger.log('allowed cors for:', origin);
         callback(null, true);
@@ -85,7 +76,6 @@ async function bootstrap() {
   app.enableVersioning({
     type: VersioningType.URI,
   });
-  await app.register(contentParser as any);
   app.useGlobalPipes(new ValidationPipe(validationOptions));
   app.useGlobalFilters(new HttpExceptionFilter(app.get(WinstonLoggerService)));
   app.useGlobalInterceptors(
@@ -94,25 +84,35 @@ async function bootstrap() {
     new ResponseInterceptor(),
   );
 
-  // Protect Swagger route
-  //const swaggerAuthService = new SwaggerAuthService(app, configService);
-  //await swaggerAuthService.onModuleInit();
   const options = new DocumentBuilder()
     .setTitle('Weavers social API')
     .setDescription('Swagger docs')
     .setVersion('1.0')
+    .addGlobalParameters({
+      name: configService.getOrThrow('app.headerLanguage', { infer: true }),
+      required: true,
+      in: 'header',
+    })
     .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
 
-  SwaggerModule.setup('docs', app, document);
+  app.use(
+    '/weavers-docs',
+    apiReference({
+      theme: 'moon',
+      spec: {
+        content: document,
+      },
+      favicon: 'https://avatars.githubusercontent.com/u/301879?s=48&v=4',
+    }),
+  );
+
+  // SwaggerModule.setup('docs', app, document);
   await app.get(WorkerService).run();
   await app.listen(
-    {
-      host: configService.getOrThrow('app.host', { infer: true }),
-      port: configService.getOrThrow('app.port', { infer: true }),
-    },
+    configService.getOrThrow('app.port', { infer: true }),
     () => {
       logger.log(
         `${configService.getOrThrow('app.name', {

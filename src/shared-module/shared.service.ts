@@ -16,9 +16,7 @@ export class SharedService {
     const tokenExpiresIn = this.configService.getOrThrow('auth.expires', {
       infer: true,
     });
-
-    const tokenExpires = Date.now() + ms(Number(tokenExpiresIn));
-
+    const tokenExpires = Date.now() + ms(tokenExpiresIn as unknown as number);
     const [accessToken, refreshToken] = await Promise.all([
       await this.jwtService.signAsync(
         {

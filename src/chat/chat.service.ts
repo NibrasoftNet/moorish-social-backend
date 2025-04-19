@@ -18,7 +18,7 @@ export class ChatService {
     @InjectRepository(Chat)
     private chatRepository: Repository<Chat>,
     private readonly userService: UsersService,
-    private readonly userAdminService: UsersTenantService,
+    private readonly userTenantService: UsersTenantService,
   ) {}
   async createOneToOne(
     createOneToOneChatDto: CreateOneToOneChatDto,
@@ -45,14 +45,14 @@ export class ChatService {
 
     const chat = this.chatRepository.create();
     chat.sender = createOneToOneChatDto.isSenderAdmin
-      ? await this.userAdminService.findOneOrFail({
+      ? await this.userTenantService.findOneOrFail({
           id: createOneToOneChatDto.senderId,
         })
       : await this.userService.findOneOrFail({
           id: createOneToOneChatDto.senderId,
         });
     chat.receiver = createOneToOneChatDto.isReceiverAdmin
-      ? await this.userAdminService.findOneOrFail({
+      ? await this.userTenantService.findOneOrFail({
           id: createOneToOneChatDto.receiverId,
         })
       : await this.userService.findOneOrFail({

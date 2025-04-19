@@ -1,7 +1,7 @@
 import { APP_URL, ADMIN_EMAIL, ADMIN_PASSWORD } from '../utils/constants';
 import request from 'supertest';
-import { RoleEnum } from '../../src/roles/roles.enum';
-import { StatusEnum } from '../../src/statuses/statuses.enum';
+import { StatusCodeEnum } from '../../src/utils/enum/statuses.enum';
+import { RoleCodeEnum } from '../../src/utils/enum/roles.enum';
 
 describe('Users admin (e2e)', () => {
   const app = APP_URL;
@@ -80,10 +80,10 @@ describe('Users admin (e2e)', () => {
         firstName: `UserByAdmin${Date.now()}`,
         lastName: 'E2E',
         role: {
-          id: RoleEnum.USER,
+          id: RoleCodeEnum.USER,
         },
         status: {
-          id: StatusEnum.ACTIVE,
+          id: StatusCodeEnum.ACTIVE,
         },
       })
       .expect(201);

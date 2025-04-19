@@ -32,15 +32,18 @@ import { CreateUserDto } from '@/domains/user/create-user.dto';
 import { AuthNewPasswordDto } from '@/domains/auth/auth-new-password.dto';
 import { AuthTenantService } from './auth-tenant.service';
 import { SessionAdminResponseDto } from '@/domains/session/session-admin-response.dto';
-import { UserTenant } from '../users-tenant/entities/user-tenant.entity';
+import { UserTenantEntity } from '../users-tenant/entities/user-tenant.entity';
 import { UserTenantDto } from '@/domains/user-tenant/user-tenant.dto';
-import { FileFastifyInterceptor, MulterFile } from 'fastify-file-interceptor';
 import { AuthAdminEmailLoginDto } from '@/domains/auth-admin/auth-admin-email-login.dto';
 import { AuthAdminForgotPasswordDto } from '@/domains/auth-admin/auth-admin-forgot-password.dto';
+import { AuthRequest } from '../utils/types/auth-request.type';
+import { CreateUserTenantDto } from '@/domains/user-tenant/create-user-tenant.dto';
+import { ConfirmOtpEmailDto } from '@/domains/otp/confirm-otp-email.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
-@ApiTags('Auth-admin')
+@ApiTags('Auth tenants')
 @Controller({
-  path: 'auth-admin',
+  path: 'auth-tenants',
   version: '1',
 })
 export class AuthTenantController {
@@ -56,6 +59,20 @@ export class AuthTenantController {
     @Body() loginDto: AuthAdminEmailLoginDto,
   ): Promise<SessionAdminResponseDto> {
     return await this.authTenantService.validateLogin(loginDto);
+  }
+
+  @Post('email-register')
+  @HttpCode(HttpStatus.CREATED)
+  async register(@Body() createUserDto: CreateUserTenantDto): Promise<boolean> {
+    return await this.authTenantService.register(createUserDto);
+  }
+
+  @Post('email-confirm')
+  @HttpCode(HttpStatus.OK)
+  async confirmEmail(
+    @Body() confirmOtpEmailDto: ConfirmOtpEmailDto,
+  ): Promise<void> {
+    return await this.authTenantService.confirmEmail(confirmOtpEmailDto);
   }
 
   @Post('forgot-password')
@@ -78,7 +95,9 @@ export class AuthTenantController {
   @Get('me')
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
-  public async me(@Request() request): Promise<SessionAdminResponseDto> {
+  public async me(
+    @Request() request: AuthRequest,
+  ): Promise<SessionAdminResponseDto> {
     return await this.authTenantService.me(request.user);
   }
 
@@ -86,7 +105,9 @@ export class AuthTenantController {
   @Post('refresh')
   @UseGuards(AuthGuard('jwt-refresh'))
   @HttpCode(HttpStatus.OK)
-  public async refresh(@Request() request): Promise<SessionAdminResponseDto> {
+  public async refresh(
+    @Request() request: AuthRequest,
+  ): Promise<SessionAdminResponseDto> {
     return await this.authTenantService.refreshToken({
       id: request.user.id,
     });
@@ -96,8 +117,8 @@ export class AuthTenantController {
   @Post('logout')
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
-  public async adminLogout(@Request() request): Promise<void> {
-    await this.authTenantService.adminLogout({
+  public adminLogout(@Request() request: AuthRequest): void {
+    this.authTenantService.adminLogout({
       id: request.user.id,
     });
   }
@@ -122,13 +143,13 @@ export class AuthTenantController {
   @Put('me')
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
-  @UseInterceptors(MapInterceptor(UserTenant, UserTenantDto))
-  @UseInterceptors(FileFastifyInterceptor('file'))
+  @UseInterceptors(MapInterceptor(UserTenantEntity, UserTenantDto))
+  @UseInterceptors(FileInterceptor('file'))
   public async update(
-    @Request() request,
+    @Request() request: AuthRequest,
     @Body('data', ParseFormdataPipe) data,
-    @UploadedFile() file?: MulterFile | Express.MulterS3.File,
-  ): Promise<NullableType<UserTenant>> {
+    @UploadedFile() file?: Express.Multer.File | Express.MulterS3.File,
+  ): Promise<NullableType<UserTenantEntity>> {
     const updateUserDto = new AuthUpdateDto(data);
     await Utils.validateDtoOrFail(updateUserDto);
     return await this.authTenantService.update(
@@ -143,7 +164,7 @@ export class AuthTenantController {
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
   public async newPassword(
-    @Request() request,
+    @Request() request: AuthRequest,
     @Body() newPasswordDto: AuthNewPasswordDto,
   ): Promise<void> {
     return await this.authTenantService.newPassword(

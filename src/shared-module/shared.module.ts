@@ -8,14 +8,17 @@ import { AllConfigType } from 'src/config/config.type';
 import { SharedService } from './shared.service';
 import { JwtModule } from '@nestjs/jwt';
 import { IsUniqueOrAppend } from '../utils/validators/is-unique-or-append';
-import { FastifyMulterModule } from 'fastify-file-interceptor';
 import { IsNotUsedByOthers } from '../utils/validators/is-not-used-by-others';
+import { IsExist } from '../utils/validators/is-exists.validator';
+import { IsNotExist } from '../utils/validators/is-not-exists.validator';
+import { ImageExistsInS3Validator } from '../utils/validators/image-exists-in-s3.validator';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Global()
 @Module({
   imports: [
     JwtModule.register({}),
-    FastifyMulterModule.registerAsync({
+    MulterModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService<AllConfigType>) => {
@@ -36,6 +39,10 @@ import { IsNotUsedByOthers } from '../utils/validators/is-not-used-by-others';
           s3: () => {
             const s3 = new S3Client({
               region: configService.get('file.awsS3Region', { infer: true }),
+              forcePathStyle: true,
+              endpoint: configService.getOrThrow('file.awsS3Endpoint', {
+                infer: true,
+              }),
               credentials: {
                 accessKeyId: configService.getOrThrow('file.accessKeyId', {
                   infer: true,
@@ -45,10 +52,6 @@ import { IsNotUsedByOthers } from '../utils/validators/is-not-used-by-others';
                   { infer: true },
                 ),
               },
-              forcePathStyle: true, // Required for MinIO, to avoid AWS-style buckets
-              endpoint: configService.getOrThrow('file.awsS3Endpoint', {
-                infer: true,
-              }),
             });
 
             return multerS3({
@@ -56,7 +59,6 @@ import { IsNotUsedByOthers } from '../utils/validators/is-not-used-by-others';
               bucket: configService.getOrThrow('file.awsDefaultS3Bucket', {
                 infer: true,
               }),
-              acl: 'public-read',
               contentType: multerS3.AUTO_CONTENT_TYPE,
               key: (request, file, callback) => {
                 callback(
@@ -83,8 +85,10 @@ import { IsNotUsedByOthers } from '../utils/validators/is-not-used-by-others';
                   },
                   HttpStatus.UNPROCESSABLE_ENTITY,
                 ),
+                false,
               );
             }
+
             callback(null, true);
           },
           storage:
@@ -98,7 +102,16 @@ import { IsNotUsedByOthers } from '../utils/validators/is-not-used-by-others';
       },
     }),
   ],
-  exports: [FastifyMulterModule, SharedService],
-  providers: [SharedService, IsUniqueOrAppend, IsNotUsedByOthers],
+  exports: [MulterModule, SharedService],
+  providers: [
+    SharedService,
+    S3Client,
+    IsUniqueOrAppend,
+    IsNotUsedByOthers,
+    IsExist,
+    IsNotExist,
+    ImageExistsInS3Validator,
+    IsNotUsedByOthers,
+  ],
 })
 export class SharedModule {}

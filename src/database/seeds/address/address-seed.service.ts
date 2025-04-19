@@ -2,15 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
-import { Address } from '../../../address/entities/address.entity';
+import { AddressEntity } from '../../../address/entities/address.entity';
 import { AddressFactory } from './address.factory';
 import { faker } from '@faker-js/faker';
 
 @Injectable()
 export class AddressSeedService {
   constructor(
-    @InjectRepository(Address)
-    private repository: Repository<Address>,
+    @InjectRepository(AddressEntity)
+    private repository: Repository<AddressEntity>,
     private addressFactory: AddressFactory,
   ) {}
 

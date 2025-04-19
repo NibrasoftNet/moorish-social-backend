@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { UploadApiOptions, UploadApiResponse } from 'cloudinary';
-import { MulterFile } from 'fastify-file-interceptor';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 
 @Injectable()
@@ -11,7 +10,7 @@ export class CloudinaryService {
   ) {}
 
   async uploadFile(
-    file: MulterFile | Express.MulterS3.File,
+    file: Express.Multer.File | Express.MulterS3.File,
   ): Promise<UploadApiResponse> {
     const uploadOptions: UploadApiOptions = {
       folder: 'uploads', // Customize folder name

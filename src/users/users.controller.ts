@@ -25,7 +25,7 @@ import { usersPaginationConfig } from './configs/users-pagination.config';
 import { InjectMapper, MapInterceptor } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import { PaginatedDto } from '../utils/serialization/paginated.dto';
-import { RoleCodeEnum } from '@/enums/role/roles.enum';
+import { RoleCodeEnum } from '@/enums/roles.enum';
 import { UserDto } from '@/domains/user/user.dto';
 import { CreateUserDto } from '@/domains/user/create-user.dto';
 import { UpdateUserDto } from '@/domains/user/update-user.dto';
@@ -51,7 +51,7 @@ export class UsersController {
     return await this.usersService.create(createProfileDto);
   }
 
-  @Roles(RoleCodeEnum.TENANT, RoleCodeEnum.SUPERADMIN, RoleCodeEnum.USER)
+  @Roles(RoleCodeEnum.TENANTADMIN, RoleCodeEnum.SUPERADMIN, RoleCodeEnum.USER)
   @Get()
   @HttpCode(HttpStatus.OK)
   @PaginatedSwaggerDocs(UserDto, usersPaginationConfig)
@@ -60,7 +60,7 @@ export class UsersController {
     return new PaginatedDto<User, UserDto>(this.mapper, users, User, UserDto);
   }
 
-  @Roles(RoleCodeEnum.TENANT, RoleCodeEnum.SUPERADMIN)
+  @Roles(RoleCodeEnum.TENANTADMIN, RoleCodeEnum.SUPERADMIN)
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(MapInterceptor(User, UserDto))
@@ -79,7 +79,7 @@ export class UsersController {
     return await this.usersService.update(id, updateProfileDto);
   }
 
-  @Roles(RoleCodeEnum.TENANT)
+  @Roles(RoleCodeEnum.USER)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string): Promise<UpdateResult> {

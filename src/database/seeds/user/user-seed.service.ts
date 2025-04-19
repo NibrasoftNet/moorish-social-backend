@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../../users/entities/user.entity';
 import { Repository } from 'typeorm';
-import { Address } from '../../../address/entities/address.entity';
+import { AddressEntity } from '../../../address/entities/address.entity';
 import { faker } from '@faker-js/faker';
 import { UserFactory } from './user.factory';
 import { FileEntity } from '../../../files/entities/file.entity';
@@ -12,8 +12,8 @@ export class UserSeedService {
   constructor(
     @InjectRepository(User)
     private repository: Repository<User>,
-    @InjectRepository(Address)
-    private addressRepository: Repository<Address>,
+    @InjectRepository(AddressEntity)
+    private addressRepository: Repository<AddressEntity>,
     @InjectRepository(FileEntity)
     private fileEntityRepository: Repository<FileEntity>,
     private userFactory: UserFactory,

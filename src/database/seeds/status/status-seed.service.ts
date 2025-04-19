@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Status } from '../../../statuses/entities/status.entity';
 import { Repository } from 'typeorm';
-import { StatusCodeEnum } from '@/enums/status/statuses.enum';
+import { StatusCodeEnum } from '@/enums/statuses.enum';
 
 @Injectable()
 export class StatusSeedService {

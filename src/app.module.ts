@@ -11,7 +11,6 @@ import { AllConfigType } from './config/config.type';
 import { OtpModule } from './otp/otp.module';
 import { addTransactionalDataSource } from 'typeorm-transactional';
 import { EndLaterThanStartDateValidator } from './utils/validators/end-later-than-start-date.validator';
-import { ImageExistsInS3Validator } from './utils/validators/image-exists-in-s3.validator';
 import { AutomapperModule } from 'automapper-nestjs';
 import { classes } from 'automapper-classes';
 import { EntityHelperProfile } from './utils/serialization/entity-helper.profile';
@@ -24,11 +23,9 @@ import mailConfig from './mail/config/mail.config';
 import fileConfig from './files/config/file.config';
 import cloudinaryConfig from './utils/cloudinary/config/cloudinary.config';
 import path from 'path';
-import { MailerModule } from '@nestjs-modules/mailer';
 import { HealthModule } from './health/health.module';
-import { IsNotUsedByOthers } from './utils/validators/is-not-used-by-others';
 import { AwsS3Module } from './utils/aws-s3/aws-s3.module';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { WinstonLoggerModule } from './logger/winston-logger.module';
 import { GraphileWorkerModule } from 'nestjs-graphile-worker';
 import { NotificationModule } from './notification/notification.module';
@@ -38,6 +35,16 @@ import { SharedModule } from './shared-module/shared.module';
 import { UsersTenantModule } from './users-tenant/users-tenant.module';
 import { FirebaseModule } from './utils/firabase-fcm/firebase.module';
 import { ChatModule } from './chat/chat.module';
+import { ClsModule } from 'nestjs-cls';
+import { TenantMiddleware } from './utils/repository/tenant-aware/tenant.middleware';
+import { SubscriptionTokenModule } from './subscription-token/subscription-token.module';
+import { CompanyModule } from './company/company.module';
+import { TokenCategoryModule } from './token-category/token-category.module';
+import { CompanyController } from './company/company.controller';
+import { SubscriptionTokenController } from './subscription-token/subscription-token.controller';
+import { CompanyPostModule } from './company-post/company-post.module';
+import { PostCategoryModule } from './post-category/post-category.module';
+import { CompanyCategoryModule } from './company-category/company-category.module';
 
 @Module({
   imports: [
@@ -53,6 +60,10 @@ import { ChatModule } from './chat/chat.module';
         cloudinaryConfig,
       ],
       envFilePath: ['.env'],
+    }),
+    ClsModule.forRoot({
+      global: true,
+      middleware: { mount: true },
     }),
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
@@ -87,38 +98,6 @@ import { ChatModule } from './chat/chat.module';
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
-    MailerModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService<AllConfigType>) => ({
-        transport: {
-          host: configService.getOrThrow('mail.host', { infer: true }),
-          port: configService.getOrThrow('mail.port', { infer: true }),
-          //service: configService.getOrThrow('mail.service', { infer: true }),
-          ignoreTLS: configService.getOrThrow('mail.ignoreTLS', {
-            infer: true,
-          }),
-          secure: configService.getOrThrow('mail.secure', { infer: true }),
-          requireTLS: configService.getOrThrow('mail.requireTLS', {
-            infer: true,
-          }),
-          auth: {
-            user: configService.getOrThrow('mail.user', { infer: true }),
-            pass: configService.getOrThrow('mail.password', { infer: true }),
-          },
-        },
-        defaults: {
-          from: '"no-reply" <helpdesk@no-reploy.com>',
-        },
-        template: {
-          dir: __dirname + '/mail/templates',
-          // adapter: new HandlebarsAdapter(),
-          options: {
-            strict: true,
-          },
-        },
-      }),
-      inject: [ConfigService],
-    }),
     GraphileWorkerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -142,15 +121,25 @@ import { ChatModule } from './chat/chat.module';
     NotificationModule,
     OauthModule,
     ChatModule,
+    CompanyModule,
+    CompanyCategoryModule,
+    CompanyPostModule,
+    SubscriptionTokenModule,
+    TokenCategoryModule,
+    PostCategoryModule,
   ],
 
   providers: [
-    EndLaterThanStartDateValidator,
-    ImageExistsInS3Validator,
     EntityHelperProfile,
-    IsNotUsedByOthers,
+    EndLaterThanStartDateValidator,
     NotificationTask,
     NotificationCronTask,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(TenantMiddleware)
+      .forRoutes(CompanyController, SubscriptionTokenController);
+  }
+}

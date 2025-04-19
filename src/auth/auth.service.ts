@@ -15,11 +15,11 @@ import { Status } from '../statuses/entities/status.entity';
 import { SessionResponseDto } from '@/domains/session/session-response.dto';
 import { AuthEmailLoginDto } from '@/domains/auth/auth-email-login.dto';
 import { AuthProvidersEnum } from '@/enums/auth/auth-provider.enum';
-import { StatusCodeEnum } from '@/enums/status/statuses.enum';
+import { StatusCodeEnum } from '@/enums/statuses.enum';
 import { UserDto } from '@/domains/user/user.dto';
 import { AuthEmailRegisterDto } from '@/domains/auth/auth-email-register.dto';
 import { CreateUserDto } from '@/domains/user/create-user.dto';
-import { RoleCodeEnum } from '@/enums/role/roles.enum';
+import { RoleCodeEnum } from '@/enums/roles.enum';
 import { RoleDto } from '@/domains/role/role.dto';
 import { StatusesDto } from '@/domains/status/statuses.dto';
 import { ConfirmOtpEmailDto } from '@/domains/otp/confirm-otp-email.dto';
@@ -27,7 +27,6 @@ import { AuthResetPasswordDto } from '@/domains/auth/auth-reset-password.dto';
 import { AuthUpdateDto } from '@/domains/auth/auth-update.dto';
 import { AuthNewPasswordDto } from '@/domains/auth/auth-new-password.dto';
 import { SharedService } from '../shared-module/shared.service';
-import { MulterFile } from 'fastify-file-interceptor';
 
 @Injectable()
 export class AuthService {
@@ -233,7 +232,7 @@ export class AuthService {
   async update(
     userJwtPayload: JwtPayloadType,
     updateUserDto: AuthUpdateDto,
-    file?: MulterFile | Express.MulterS3.File,
+    file?: Express.Multer.File | Express.MulterS3.File,
   ): Promise<NullableType<User>> {
     return await this.usersService.update(
       userJwtPayload.id,

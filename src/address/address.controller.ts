@@ -14,7 +14,7 @@ import {
 import { AddressService } from './address.service';
 import { ApiTags } from '@nestjs/swagger';
 import { InjectMapper, MapInterceptor } from 'automapper-nestjs';
-import { Address } from './entities/address.entity';
+import { AddressEntity } from './entities/address.entity';
 import { Mapper } from 'automapper-core';
 import { AddressDto } from '@/domains/address/address.dto';
 import { CreateAddressDto } from '@/domains/address/create-address.dto';
@@ -30,34 +30,36 @@ export class AddressController {
     @InjectMapper() private readonly mapper: Mapper,
   ) {}
 
-  @UseInterceptors(MapInterceptor(Address, AddressDto))
+  @UseInterceptors(MapInterceptor(AddressEntity, AddressDto))
   @HttpCode(HttpStatus.OK)
   @Post()
-  async create(@Body() createAddressDto: CreateAddressDto): Promise<Address> {
+  async create(
+    @Body() createAddressDto: CreateAddressDto,
+  ): Promise<AddressEntity> {
     return await this.addressService.create(createAddressDto);
   }
 
-  @UseInterceptors(MapInterceptor(Address, AddressDto, { isArray: true }))
+  @UseInterceptors(MapInterceptor(AddressEntity, AddressDto, { isArray: true }))
   @HttpCode(HttpStatus.OK)
   @Get()
-  async findAll(): Promise<Address[]> {
+  async findAll(): Promise<AddressEntity[]> {
     return await this.addressService.findAll();
   }
 
-  @UseInterceptors(MapInterceptor(Address, AddressDto))
+  @UseInterceptors(MapInterceptor(AddressEntity, AddressDto))
   @HttpCode(HttpStatus.OK)
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<NullableType<Address>> {
+  async findOne(@Param('id') id: string): Promise<NullableType<AddressEntity>> {
     return await this.addressService.findOne({ id });
   }
 
-  @UseInterceptors(MapInterceptor(Address, AddressDto))
+  @UseInterceptors(MapInterceptor(AddressEntity, AddressDto))
   @HttpCode(HttpStatus.OK)
   @Put(':id')
   async update(
     @Param('id') id: string,
     @Body() updateAddressDto: UpdateAddressDto,
-  ): Promise<Address> {
+  ): Promise<AddressEntity> {
     return await this.addressService.update(id, updateAddressDto);
   }
 

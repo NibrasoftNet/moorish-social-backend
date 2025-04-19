@@ -13,13 +13,19 @@ export class UserTenantDto extends EntityHelperDto {
   email: string;
 
   @AutoMap()
-  userName: string;
+  tenantId: string;
+
+  @AutoMap(() => String)
+  firstName: string;
+
+  @AutoMap(() => String)
+  lastName: string;
 
   @AutoMap()
   whatsApp: string;
 
   @AutoMap(() => FileDto)
-  photo: FileDto;
+  image: FileDto;
 
   @AutoMap(() => RoleDto)
   role: string;
@@ -32,9 +38,6 @@ export class UserTenantDto extends EntityHelperDto {
 
   @AutoMap()
   notificationsToken: string;
-
-  @AutoMap(() => Date)
-  subscriptionExpiryDate: Date;
 
   @AutoMap(() => UserSocketDto)
   socket: UserSocketDto;

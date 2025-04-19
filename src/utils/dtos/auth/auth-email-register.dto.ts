@@ -17,7 +17,7 @@ import { CreateAddressDto } from '@/domains/address/create-address.dto';
 import { IsUniqueOrAppend } from '../../validators/is-unique-or-append';
 
 export class AuthEmailRegisterDto {
-  @ApiProperty({ example: 'test1@example.com' })
+  @ApiProperty({ example: 'test@weavers.com' })
   @Transform(lowerCaseTransformer)
   @Validate(IsNotExist, ['User', 'validation.emailAlreadyExists'])
   @IsEmail()

@@ -17,7 +17,6 @@ import { WinstonLoggerService } from '../logger/winston-logger.service';
 import { NullableType } from '../utils/types/nullable.type';
 import { CreateUserDto } from '@/domains/user/create-user.dto';
 import { AuthUpdateDto } from '@/domains/auth/auth-update.dto';
-import { MulterFile } from 'fastify-file-interceptor';
 
 @Injectable()
 export class UsersService {
@@ -76,7 +75,7 @@ export class UsersService {
   async update(
     id: string,
     updateUserDto: AuthUpdateDto,
-    file?: MulterFile | Express.MulterS3.File,
+    file?: Express.Multer.File | Express.MulterS3.File,
   ): Promise<User> {
     const user = await this.usersRepository.findOneByOrFail({ id });
     const { address, ...filteredUserDto } = updateUserDto;

@@ -16,6 +16,7 @@ import { Otp } from './entities/otp.entity';
 import { DeleteResult } from 'typeorm';
 import { ConfirmOtpEmailDto } from '@/domains/otp/confirm-otp-email.dto';
 import { ResendVerifyOtpDto } from '@/domains/otp/verifyotp.dto';
+
 @ApiTags('Otp')
 @Controller({
   path: 'otp',

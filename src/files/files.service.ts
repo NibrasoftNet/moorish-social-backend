@@ -13,7 +13,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { AwsS3Service } from '../utils/aws-s3/aws-s3.service';
 import { I18nContext, I18nService } from 'nestjs-i18n';
-import { MulterFile } from 'fastify-file-interceptor';
 import { FileDriver } from '@/enums/file/file-driver.enum';
 import { NullableType } from '../utils/types/nullable.type';
 import { PresignedUrlResponseDto } from '@/domains/files/presign-url-response.dto';
@@ -53,7 +52,7 @@ export class FilesService {
   }
 
   async uploadFile(
-    file: MulterFile | Express.MulterS3.File,
+    file: Express.Multer.File | Express.MulterS3.File,
   ): Promise<FileEntity> {
     if (!file) {
       throw new HttpException(
@@ -68,16 +67,16 @@ export class FilesService {
         HttpStatus.PRECONDITION_FAILED,
       );
     }
-
     const path = {
       local: `${this.configService.get('app.backendDomain', { infer: true })}/${this.configService.get('app.apiPrefix', { infer: true })}/v1/files/${
         file.filename
       }`,
       s3: (file as Express.MulterS3.File).location,
-      cloudinary: (file as MulterFile).path,
+      cloudinary: (file as Express.Multer.File).path,
     };
     return this.fileRepository.save(
       this.fileRepository.create({
+        mimeType: file.mimetype,
         path: path[
           this.configService.getOrThrow('file.driver', { infer: true })
         ],
@@ -86,7 +85,7 @@ export class FilesService {
   }
 
   async uploadMultipleFiles(
-    files: Array<MulterFile | Express.MulterS3.File>,
+    files: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<FileEntity[]> {
     if (!files) {
       throw new HttpException(
@@ -112,6 +111,7 @@ export class FilesService {
           };
           return await manager.save(
             this.fileRepository.create({
+              mimeType: file.mimetype,
               path: path[
                 this.configService.getOrThrow('file.driver', { infer: true })
               ],
@@ -130,7 +130,7 @@ export class FilesService {
    */
   async updateFile(
     id: string,
-    file: MulterFile | Express.MulterS3.File,
+    file: Express.Multer.File | Express.MulterS3.File,
   ): Promise<FileEntity> {
     if (!file) {
       throw new HttpException(
@@ -159,6 +159,7 @@ export class FilesService {
     };
 
     const updatedFile = Object.assign({}, fileToUpdate, {
+      mimeType: file.mimetype,
       path: path[this.storage],
     });
     return this.fileRepository.save(updatedFile);

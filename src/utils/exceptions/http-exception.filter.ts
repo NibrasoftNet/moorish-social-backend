@@ -5,7 +5,6 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { FastifyRequest, FastifyReply } from 'fastify';
 import { WinstonLoggerService } from '../../logger/winston-logger.service';
 import { EntityNotFoundError } from 'typeorm';
 
@@ -41,8 +40,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
   handleHttpException(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<FastifyReply>();
-    const request = ctx.getRequest<FastifyRequest>();
+    const response = ctx.getResponse();
+    const request = ctx.getRequest();
     const status = exception.getStatus();
 
     this.logError(request, 'HttpException', exception);
@@ -61,8 +60,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
     host: ArgumentsHost,
   ) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<FastifyReply>();
-    const request = ctx.getRequest<FastifyRequest>();
+    const response = ctx.getResponse();
+    const request = ctx.getRequest();
     const status = HttpStatus.PRECONDITION_FAILED; // EntityNotFoundError is treated as 404
 
     this.logError(request, 'EntityNotFoundError', exception);
@@ -86,8 +85,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
     host: ArgumentsHost,
   ) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<FastifyReply>();
-    const request = ctx.getRequest<FastifyRequest>();
+    const response = ctx.getResponse();
+    const request = ctx.getRequest();
     const status = HttpStatus.UNAUTHORIZED; // UnauthorizedException is treated as 401
 
     this.logError(request, 'UnauthorizedException', exception);
@@ -108,8 +107,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
   private handleUnknownException(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<FastifyReply>();
-    const request = ctx.getRequest<FastifyRequest>();
+    const response = ctx.getResponse();
+    const request = ctx.getRequest();
     const status = HttpStatus.INTERNAL_SERVER_ERROR; // Default to 500 for unknown exceptions
 
     this.logError(request, 'UnknownException', exception);
@@ -128,11 +127,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     });
   }
 
-  private logError(
-    request: FastifyRequest,
-    exceptionType: string,
-    exception: unknown,
-  ) {
+  private logError(request: any, exceptionType: string, exception: unknown) {
     this.loggerService.error(request.url, {
       description: request.url,
       class: exceptionType,

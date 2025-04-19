@@ -10,19 +10,18 @@ import { InjectMapper } from 'automapper-nestjs';
 import { OtpService } from 'src/otp/otp.service';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { Status } from '../statuses/entities/status.entity';
-import { AuthProvidersEnum } from '@/enums/auth/auth-provider.enum';
-import { StatusCodeEnum } from '@/enums/status/statuses.enum';
+import { StatusCodeEnum } from '@/enums/statuses.enum';
 import { ConfirmOtpEmailDto } from '@/domains/otp/confirm-otp-email.dto';
 import { AuthResetPasswordDto } from '@/domains/auth/auth-reset-password.dto';
 import { AuthUpdateDto } from '@/domains/auth/auth-update.dto';
 import { AuthNewPasswordDto } from '@/domains/auth/auth-new-password.dto';
 import { SharedService } from '../shared-module/shared.service';
 import { UsersTenantService } from '../users-tenant/users-tenant.service';
-import { UserTenant } from '../users-tenant/entities/user-tenant.entity';
+import { UserTenantEntity } from '../users-tenant/entities/user-tenant.entity';
 import { UserTenantDto } from '@/domains/user-tenant/user-tenant.dto';
 import { SessionAdminResponseDto } from '@/domains/session/session-admin-response.dto';
-import { MulterFile } from 'fastify-file-interceptor';
 import { AuthAdminEmailLoginDto } from '@/domains/auth-admin/auth-admin-email-login.dto';
+import { CreateUserTenantDto } from '@/domains/user-tenant/create-user-tenant.dto';
 
 @Injectable()
 export class AuthTenantService {
@@ -35,24 +34,30 @@ export class AuthTenantService {
     private readonly i18n: I18nService,
   ) {}
 
+  async register(authEmailRegisterDto: CreateUserTenantDto): Promise<boolean> {
+    // Attempt to restore a soft-deleted user by email
+    const restoredUser = await this.usersTenantService.restoreUserByEmail(
+      authEmailRegisterDto.email,
+    );
+    const newUser = new CreateUserTenantDto();
+    newUser.email = authEmailRegisterDto.email;
+    newUser.firstName = authEmailRegisterDto.firstName;
+    newUser.lastName = authEmailRegisterDto.lastName;
+    newUser.password = authEmailRegisterDto.password;
+
+    const user = restoredUser
+      ? restoredUser
+      : await this.usersTenantService.create(newUser);
+    await this.sendConfirmEmail(user.email);
+    return true;
+  }
+
   async validateLogin(
     loginDto: AuthAdminEmailLoginDto,
   ): Promise<SessionAdminResponseDto> {
     const user = await this.usersTenantService.findOneOrFail({
       email: loginDto.email,
     });
-
-    if (user.provider !== AuthProvidersEnum.EMAIL) {
-      throw new HttpException(
-        {
-          status: HttpStatus.PRECONDITION_FAILED,
-          errors: {
-            email: `${this.i18n.t('auth.loggedWithSocial', { lang: I18nContext.current()?.lang })}:${user.provider}`,
-          },
-        },
-        HttpStatus.PRECONDITION_FAILED,
-      );
-    }
 
     const isValidPassword = await bcrypt.compare(
       loginDto.password,
@@ -104,7 +109,7 @@ export class AuthTenantService {
       accessToken,
       refreshToken,
       tokenExpires,
-      user: this.mapper.map(user, UserTenant, UserTenantDto),
+      user: this.mapper.map(user, UserTenantEntity, UserTenantDto),
     });
   }
 
@@ -192,15 +197,15 @@ export class AuthTenantService {
       accessToken,
       refreshToken,
       tokenExpires,
-      user: this.mapper.map(user, UserTenant, UserTenantDto),
+      user: this.mapper.map(user, UserTenantEntity, UserTenantDto),
     });
   }
 
   async update(
     userJwtPayload: JwtPayloadType,
     updateUserDto: AuthUpdateDto,
-    files?: MulterFile | Express.MulterS3.File,
-  ): Promise<NullableType<UserTenant>> {
+    files?: Express.Multer.File | Express.MulterS3.File,
+  ): Promise<NullableType<UserTenantEntity>> {
     return await this.usersTenantService.update(
       userJwtPayload.id,
       updateUserDto,
@@ -256,11 +261,11 @@ export class AuthTenantService {
       accessToken,
       refreshToken,
       tokenExpires,
-      user: this.mapper.map(user, UserTenant, UserTenantDto),
+      user: this.mapper.map(user, UserTenantEntity, UserTenantDto),
     });
   }
 
-  async softDelete(user: UserTenant): Promise<void> {
+  async softDelete(user: UserTenantEntity): Promise<void> {
     await this.usersTenantService.softDelete(user.id);
   }
 

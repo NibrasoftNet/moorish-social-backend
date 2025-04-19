@@ -18,7 +18,7 @@ import { UserDto } from '@/domains/user/user.dto';
 import { ChatDto } from '@/domains/chat/chat.dto';
 import { WinstonLoggerService } from '../logger/winston-logger.service';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserSocket } from './entities/user-socket.entity';
+import { UserSocketEntity } from './entities/user-socket.entity';
 import { Repository } from 'typeorm';
 import { CreateChatGroupDto } from '@/domains/chat/create-chat-group.dto';
 import { UseGuards } from '@nestjs/common';
@@ -36,12 +36,12 @@ export class ChatGateway
 {
   @WebSocketServer() server: Server;
   constructor(
-    @InjectRepository(UserSocket)
-    private userSocketRepository: Repository<UserSocket>,
+    @InjectRepository(UserSocketEntity)
+    private userSocketRepository: Repository<UserSocketEntity>,
     private readonly chatService: ChatService,
     private readonly messageService: MessageService,
     private readonly userService: UsersService,
-    private readonly userAdminService: UsersTenantService,
+    private readonly userTenantService: UsersTenantService,
     private readonly logger: WinstonLoggerService,
     @InjectMapper() private mapper: Mapper,
   ) {}
@@ -130,8 +130,12 @@ export class ChatGateway
       // Ensure sender and receiver join the selected room
       const roomId = resolvedChat.id;
       const receiverSocket = await this.getReceiverSocket(receiverId);
-      !receiverSocket.rooms.has(roomId) && (await receiverSocket.join(roomId));
-      !client.rooms.has(roomId) && (await client.join(roomId));
+      if (!receiverSocket.rooms.has(roomId)) {
+        await receiverSocket.join(roomId);
+      }
+      if (!client.rooms.has(roomId)) {
+        await client.join(roomId);
+      }
       console.log(
         'receiver id',
         receiverSocket.rooms.has(roomId),
@@ -180,10 +184,13 @@ export class ChatGateway
       // Assuming chat.participants is an array of user objects that are part of the chat
       for (const participant of resolvedChat.participants!) {
         const receiverSocket = await this.getReceiverSocket(participant.id);
-        !receiverSocket.rooms.has(roomId) &&
-          (await receiverSocket.join(roomId));
+        if (!receiverSocket.rooms.has(roomId)) {
+          await receiverSocket.join(roomId);
+        }
       }
-      !client.rooms.has(roomId) && (await client.join(roomId));
+      if (!client.rooms.has(roomId)) {
+        await client.join(roomId);
+      }
       const mappedMessage = this.mapper.map(message, Message, MessageDto);
       // Emit to the group chat room
       this.server
@@ -221,7 +228,7 @@ export class ChatGateway
     if (!!user) {
       newSocket.user = user;
     } else {
-      newSocket.userTenant = await this.userAdminService.findOneOrFail({
+      newSocket.userTenant = await this.userTenantService.findOneOrFail({
         id: userId,
       });
     }

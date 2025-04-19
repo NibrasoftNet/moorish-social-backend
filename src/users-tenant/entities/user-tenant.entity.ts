@@ -5,7 +5,6 @@ import {
   Column,
   DeleteDateColumn,
   Entity,
-  Index,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -15,40 +14,53 @@ import { Status } from '../../statuses/entities/status.entity';
 import bcrypt from 'bcryptjs';
 import EntityHelper from '../../utils/entities/entity-helper';
 import { AutoMap } from 'automapper-classes';
-import { AuthProvidersEnum } from '@/enums/auth/auth-provider.enum';
 import { FileEntity } from '../../files/entities/file.entity';
-import { UserSocket } from '../../chat/entities/user-socket.entity';
+import { UserSocketEntity } from '../../chat/entities/user-socket.entity';
+import { CompanyEntity } from '../../company/entities/company.entity';
 
 @Entity()
-export class UserTenant extends EntityHelper {
+export class UserTenantEntity extends EntityHelper {
   @AutoMap()
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @AutoMap()
+  @Column({ type: String, nullable: false })
+  tenantId: string;
+
+  @AutoMap()
   @Column({ type: String, unique: true, nullable: false })
   email: string;
 
+  @AutoMap()
   @Column({ nullable: true, type: String })
   password: string;
 
   public previousPassword: string;
 
-  @Column({ nullable: false, type: String, default: '0123456789' })
-  whatsApp: string;
-
   @AutoMap()
-  @Column({ default: AuthProvidersEnum.EMAIL })
-  provider: string;
-
-  @AutoMap(() => String)
-  @Index()
-  @Column({ type: String, nullable: true })
-  socialId?: string | null;
+  @Column({ nullable: true, type: String, default: '0123456789' })
+  whatsApp: string;
 
   @AutoMap(() => String)
   @Column({ type: String, nullable: false })
-  userName: string;
+  firstName: string;
+
+  @AutoMap(() => String)
+  @Column({ type: String, nullable: false })
+  lastName: string;
+
+  @AutoMap(() => CompanyEntity)
+  @ManyToOne(() => CompanyEntity, (company) => company.tenants, {
+    eager: true,
+  })
+  company: CompanyEntity;
+
+  @AutoMap(() => FileEntity)
+  @ManyToOne(() => FileEntity, {
+    eager: true,
+  })
+  image?: FileEntity | null;
 
   @AutoMap(() => Role)
   @ManyToOne(() => Role, {
@@ -62,12 +74,6 @@ export class UserTenant extends EntityHelper {
   })
   status: Status;
 
-  @AutoMap(() => FileEntity)
-  @ManyToOne(() => FileEntity, {
-    eager: true,
-  })
-  photo?: FileEntity | null;
-
   @DeleteDateColumn()
   deletedAt: Date;
 
@@ -75,17 +81,13 @@ export class UserTenant extends EntityHelper {
   @Column({ type: String, nullable: true })
   notificationsToken?: string | null;
 
-  @AutoMap()
-  @Column({ type: 'timestamp', nullable: false })
-  subscriptionExpiryDate: Date;
-
-  @AutoMap(() => UserSocket)
-  @OneToOne(() => UserSocket, (socket) => socket.userTenant, {
+  @AutoMap(() => UserSocketEntity)
+  @OneToOne(() => UserSocketEntity, (socket) => socket.userTenant, {
     eager: true,
     nullable: true,
     cascade: true,
   })
-  socket: UserSocket;
+  socket: UserSocketEntity;
 
   @AfterLoad()
   public loadPreviousPassword(): void {

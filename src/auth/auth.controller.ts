@@ -37,7 +37,8 @@ import { AuthResetPasswordDto } from '@/domains/auth/auth-reset-password.dto';
 import { AuthUpdateDto } from '@/domains/auth/auth-update.dto';
 import { UserDto } from '@/domains/user/user.dto';
 import { AuthNewPasswordDto } from '@/domains/auth/auth-new-password.dto';
-import { FileFastifyInterceptor, MulterFile } from 'fastify-file-interceptor';
+import { AuthRequest } from '../utils/types/auth-request.type';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Auth')
 @Controller({
@@ -95,7 +96,9 @@ export class AuthController {
   @Get('me')
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
-  public async me(@Request() request): Promise<SessionResponseDto> {
+  public async me(
+    @Request() request: AuthRequest,
+  ): Promise<SessionResponseDto> {
     return await this.service.me(request.user);
   }
 
@@ -140,11 +143,11 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(MapInterceptor(User, UserDto))
-  @UseInterceptors(FileFastifyInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file'))
   public async update(
-    @Request() request,
+    @Request() request: AuthRequest,
     @Body('data', ParseFormdataPipe) data,
-    @UploadedFile() file?: MulterFile | Express.MulterS3.File,
+    @UploadedFile() file?: Express.Multer.File | Express.MulterS3.File,
   ): Promise<NullableType<User>> {
     const updateUserDto = new AuthUpdateDto(data);
     await Utils.validateDtoOrFail(updateUserDto);
@@ -156,7 +159,7 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
   public async newPassword(
-    @Request() request,
+    @Request() request: AuthRequest,
     @Body() newPasswordDto: AuthNewPasswordDto,
   ): Promise<void> {
     return await this.service.newPassword(request.user, newPasswordDto);

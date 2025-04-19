@@ -9,7 +9,7 @@ import { ChatController } from './chat.controller';
 import { ChatSerializationProfile } from './serialization/chat-serialization.profile';
 import { MessageService } from './message.service';
 import { FilesModule } from '../files/files.module';
-import { UserSocket } from './entities/user-socket.entity';
+import { UserSocketEntity } from './entities/user-socket.entity';
 import { UserSocketSerializationProfile } from './serialization/user-socket-serialization.profile';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersTenantModule } from '../users-tenant/users-tenant.module';
@@ -17,7 +17,7 @@ import { MessageSerializationProfile } from './serialization/message-serializati
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Chat, Message, UserSocket]),
+    TypeOrmModule.forFeature([Chat, Message, UserSocketEntity]),
     UsersModule,
     UsersTenantModule,
     FilesModule,

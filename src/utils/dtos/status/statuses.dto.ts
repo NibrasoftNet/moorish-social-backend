@@ -1,6 +1,6 @@
 import { AutoMap } from 'automapper-classes';
 import { Validate } from 'class-validator';
-import { StatusCodeEnum } from '@/enums/status/statuses.enum';
+import { StatusCodeEnum } from '@/enums/statuses.enum';
 import { IsExist } from '../../validators/is-exists.validator';
 
 export class StatusesDto {

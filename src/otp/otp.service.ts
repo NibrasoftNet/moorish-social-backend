@@ -39,7 +39,7 @@ export class OtpService {
 
   /**
    * Send single pending otp
-   * @returns {Promise<Otp>} created Pickup
+   * @returns {Promise<Otp>} created otp
    * @param field
    * @param relations
    */
@@ -199,9 +199,11 @@ export class OtpService {
     otpRecord.validated = true;
 
     // OTP is valid, delete the record from database
-    !!deleteOtp
-      ? await this.delete(otpRecord.id)
-      : await this.otpRepository.save(otpRecord);
+    if (deleteOtp) {
+      await this.delete(otpRecord.id);
+    } else {
+      await this.otpRepository.save(otpRecord);
+    }
   }
 
   async validateVerification(email: string) {

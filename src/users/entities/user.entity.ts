@@ -17,11 +17,11 @@ import { Status } from '../../statuses/entities/status.entity';
 import { FileEntity } from '../../files/entities/file.entity';
 import bcrypt from 'bcryptjs';
 import EntityHelper from '../../utils/entities/entity-helper';
-import { Address } from '../../address/entities/address.entity';
+import { AddressEntity } from '../../address/entities/address.entity';
 import { AutoMap } from 'automapper-classes';
 import { AuthProvidersEnum } from '@/enums/auth/auth-provider.enum';
 import { NotificationRecipient } from '../../notification/entities/notification-recipient.entity';
-import { UserSocket } from '../../chat/entities/user-socket.entity';
+import { UserSocketEntity } from '../../chat/entities/user-socket.entity';
 
 @Entity()
 export class User extends EntityHelper {
@@ -69,12 +69,12 @@ export class User extends EntityHelper {
   })
   status: Status;
 
-  @AutoMap(() => Address)
-  @OneToOne(() => Address, (address) => address.id, {
+  @AutoMap(() => AddressEntity)
+  @OneToOne(() => AddressEntity, (address) => address.id, {
     eager: true,
   })
   @JoinColumn()
-  address: Address;
+  address: AddressEntity;
 
   @DeleteDateColumn()
   deletedAt: Date;
@@ -89,13 +89,13 @@ export class User extends EntityHelper {
   })
   notifications?: NotificationRecipient[];
 
-  @AutoMap(() => UserSocket)
-  @OneToOne(() => UserSocket, (socket) => socket.user, {
+  @AutoMap(() => UserSocketEntity)
+  @OneToOne(() => UserSocketEntity, (socket) => socket.user, {
     eager: true,
     nullable: true,
     cascade: true,
   })
-  socket: UserSocket;
+  socket: UserSocketEntity;
 
   @AfterLoad()
   public loadPreviousPassword(): void {

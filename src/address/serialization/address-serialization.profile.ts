@@ -1,7 +1,7 @@
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
 import { Injectable } from '@nestjs/common';
 import { createMap, Mapper, MappingProfile } from 'automapper-core';
-import { Address } from '../entities/address.entity';
+import { AddressEntity } from '../entities/address.entity';
 import { AddressDto } from '@/domains/address/address.dto';
 
 @Injectable()
@@ -12,7 +12,7 @@ export class AddressSerializationProfile extends AutomapperProfile {
 
   override get profile(): MappingProfile {
     return (mapper) => {
-      createMap(mapper, Address, AddressDto);
+      createMap(mapper, AddressEntity, AddressDto);
     };
   }
 }

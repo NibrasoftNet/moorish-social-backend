@@ -6,9 +6,9 @@ import { Status } from '../../../statuses/entities/status.entity';
 import { Repository } from 'typeorm';
 import { faker } from '@faker-js/faker';
 import { AddressFactory } from '../address/address.factory';
-import { Address } from '../../../address/entities/address.entity';
-import { RoleCodeEnum } from '@/enums/role/roles.enum';
-import { StatusCodeEnum } from '@/enums/status/statuses.enum';
+import { AddressEntity } from '../../../address/entities/address.entity';
+import { RoleCodeEnum } from '@/enums/roles.enum';
+import { StatusCodeEnum } from '@/enums/statuses.enum';
 
 @Injectable()
 export class UserFactory {
@@ -19,8 +19,8 @@ export class UserFactory {
     private repositoryRole: Repository<Role>,
     @InjectRepository(Status)
     private repositoryStatus: Repository<Status>,
-    @InjectRepository(Address)
-    private repositoryAddress: Repository<Address>,
+    @InjectRepository(AddressEntity)
+    private repositoryAddress: Repository<AddressEntity>,
     private addressFactory: AddressFactory,
   ) {}
 
@@ -43,9 +43,9 @@ export class UserFactory {
       code: RoleCodeEnum.USER,
     } as Role;
     const adminRole = {
-      id: RoleCodeEnum.TENANT,
+      id: RoleCodeEnum.TENANTADMIN,
       name: 'ADMIN',
-      code: RoleCodeEnum.TENANT,
+      code: RoleCodeEnum.TENANTADMIN,
     } as Role;
     return {
       userName: faker.person.firstName(),
