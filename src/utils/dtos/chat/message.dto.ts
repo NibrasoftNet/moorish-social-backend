@@ -1,4 +1,4 @@
-import { MessageTypeEnum } from '@/enums/chat/message-type.enum';
+import { MessageTypeEnum } from '@/enums/message-type.enum';
 import { EntityHelperDto } from '@/domains/general/entity-helper.dto';
 import { AutoMap } from 'automapper-classes';
 import { ChatDto } from '@/domains/chat/chat.dto';

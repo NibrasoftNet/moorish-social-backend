@@ -2,6 +2,7 @@ import { AutoMap } from 'automapper-classes';
 import { CompanyDto } from '@/domains/company/company.dto';
 import { FileDto } from '@/domains/files/file.dto';
 import { EntityHelperDto } from '@/domains/general/entity-helper.dto';
+import { languageEnum } from '@/enums/language.enum';
 
 export class CompanyCategoryDto extends EntityHelperDto {
   @AutoMap()
@@ -21,4 +22,7 @@ export class CompanyCategoryDto extends EntityHelperDto {
 
   @AutoMap(() => [CompanyDto])
   companies: CompanyDto[];
+
+  @AutoMap()
+  language: languageEnum;
 }

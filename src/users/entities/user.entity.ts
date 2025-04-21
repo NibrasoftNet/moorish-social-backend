@@ -19,12 +19,12 @@ import bcrypt from 'bcryptjs';
 import EntityHelper from '../../utils/entities/entity-helper';
 import { AddressEntity } from '../../address/entities/address.entity';
 import { AutoMap } from 'automapper-classes';
-import { AuthProvidersEnum } from '@/enums/auth/auth-provider.enum';
+import { AuthProvidersEnum } from '@/enums/auth-provider.enum';
 import { NotificationRecipient } from '../../notification/entities/notification-recipient.entity';
 import { UserSocketEntity } from '../../chat/entities/user-socket.entity';
 
 @Entity()
-export class User extends EntityHelper {
+export class UserEntity extends EntityHelper {
   @AutoMap()
   @PrimaryGeneratedColumn('uuid')
   id: string;

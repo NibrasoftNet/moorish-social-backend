@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { User } from '../users/entities/user.entity';
+import { UserEntity } from '../users/entities/user.entity';
 import bcrypt from 'bcryptjs';
 import { plainToClass } from 'class-transformer';
 import { UsersService } from '../users/users.service';
@@ -14,7 +14,7 @@ import { I18nContext, I18nService } from 'nestjs-i18n';
 import { Status } from '../statuses/entities/status.entity';
 import { SessionResponseDto } from '@/domains/session/session-response.dto';
 import { AuthEmailLoginDto } from '@/domains/auth/auth-email-login.dto';
-import { AuthProvidersEnum } from '@/enums/auth/auth-provider.enum';
+import { AuthProvidersEnum } from '@/enums/auth-provider.enum';
 import { StatusCodeEnum } from '@/enums/statuses.enum';
 import { UserDto } from '@/domains/user/user.dto';
 import { AuthEmailRegisterDto } from '@/domains/auth/auth-email-register.dto';
@@ -108,7 +108,7 @@ export class AuthService {
       accessToken,
       refreshToken,
       tokenExpires,
-      user: this.mapper.map(user, User, UserDto),
+      user: this.mapper.map(user, UserEntity, UserDto),
     });
   }
 
@@ -225,7 +225,7 @@ export class AuthService {
       accessToken,
       refreshToken,
       tokenExpires,
-      user: this.mapper.map(user, User, UserDto),
+      user: this.mapper.map(user, UserEntity, UserDto),
     });
   }
 
@@ -233,7 +233,7 @@ export class AuthService {
     userJwtPayload: JwtPayloadType,
     updateUserDto: AuthUpdateDto,
     file?: Express.Multer.File | Express.MulterS3.File,
-  ): Promise<NullableType<User>> {
+  ): Promise<NullableType<UserEntity>> {
     return await this.usersService.update(
       userJwtPayload.id,
       updateUserDto,
@@ -289,11 +289,11 @@ export class AuthService {
       accessToken,
       refreshToken,
       tokenExpires,
-      user: this.mapper.map(user, User, UserDto),
+      user: this.mapper.map(user, UserEntity, UserDto),
     });
   }
 
-  async softDelete(user: User): Promise<void> {
+  async softDelete(user: UserEntity): Promise<void> {
     await this.usersService.softDelete(user.id);
   }
 

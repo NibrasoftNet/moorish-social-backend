@@ -8,7 +8,7 @@ import {
   MappingProfile,
   typeConverter,
 } from 'automapper-core';
-import { User } from '../entities/user.entity';
+import { UserEntity } from '../entities/user.entity';
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
 import { UserDto } from '@/domains/user/user.dto';
 
@@ -22,15 +22,15 @@ export class UserSerializationProfile extends AutomapperProfile {
     return (mapper) => {
       createMap(
         mapper,
-        User,
+        UserEntity,
         UserDto,
         forMember(
           (dto: UserDto) => dto.status,
-          mapFrom((source: User) => source.status?.name),
+          mapFrom((source: UserEntity) => source.status?.name),
         ),
         forMember(
           (dto: UserDto) => dto.role,
-          mapFrom((source: User) => source.role?.name),
+          mapFrom((source: UserEntity) => source.role?.name),
         ),
         typeConverter(Date, String, (date) => date.toDateString()),
       );

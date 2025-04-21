@@ -4,7 +4,7 @@ import { FileDto } from '@/domains/files/file.dto';
 import { UserTenantDto } from '@/domains/user-tenant/user-tenant.dto';
 import { EntityHelperDto } from '@/domains/general/entity-helper.dto';
 import { AddressDto } from '../address/address.dto';
-import { SubscriptionTokenDto } from '@/domains/subscription-token/subscription-token.dto';
+import { CompanySubscriptionTokenDto } from '@/domains/company-subscription-token/company-subscription-token.dto';
 import { CompanyCategoryDto } from '@/domains/company-category/company-category.dto';
 
 export class CompanyDto extends EntityHelperDto {
@@ -44,9 +44,9 @@ export class CompanyDto extends EntityHelperDto {
   @Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
   availableSubscriptionTokens: number;
 
-  @AutoMap(() => [SubscriptionTokenDto])
+  @AutoMap(() => [CompanySubscriptionTokenDto])
   @Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
-  subscriptions: SubscriptionTokenDto[];
+  subscriptions: CompanySubscriptionTokenDto[];
 
   @AutoMap(() => CompanyCategoryDto)
   @Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })

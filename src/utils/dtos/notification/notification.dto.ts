@@ -1,5 +1,5 @@
 import { AutoMap } from 'automapper-classes';
-import { NotificationTypeOfSendingEnum } from '@/enums/notification/notification-type-of-sending.enum';
+import { NotificationTypeOfSendingEnum } from '@/enums/notification-type-of-sending.enum';
 import { UserDto } from '@/domains/user/user.dto';
 import { Expose } from 'class-transformer';
 

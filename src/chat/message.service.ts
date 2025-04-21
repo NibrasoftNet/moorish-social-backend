@@ -9,7 +9,7 @@ import { NullableType } from '../utils/types/nullable.type';
 import { Chat } from './entities/chat.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Message } from './entities/message.entity';
-import { User } from '../users/entities/user.entity';
+import { UserEntity } from '../users/entities/user.entity';
 import { UpdateChatMessageDto } from '@/domains/chat/update-chat-message.dto';
 import { CreateChatMessageDto } from '@/domains/chat/create-chat-message.dto';
 
@@ -24,7 +24,7 @@ export class MessageService {
     const message = this.messageRepository.create(
       createChatMessageDto as DeepPartial<Message>,
     );
-    message.sender = createChatMessageDto.sender as unknown as User;
+    message.sender = createChatMessageDto.sender as unknown as UserEntity;
     message.chat = createChatMessageDto.chat as unknown as Chat;
     message.content = createChatMessageDto.content;
     return await this.messageRepository.save(message);

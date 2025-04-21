@@ -6,7 +6,7 @@ import {
   JoinColumn,
   Index,
 } from 'typeorm';
-import { User } from '../../users/entities/user.entity';
+import { UserEntity } from '../../users/entities/user.entity';
 import EntityHelper from '../../utils/entities/entity-helper';
 import { AutoMap } from 'automapper-classes';
 import { UserTenantEntity } from '../../users-tenant/entities/user-tenant.entity';
@@ -17,13 +17,13 @@ export class UserSocketEntity extends EntityHelper {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @AutoMap(() => User)
-  @OneToOne(() => User, (user) => user.socket, {
+  @AutoMap(() => UserEntity)
+  @OneToOne(() => UserEntity, (user) => user.socket, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'user_id' })
   @Index()
-  user: User;
+  user: UserEntity;
 
   @AutoMap(() => UserTenantEntity)
   @OneToOne(() => UserTenantEntity, (userTenant) => userTenant.socket, {

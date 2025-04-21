@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 import { Message } from './message.entity';
 import EntityHelper from '../../utils/entities/entity-helper';
-import { User } from '../../users/entities/user.entity';
+import { UserEntity } from '../../users/entities/user.entity';
 import { AutoMap } from 'automapper-classes';
 
 @Entity()
@@ -24,14 +24,14 @@ export class Chat extends EntityHelper {
   @Column({ type: String, nullable: true })
   name?: string | null;
 
-  @AutoMap(() => User)
-  @ManyToOne(() => User, { nullable: true })
-  creator?: User | null; // Only for group chats
+  @AutoMap(() => UserEntity)
+  @ManyToOne(() => UserEntity, { nullable: true })
+  creator?: UserEntity | null; // Only for group chats
 
-  @AutoMap(() => [User])
-  @ManyToMany(() => User, { nullable: true })
+  @AutoMap(() => [UserEntity])
+  @ManyToMany(() => UserEntity, { nullable: true })
   @JoinTable()
-  participants?: User[] | null;
+  participants?: UserEntity[] | null;
 
   @AutoMap()
   @Column({ default: false })
@@ -45,7 +45,7 @@ export class Chat extends EntityHelper {
   @Column({ type: 'jsonb', nullable: true })
   receiver?: Record<string, any> | null;
 
-  @AutoMap(() => [User])
+  @AutoMap(() => [UserEntity])
   @OneToMany(() => Message, (message) => message.chat)
   messages: Message[];
 

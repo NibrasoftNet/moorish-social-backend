@@ -13,7 +13,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { AwsS3Service } from '../utils/aws-s3/aws-s3.service';
 import { I18nContext, I18nService } from 'nestjs-i18n';
-import { FileDriver } from '@/enums/file/file-driver.enum';
+import { FileDriver } from '@/enums/file-driver.enum';
 import { NullableType } from '../utils/types/nullable.type';
 import { PresignedUrlResponseDto } from '@/domains/files/presign-url-response.dto';
 import { WinstonLoggerService } from '../logger/winston-logger.service';
@@ -84,6 +84,18 @@ export class FilesService {
     );
   }
 
+  async updateMultipleFiles(
+    oldFiles: Array<FileEntity>,
+    files: Array<Express.Multer.File | Express.MulterS3.File>,
+  ): Promise<FileEntity[]> {
+    //Delete old documents
+    for (const file of oldFiles) {
+      await this.deleteFile(file.id);
+    }
+    // Upload new file to database
+    return await this.handleMultipleFilesUpload(files);
+  }
+
   async uploadMultipleFiles(
     files: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<FileEntity[]> {
@@ -100,26 +112,7 @@ export class FilesService {
         HttpStatus.PRECONDITION_FAILED,
       );
     }
-    return await this.dataSource.transaction(async (manager) => {
-      return await Promise.all(
-        files.map(async (file) => {
-          const path = {
-            local: `${this.configService.get('app.backendDomain', { infer: true })}/${this.configService.get('app.apiPrefix', { infer: true })}/v1/files/${
-              file.filename
-            }`,
-            s3: (file as Express.MulterS3.File).location,
-          };
-          return await manager.save(
-            this.fileRepository.create({
-              mimeType: file.mimetype,
-              path: path[
-                this.configService.getOrThrow('file.driver', { infer: true })
-              ],
-            }),
-          );
-        }),
-      );
-    });
+    return await this.handleMultipleFilesUpload(files);
   }
 
   /**
@@ -275,5 +268,30 @@ export class FilesService {
       function: 'getPresignedUrl',
     });
     return await this.awsS3Service.generatePresignedUrl(type);
+  }
+
+  private async handleMultipleFilesUpload(
+    files: Array<Express.Multer.File | Express.MulterS3.File>,
+  ): Promise<FileEntity[]> {
+    return await this.dataSource.transaction(async (manager) => {
+      return await Promise.all(
+        files.map(async (file) => {
+          const path = {
+            local: `${this.configService.get('app.backendDomain', { infer: true })}/${this.configService.get('app.apiPrefix', { infer: true })}/v1/files/${
+              file.filename
+            }`,
+            s3: (file as Express.MulterS3.File).location,
+          };
+          return await manager.save(
+            this.fileRepository.create({
+              mimeType: file.mimetype,
+              path: path[
+                this.configService.getOrThrow('file.driver', { infer: true })
+              ],
+            }),
+          );
+        }),
+      );
+    });
   }
 }

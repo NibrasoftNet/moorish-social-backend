@@ -19,7 +19,7 @@ import { IsUniqueOrAppend } from '../../validators/is-unique-or-append';
 export class AuthEmailRegisterDto {
   @ApiProperty({ example: 'test@weavers.com' })
   @Transform(lowerCaseTransformer)
-  @Validate(IsNotExist, ['User', 'validation.emailAlreadyExists'])
+  @Validate(IsNotExist, ['UserEntity', 'validation.emailAlreadyExists'])
   @IsEmail()
   email: string;
 
@@ -40,7 +40,7 @@ export class AuthEmailRegisterDto {
   @MaxLength(16)
   @MinLength(2)
   @Validate(IsUniqueOrAppend, [
-    'User',
+    'UserEntity',
     'userName',
     'validation.userNameAlreadyExists',
   ])

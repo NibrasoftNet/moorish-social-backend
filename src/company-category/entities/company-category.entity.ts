@@ -11,6 +11,7 @@ import { FileEntity } from '../../files/entities/file.entity';
 import { AutoMap } from 'automapper-classes';
 import EntityHelper from '../../utils/entities/entity-helper';
 import { CompanyEntity } from '../../company/entities/company.entity';
+import { languageEnum } from '@/enums/language.enum';
 
 @Entity()
 export class CompanyCategoryEntity extends EntityHelper {
@@ -44,4 +45,8 @@ export class CompanyCategoryEntity extends EntityHelper {
   @AutoMap(() => [CompanyEntity])
   @OneToMany(() => CompanyEntity, (company) => company.category)
   companies: CompanyEntity[];
+
+  @AutoMap()
+  @Column({ default: languageEnum['en-US'] })
+  language: languageEnum;
 }

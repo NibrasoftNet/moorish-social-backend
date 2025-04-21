@@ -6,7 +6,7 @@ import {
   IsString,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { MessageTypeEnum } from '@/enums/chat/message-type.enum';
+import { MessageTypeEnum } from '@/enums/message-type.enum';
 
 export class CreateChatDto {
   @ApiProperty()

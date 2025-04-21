@@ -22,12 +22,12 @@ import {
 } from 'nestjs-graphile-worker';
 import { WorkerEventMap } from 'graphile-worker';
 import { NotificationJobPayload } from './interfaces/notification-job-payload';
-import { NotificationTypeOfSendingEnum } from '@/enums/notification/notification-type-of-sending.enum';
+import { NotificationTypeOfSendingEnum } from '@/enums/notification-type-of-sending.enum';
 import { CreateNotificationDto } from '@/domains/notification/create-notification.dto';
 import { NotificationMessageDto } from '@/domains/notification/notification-message.dto';
 import { UpdateNotificationDto } from '@/domains/notification/update-notification.dto';
 import { NotificationRecipient } from './entities/notification-recipient.entity';
-import { User } from '../users/entities/user.entity';
+import { UserEntity } from '../users/entities/user.entity';
 import { notificationsRecipientPaginationConfig } from './config/notifications-recipient-pagination.config';
 
 @Injectable()
@@ -259,7 +259,7 @@ export class NotificationService {
     );
     const users = (await this.handleNotificationRecipients(
       notification,
-    )) as User[];
+    )) as UserEntity[];
     return await this.notificationRecipientRepository.manager.transaction(
       async (entityManager: EntityManager) => {
         const notificationRecipients = users.map((user) => {
@@ -306,13 +306,13 @@ export class NotificationService {
   async handleNotificationRecipients(
     notification: Notification,
     onlyTokens: boolean = false,
-  ): Promise<string[] | User[]> {
+  ): Promise<string[] | UserEntity[]> {
     if (!notification.forAllUsers) {
       return onlyTokens
         ? (notification.users
             .map((item) => item.notificationsToken)
             .filter((token) => token !== null) as string[])
-        : (notification.users.map((item) => item) as User[]);
+        : (notification.users.map((item) => item) as UserEntity[]);
     }
     return onlyTokens
       ? await this.usersService.findAllUsersToken()

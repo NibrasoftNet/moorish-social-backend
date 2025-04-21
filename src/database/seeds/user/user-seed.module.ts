@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'src/users/entities/user.entity';
+import { UserEntity } from 'src/users/entities/user.entity';
 import { UserSeedService } from './user-seed.service';
 import { AddressEntity } from '../../../address/entities/address.entity';
 import { UserFactory } from './user.factory';
@@ -11,7 +11,13 @@ import { FileEntity } from '../../../files/entities/file.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, AddressEntity, Status, Role, FileEntity]),
+    TypeOrmModule.forFeature([
+      UserEntity,
+      AddressEntity,
+      Status,
+      Role,
+      FileEntity,
+    ]),
     AddressSeedModule,
   ],
   providers: [UserSeedService, UserFactory],

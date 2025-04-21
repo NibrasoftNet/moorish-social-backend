@@ -12,7 +12,7 @@ import EntityHelper from '../../utils/entities/entity-helper';
 import { AutoMap } from 'automapper-classes';
 import { FileEntity } from '../../files/entities/file.entity';
 import { UserTenantEntity } from '../../users-tenant/entities/user-tenant.entity';
-import { SubscriptionTokenEntity } from '../../subscription-token/entities/subscription-token.entity';
+import { CompanySubscriptionTokenEntity } from '../../company-subscription-token/entities/company-subscription-token.entity';
 import { AddressEntity } from '../../address/entities/address.entity';
 import { CompanyCategoryEntity } from '../../company-category/entities/company-category.entity';
 
@@ -57,12 +57,12 @@ export class CompanyEntity extends EntityHelper {
   @Column({ type: Number, nullable: false, default: 100 })
   availableSubscriptionTokens: number;
 
-  @AutoMap(() => [SubscriptionTokenEntity])
-  @OneToMany(() => SubscriptionTokenEntity, (tenant) => tenant.company, {
+  @AutoMap(() => [CompanySubscriptionTokenEntity])
+  @OneToMany(() => CompanySubscriptionTokenEntity, (tenant) => tenant.company, {
     eager: true,
     nullable: true,
   })
-  subscriptions: SubscriptionTokenEntity[];
+  subscriptions: CompanySubscriptionTokenEntity[];
 
   @AutoMap(() => CompanyCategoryEntity)
   @ManyToOne(() => CompanyCategoryEntity, (category) => category.companies, {

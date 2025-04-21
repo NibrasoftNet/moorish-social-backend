@@ -8,7 +8,7 @@ import {
   Repository,
   UpdateResult,
 } from 'typeorm';
-import { User } from './entities/user.entity';
+import { UserEntity } from './entities/user.entity';
 import { AddressService } from '../address/address.service';
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { usersPaginationConfig } from './configs/users-pagination.config';
@@ -21,19 +21,19 @@ import { AuthUpdateDto } from '@/domains/auth/auth-update.dto';
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    @InjectRepository(UserEntity)
+    private usersRepository: Repository<UserEntity>,
     private readonly addressService: AddressService,
     private fileService: FilesService,
     private readonly logger: WinstonLoggerService,
   ) {}
 
-  async create(createProfileDto: CreateUserDto): Promise<User> {
+  async create(createProfileDto: CreateUserDto): Promise<UserEntity> {
     return await this.usersRepository.manager.transaction(
       async (entityManager: EntityManager) => {
         const user = entityManager.create(
-          User,
-          createProfileDto as DeepPartial<User>,
+          UserEntity,
+          createProfileDto as DeepPartial<UserEntity>,
         );
         if (createProfileDto.address) {
           user.address = await this.addressService.create(
@@ -45,15 +45,19 @@ export class UsersService {
     );
   }
 
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<UserEntity[]> {
     return await this.usersRepository.find();
   }
 
-  async findManyWithPagination(query: PaginateQuery): Promise<Paginated<User>> {
+  async findManyWithPagination(
+    query: PaginateQuery,
+  ): Promise<Paginated<UserEntity>> {
     return await paginate(query, this.usersRepository, usersPaginationConfig);
   }
 
-  async findOne(fields: FindOptionsWhere<User>): Promise<NullableType<User>> {
+  async findOne(
+    fields: FindOptionsWhere<UserEntity>,
+  ): Promise<NullableType<UserEntity>> {
     return await this.usersRepository.findOne({
       where: fields,
       relations: {
@@ -63,9 +67,9 @@ export class UsersService {
   }
 
   async findOneOrFail(
-    fields: FindOptionsWhere<User>,
-    relations?: FindOptionsRelations<User>,
-  ): Promise<User> {
+    fields: FindOptionsWhere<UserEntity>,
+    relations?: FindOptionsRelations<UserEntity>,
+  ): Promise<UserEntity> {
     return this.usersRepository.findOneOrFail({
       where: fields,
       relations,
@@ -76,7 +80,7 @@ export class UsersService {
     id: string,
     updateUserDto: AuthUpdateDto,
     file?: Express.Multer.File | Express.MulterS3.File,
-  ): Promise<User> {
+  ): Promise<UserEntity> {
     const user = await this.usersRepository.findOneByOrFail({ id });
     const { address, ...filteredUserDto } = updateUserDto;
     if (!!address) {
@@ -91,11 +95,13 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  async softDelete(id: User['id']): Promise<UpdateResult> {
+  async softDelete(id: UserEntity['id']): Promise<UpdateResult> {
     return await this.usersRepository.softDelete(id);
   }
 
-  async restoreUserByEmail(email: User['email']): Promise<User | null> {
+  async restoreUserByEmail(
+    email: UserEntity['email'],
+  ): Promise<UserEntity | null> {
     // Find the user by email, including soft-deleted ones
     const user = await this.usersRepository.findOne({
       withDeleted: true,

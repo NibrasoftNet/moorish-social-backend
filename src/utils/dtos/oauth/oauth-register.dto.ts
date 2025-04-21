@@ -10,7 +10,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import { lowerCaseTransformer } from '../../transformers/lower-case.transformer';
 import { CreateAddressDto } from '@/domains/address/create-address.dto';
-import { AuthProvidersEnum } from '@/enums/auth/auth-provider.enum';
+import { AuthProvidersEnum } from '@/enums/auth-provider.enum';
 
 export class OauthRegisterDto {
   @ApiProperty({ description: 'The unique identifier for the social entry' })

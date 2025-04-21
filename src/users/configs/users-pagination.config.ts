@@ -1,7 +1,7 @@
 import { FilterOperator, FilterSuffix, PaginateConfig } from 'nestjs-paginate';
-import { User } from '../entities/user.entity';
+import { UserEntity } from '../entities/user.entity';
 
-export const usersPaginationConfig: PaginateConfig<User> = {
+export const usersPaginationConfig: PaginateConfig<UserEntity> = {
   defaultSortBy: [['createdAt', 'DESC']],
   relations: ['address', 'role', 'status', 'photo'],
   searchableColumns: [

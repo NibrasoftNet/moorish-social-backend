@@ -5,7 +5,7 @@ import {
   registerDecorator,
   ValidationOptions,
 } from 'class-validator';
-import { TimestampPrecision } from '@/enums/general/timestamp.enum';
+import { TimestampPrecision } from '@/enums/timestamp.enum';
 
 @ValidatorConstraint({ name: 'IsTimestamp', async: false })
 export class IsTimestampConstraint implements ValidatorConstraintInterface {

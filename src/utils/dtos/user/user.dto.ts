@@ -17,7 +17,7 @@ export class UserDto extends EntityHelperDto {
   userName: string;
 
   @AutoMap(() => FileDto)
-  photo?: FileDto;
+  photo: FileDto;
 
   @AutoMap(() => RoleDto)
   role: string;

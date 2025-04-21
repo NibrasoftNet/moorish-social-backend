@@ -17,7 +17,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from '../roles/roles.decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../roles/roles.guard';
-import { User } from './entities/user.entity';
+import { UserEntity } from './entities/user.entity';
 import { NullableType } from '../utils/types/nullable.type';
 import { UpdateResult } from 'typeorm';
 import { Paginate, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate';
@@ -46,8 +46,8 @@ export class UsersController {
   @Roles(RoleCodeEnum.SUPERADMIN)
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @UseInterceptors(MapInterceptor(User, UserDto))
-  async create(@Body() createProfileDto: CreateUserDto): Promise<User> {
+  @UseInterceptors(MapInterceptor(UserEntity, UserDto))
+  async create(@Body() createProfileDto: CreateUserDto): Promise<UserEntity> {
     return await this.usersService.create(createProfileDto);
   }
 
@@ -57,25 +57,30 @@ export class UsersController {
   @PaginatedSwaggerDocs(UserDto, usersPaginationConfig)
   async findAllPaginated(@Paginate() query: PaginateQuery) {
     const users = await this.usersService.findManyWithPagination(query);
-    return new PaginatedDto<User, UserDto>(this.mapper, users, User, UserDto);
+    return new PaginatedDto<UserEntity, UserDto>(
+      this.mapper,
+      users,
+      UserEntity,
+      UserDto,
+    );
   }
 
   @Roles(RoleCodeEnum.TENANTADMIN, RoleCodeEnum.SUPERADMIN)
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  @UseInterceptors(MapInterceptor(User, UserDto))
-  async findOne(@Param('id') id: string): Promise<NullableType<User>> {
+  @UseInterceptors(MapInterceptor(UserEntity, UserDto))
+  async findOne(@Param('id') id: string): Promise<NullableType<UserEntity>> {
     return await this.usersService.findOne({ id });
   }
 
   @Roles(RoleCodeEnum.SUPERADMIN)
   @Put(':id')
   @HttpCode(HttpStatus.OK)
-  @UseInterceptors(MapInterceptor(User, UserDto))
+  @UseInterceptors(MapInterceptor(UserEntity, UserDto))
   async update(
     @Param('id', ParseIntPipe) id: string,
     @Body() updateProfileDto: UpdateUserDto,
-  ): Promise<User> {
+  ): Promise<UserEntity> {
     return await this.usersService.update(id, updateProfileDto);
   }
 

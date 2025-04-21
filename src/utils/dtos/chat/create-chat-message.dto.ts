@@ -1,4 +1,4 @@
-import { MessageTypeEnum } from '@/enums/chat/message-type.enum';
+import { MessageTypeEnum } from '@/enums/message-type.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { ChatDto } from '@/domains/chat/chat.dto';
 import { UserDto } from '@/domains/user/user.dto';

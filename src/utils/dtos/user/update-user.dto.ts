@@ -14,7 +14,7 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @ApiProperty({ example: 'test1@example.com' })
   @Transform(lowerCaseTransformer)
   @IsOptional()
-  @Validate(IsNotExist, ['User', 'validation.emailAlreadyExists'])
+  @Validate(IsNotExist, ['UserEntity', 'validation.emailAlreadyExists'])
   @IsEmail()
   email?: string;
 

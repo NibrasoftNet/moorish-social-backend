@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { User } from '../users/entities/user.entity';
+import { UserEntity } from '../users/entities/user.entity';
 import ms from 'ms';
 import { AllConfigType } from '../config/config.type';
 import { JwtService } from '@nestjs/jwt';
@@ -12,7 +12,10 @@ export class SharedService {
     private configService: ConfigService<AllConfigType>,
   ) {}
 
-  async getTokensData(data: { id: User['id']; role: User['role'] }) {
+  async getTokensData(data: {
+    id: UserEntity['id'];
+    role: UserEntity['role'];
+  }) {
     const tokenExpiresIn = this.configService.getOrThrow('auth.expires', {
       infer: true,
     });

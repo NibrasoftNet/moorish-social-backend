@@ -1,6 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
-import { User } from '../../../users/entities/user.entity';
+import { UserEntity } from '../../../users/entities/user.entity';
 import { Role } from '../../../roles/entities/role.entity';
 import { Status } from '../../../statuses/entities/status.entity';
 import { Repository } from 'typeorm';
@@ -13,8 +13,8 @@ import { StatusCodeEnum } from '@/enums/statuses.enum';
 @Injectable()
 export class UserFactory {
   constructor(
-    @InjectRepository(User)
-    private repositoryUser: Repository<User>,
+    @InjectRepository(UserEntity)
+    private repositoryUser: Repository<UserEntity>,
     @InjectRepository(Role)
     private repositoryRole: Repository<Role>,
     @InjectRepository(Status)
@@ -57,6 +57,6 @@ export class UserFactory {
         inactiveStatus,
       ]),
       address: this.addressFactory.generateRandom(),
-    } as User;
+    } as UserEntity;
   }
 }

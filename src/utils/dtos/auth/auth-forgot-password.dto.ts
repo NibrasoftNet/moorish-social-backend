@@ -8,6 +8,6 @@ export class AuthForgotPasswordDto {
   @ApiProperty()
   @Transform(lowerCaseTransformer)
   @IsEmail()
-  @Validate(IsExist, ['User', 'email', 'validation.emailNotExists'])
+  @Validate(IsExist, ['UserEntity', 'email', 'validation.emailNotExists'])
   email: string;
 }

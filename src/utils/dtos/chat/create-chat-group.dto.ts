@@ -1,6 +1,6 @@
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { MessageTypeEnum } from '@/enums/chat/message-type.enum';
+import { MessageTypeEnum } from '@/enums/message-type.enum';
 
 export class CreateChatGroupDto {
   @ApiProperty()

@@ -12,7 +12,7 @@ import {
   Max,
   Min,
 } from 'class-validator';
-import { EnvironmentEnum } from '@/enums/general/environment.enum';
+import { EnvironmentEnum } from '@/enums/environment.enum';
 
 class EnvironmentVariablesValidator {
   @IsEnum(EnvironmentEnum)

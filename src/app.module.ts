@@ -37,14 +37,18 @@ import { FirebaseModule } from './utils/firabase-fcm/firebase.module';
 import { ChatModule } from './chat/chat.module';
 import { ClsModule } from 'nestjs-cls';
 import { TenantMiddleware } from './utils/repository/tenant-aware/tenant.middleware';
-import { SubscriptionTokenModule } from './subscription-token/subscription-token.module';
+import { CompanySubscriptionTokenModule } from './company-subscription-token/company-subscription-token.module';
 import { CompanyModule } from './company/company.module';
 import { TokenCategoryModule } from './token-category/token-category.module';
 import { CompanyController } from './company/company.controller';
-import { SubscriptionTokenController } from './subscription-token/subscription-token.controller';
+import { CompanySubscriptionTokenController } from './company-subscription-token/company-subscription-token.controller';
 import { CompanyPostModule } from './company-post/company-post.module';
 import { PostCategoryModule } from './post-category/post-category.module';
 import { CompanyCategoryModule } from './company-category/company-category.module';
+import { CompanyOfferModule } from './company-offer/company-offer.module';
+import { UserRequestOfferModule } from './user-request-offer/user-request-offer.module';
+import { UserTenderModule } from './user-tender/user-tender.module';
+import { TenderCategoryModule } from './tender-category/tender-category.module';
 
 @Module({
   imports: [
@@ -124,9 +128,13 @@ import { CompanyCategoryModule } from './company-category/company-category.modul
     CompanyModule,
     CompanyCategoryModule,
     CompanyPostModule,
-    SubscriptionTokenModule,
+    CompanyOfferModule,
+    CompanySubscriptionTokenModule,
     TokenCategoryModule,
     PostCategoryModule,
+    UserRequestOfferModule,
+    UserTenderModule,
+    TenderCategoryModule,
   ],
 
   providers: [
@@ -140,6 +148,6 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(TenantMiddleware)
-      .forRoutes(CompanyController, SubscriptionTokenController);
+      .forRoutes(CompanyController, CompanySubscriptionTokenController);
   }
 }

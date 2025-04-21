@@ -9,8 +9,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { AutoMap } from 'automapper-classes';
-import { User } from '../../users/entities/user.entity';
-import { NotificationTypeOfSendingEnum } from '@/enums/notification/notification-type-of-sending.enum';
+import { UserEntity } from '../../users/entities/user.entity';
+import { NotificationTypeOfSendingEnum } from '@/enums/notification-type-of-sending.enum';
 
 @Entity()
 export class Notification extends EntityHelper {
@@ -49,10 +49,10 @@ export class Notification extends EntityHelper {
   @Column({ default: true })
   active: boolean;
 
-  @AutoMap(() => [User])
-  @ManyToMany(() => User, { nullable: true })
+  @AutoMap(() => [UserEntity])
+  @ManyToMany(() => UserEntity, { nullable: true })
   @JoinTable()
-  users: User[];
+  users: UserEntity[];
 
   @AutoMap(() => Boolean)
   @Column({ default: false })

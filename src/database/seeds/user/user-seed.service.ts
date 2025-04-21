@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../../../users/entities/user.entity';
+import { UserEntity } from '../../../users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { AddressEntity } from '../../../address/entities/address.entity';
 import { faker } from '@faker-js/faker';
@@ -10,8 +10,8 @@ import { FileEntity } from '../../../files/entities/file.entity';
 @Injectable()
 export class UserSeedService {
   constructor(
-    @InjectRepository(User)
-    private repository: Repository<User>,
+    @InjectRepository(UserEntity)
+    private repository: Repository<UserEntity>,
     @InjectRepository(AddressEntity)
     private addressRepository: Repository<AddressEntity>,
     @InjectRepository(FileEntity)

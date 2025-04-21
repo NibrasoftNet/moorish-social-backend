@@ -12,7 +12,7 @@ import {
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { UserDto } from '@/domains/user/user.dto';
-import { NotificationTypeOfSendingEnum } from '@/enums/notification/notification-type-of-sending.enum';
+import { NotificationTypeOfSendingEnum } from '@/enums/notification-type-of-sending.enum';
 import {
   CompareDate,
   DateComparisonMethod,

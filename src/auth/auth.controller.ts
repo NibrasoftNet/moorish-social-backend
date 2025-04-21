@@ -22,7 +22,7 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { User } from '../users/entities/user.entity';
+import { UserEntity } from '../users/entities/user.entity';
 import { NullableType } from '../utils/types/nullable.type';
 import { InjectMapper, MapInterceptor } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
@@ -142,13 +142,13 @@ export class AuthController {
   @Put('me')
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
-  @UseInterceptors(MapInterceptor(User, UserDto))
+  @UseInterceptors(MapInterceptor(UserEntity, UserDto))
   @UseInterceptors(FileInterceptor('file'))
   public async update(
     @Request() request: AuthRequest,
     @Body('data', ParseFormdataPipe) data,
     @UploadedFile() file?: Express.Multer.File | Express.MulterS3.File,
-  ): Promise<NullableType<User>> {
+  ): Promise<NullableType<UserEntity>> {
     const updateUserDto = new AuthUpdateDto(data);
     await Utils.validateDtoOrFail(updateUserDto);
     return await this.service.update(request.user, updateUserDto, file);

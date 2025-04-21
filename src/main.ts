@@ -21,7 +21,6 @@ import { WinstonLoggerService } from './logger/winston-logger.service';
 import { HttpExceptionFilter } from './utils/exceptions/http-exception.filter';
 import { WorkerService } from 'nestjs-graphile-worker';
 import { RolesSerializerInterceptor } from './utils/interceptors/role.serializer.interceptor';
-import { apiReference } from '@scalar/nestjs-api-reference';
 
 const logger = new Logger('Weavers-social');
 const whitelist = [
@@ -98,7 +97,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, options);
 
-  app.use(
+  /*  app.use(
     '/weavers-docs',
     apiReference({
       theme: 'moon',
@@ -107,9 +106,9 @@ async function bootstrap() {
       },
       favicon: 'https://avatars.githubusercontent.com/u/301879?s=48&v=4',
     }),
-  );
+  );*/
 
-  // SwaggerModule.setup('docs', app, document);
+  SwaggerModule.setup('weavers-docs', app, document);
   await app.get(WorkerService).run();
   await app.listen(
     configService.getOrThrow('app.port', { infer: true }),
