@@ -99,7 +99,7 @@ export class NotificationController {
   @UseInterceptors(MapInterceptor(Notification, NotificationDto))
   @HttpCode(HttpStatus.OK)
   async findOne(@Param('id') id: string) {
-    return await this.notificationService.findOne({ id }, { users: true });
+    return await this.notificationService.findOne({ id });
   }
 
   @Roles(RoleCodeEnum.TENANTADMIN, RoleCodeEnum.USER, RoleCodeEnum.SUPERADMIN)

@@ -1,4 +1,53 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateUserTenderDto } from './create-user-tender.dto';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsArray,
+  IsBoolean,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+import { FileDto } from '@/domains/files/file.dto';
 
-export class UpdateUserTenderDto extends PartialType(CreateUserTenderDto) {}
+export class UpdateUserTenderDto {
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  title?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  content?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsBoolean()
+  active?: boolean;
+
+  @ApiProperty({
+    description: 'Array of image objects to delete',
+    required: false,
+    type: [FileDto],
+  })
+  @IsOptional()
+  @IsArray()
+  @IsObject({ each: true })
+  deleteImages?: FileDto[];
+
+  constructor({
+    title,
+    content,
+    active,
+    deleteImages,
+  }: {
+    title?: string;
+    content?: string;
+    active?: boolean;
+    deleteImages?: FileDto[];
+  }) {
+    this.title = title;
+    this.content = content;
+    this.active = active;
+    this.deleteImages = deleteImages;
+  }
+}

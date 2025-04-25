@@ -23,11 +23,13 @@ import {
 import { WorkerEventMap } from 'graphile-worker';
 import { NotificationJobPayload } from './interfaces/notification-job-payload';
 import { NotificationTypeOfSendingEnum } from '@/enums/notification-type-of-sending.enum';
-import { CreateNotificationDto } from '@/domains/notification/create-notification.dto';
+import {
+  CreateNotificationDto,
+  ReceiverDto,
+} from '@/domains/notification/create-notification.dto';
 import { NotificationMessageDto } from '@/domains/notification/notification-message.dto';
 import { UpdateNotificationDto } from '@/domains/notification/update-notification.dto';
 import { NotificationRecipient } from './entities/notification-recipient.entity';
-import { UserEntity } from '../users/entities/user.entity';
 import { notificationsRecipientPaginationConfig } from './config/notifications-recipient-pagination.config';
 
 @Injectable()
@@ -233,10 +235,7 @@ export class NotificationService {
   }
 
   async sendProgrammedNotifications(notificationId: string, sendAt: Date) {
-    const notification = await this.findOneOrFail(
-      { id: notificationId },
-      { users: true },
-    );
+    const notification = await this.findOneOrFail({ id: notificationId });
     const message = await this.createNotificationMessage(notification);
 
     await this.graphileWorker.addJob(
@@ -253,19 +252,14 @@ export class NotificationService {
   }
 
   async createNotificationRecipient(notificationId: string) {
-    const notification = await this.findOneOrFail(
-      { id: notificationId },
-      { users: true },
-    );
-    const users = (await this.handleNotificationRecipients(
-      notification,
-    )) as UserEntity[];
+    const notification = await this.findOneOrFail({ id: notificationId });
+    const users = await this.handleNotificationRecipients(notification);
     return await this.notificationRecipientRepository.manager.transaction(
       async (entityManager: EntityManager) => {
         const notificationRecipients = users.map((user) => {
           const notificationRecipient = new NotificationRecipient();
           notificationRecipient.notification = notification;
-          notificationRecipient.user = user;
+          notificationRecipient.receivers = user;
           return notificationRecipient;
         });
         await entityManager
@@ -284,10 +278,7 @@ export class NotificationService {
   async createNotificationMessage(
     notification: Notification,
   ): Promise<NotificationMessageDto> {
-    const tokens = (await this.handleNotificationRecipients(
-      notification,
-      true,
-    )) as string[];
+    const tokens = await this.extractNotificationRecipientsTokens(notification);
 
     return new NotificationMessageDto({
       notification: {
@@ -303,19 +294,23 @@ export class NotificationService {
     });
   }
 
+  async extractNotificationRecipientsTokens(
+    notification: Notification,
+  ): Promise<string[]> {
+    if (!notification.forAllUsers) {
+      return notification.receivers
+        .map((item) => item.notificationToken)
+        .filter((token) => token !== null) as string[];
+    }
+    return await this.usersService.findAllUsersToken();
+  }
+
   async handleNotificationRecipients(
     notification: Notification,
-    onlyTokens: boolean = false,
-  ): Promise<string[] | UserEntity[]> {
+  ): Promise<ReceiverDto[]> {
     if (!notification.forAllUsers) {
-      return onlyTokens
-        ? (notification.users
-            .map((item) => item.notificationsToken)
-            .filter((token) => token !== null) as string[])
-        : (notification.users.map((item) => item) as UserEntity[]);
+      return notification.receivers;
     }
-    return onlyTokens
-      ? await this.usersService.findAllUsersToken()
-      : await this.usersService.findAll();
+    return await this.usersService.findAllReceivers();
   }
 }

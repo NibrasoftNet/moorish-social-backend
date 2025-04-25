@@ -20,7 +20,7 @@ services:
       - ${MAIL_CLIENT_PORT}:1080
       - ${MAIL_PORT}:1025
   adminer:
-    image: adminer
+    image: adminer:latest
     container_name: weavers-social-adminer
     restart: always
     ports:

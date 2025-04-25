@@ -1,7 +1,6 @@
 import { AutoMap } from 'automapper-classes';
-import { NotificationTypeOfSendingEnum } from '@/enums/notification-type-of-sending.enum';
-import { UserDto } from '@/domains/user/user.dto';
 import { Expose } from 'class-transformer';
+import { NotificationTypeOfSendingEnum } from '@/enums/notification-type-of-sending.enum';
 
 export class NotificationDto {
   @AutoMap()
@@ -36,9 +35,13 @@ export class NotificationDto {
   @Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
   active: boolean;
 
-  @AutoMap(() => [UserDto])
+  @AutoMap(() => Object)
   @Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
-  users?: [UserDto];
+  receivers: Array<{
+    id: string;
+    name: string;
+    notificationToken: string;
+  }>;
 
   @AutoMap()
   @Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })

@@ -9,14 +9,31 @@ import {
   IsString,
   MaxLength,
   ValidateIf,
+  ValidateNested,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
-import { UserDto } from '@/domains/user/user.dto';
 import { NotificationTypeOfSendingEnum } from '@/enums/notification-type-of-sending.enum';
 import {
   CompareDate,
   DateComparisonMethod,
 } from '../../validators/compare-date.validator';
+
+export class ReceiverDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  id: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  name: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  notificationToken: string;
+}
 
 export class CreateNotificationDto {
   @ApiProperty()
@@ -43,11 +60,16 @@ export class CreateNotificationDto {
   @IsNotEmpty()
   typeOfSending: NotificationTypeOfSendingEnum;
 
-  @ApiProperty({ description: 'The selected users ID', type: [UserDto] })
+  @ApiProperty({
+    description: 'List of notification receivers',
+    type: [ReceiverDto],
+  })
   @ValidateIf((dto) => dto.forAllUsers === false)
-  @IsNotEmpty()
   @IsArray()
-  users: UserDto[];
+  @IsNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => ReceiverDto)
+  receivers: ReceiverDto[];
 
   @ApiProperty({
     description: 'Start date of the tournament',

@@ -99,11 +99,13 @@ export class UserTenderService {
     files?: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<UserTenderEntity> {
     const tender = await this.findOneOrFail({ id });
-    Object.assign(tender, updateUserTenderDto);
+    const { deleteImages, ...filteredUserTenderDto } = updateUserTenderDto;
+    Object.assign(tender, filteredUserTenderDto);
+    if (deleteImages) {
+      await this.filesService.deleteMultipleFiles(deleteImages);
+    }
     if (files) {
-      tender.documents = tender.documents
-        ? await this.filesService.updateMultipleFiles(tender.documents, files)
-        : await this.filesService.uploadMultipleFiles(files);
+      tender.documents = await this.filesService.uploadMultipleFiles(files);
     }
     return await this.tenderRepository.save(tender);
   }

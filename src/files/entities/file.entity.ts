@@ -5,7 +5,6 @@ import {
   Entity,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ApiProperty } from '@nestjs/swagger';
 import { Allow } from 'class-validator';
 import EntityHelper from '../../utils/entities/entity-helper';
 import appConfig from '../../config/app.config';

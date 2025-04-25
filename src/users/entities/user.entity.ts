@@ -1,3 +1,4 @@
+import { AutoMap } from 'automapper-classes';
 import {
   AfterLoad,
   BeforeInsert,
@@ -8,7 +9,6 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -18,9 +18,7 @@ import { FileEntity } from '../../files/entities/file.entity';
 import bcrypt from 'bcryptjs';
 import EntityHelper from '../../utils/entities/entity-helper';
 import { AddressEntity } from '../../address/entities/address.entity';
-import { AutoMap } from 'automapper-classes';
 import { AuthProvidersEnum } from '@/enums/auth-provider.enum';
-import { NotificationRecipient } from '../../notification/entities/notification-recipient.entity';
 import { UserSocketEntity } from '../../chat/entities/user-socket.entity';
 
 @Entity()
@@ -82,12 +80,6 @@ export class UserEntity extends EntityHelper {
   @AutoMap(() => String)
   @Column({ type: String, nullable: true })
   notificationsToken?: string | null;
-
-  @AutoMap(() => [NotificationRecipient])
-  @OneToMany(() => NotificationRecipient, (notification) => notification.user, {
-    nullable: true,
-  })
-  notifications?: NotificationRecipient[];
 
   @AutoMap(() => UserSocketEntity)
   @OneToOne(() => UserSocketEntity, (socket) => socket.user, {

@@ -17,6 +17,7 @@ import { WinstonLoggerService } from '../logger/winston-logger.service';
 import { NullableType } from '../utils/types/nullable.type';
 import { CreateUserDto } from '@/domains/user/create-user.dto';
 import { AuthUpdateDto } from '@/domains/auth/auth-update.dto';
+import { ReceiverDto } from '@/domains/notification/create-notification.dto';
 
 @Injectable()
 export class UsersService {
@@ -136,7 +137,34 @@ export class UsersService {
         HttpStatus.BAD_REQUEST,
       );
     }
-
     return result.tokens as string[];
+  }
+
+  async findAllReceivers(): Promise<ReceiverDto[]> {
+    const result = await this.usersRepository
+      .createQueryBuilder('user')
+      .select(['user.id', 'user.name', 'user.notificationsToken'])
+      .where('user.notificationsToken IS NOT NULL')
+      .getRawMany();
+
+    if (!result.length) {
+      this.logger.debug('No notification receiver found');
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          errors: {
+            notification: 'No notification receiver found',
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // Transform raw results to ReceiverDto array
+    return result.map((user) => ({
+      id: user.user_id,
+      name: user.user_name,
+      notificationToken: user.user_notificationsToken,
+    }));
   }
 }

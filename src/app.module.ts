@@ -49,6 +49,10 @@ import { CompanyOfferModule } from './company-offer/company-offer.module';
 import { UserRequestOfferModule } from './user-request-offer/user-request-offer.module';
 import { UserTenderModule } from './user-tender/user-tender.module';
 import { TenderCategoryModule } from './tender-category/tender-category.module';
+import { CompanyParticipationUserTenderModule } from './company-participation-user-tender/company-participation-user-tender.module';
+import { CompanyTenderModule } from './company-tender/company-tender.module';
+import { CompanyParticipationCompanyTenderModule } from './company-participation-company-tender/company-participation-company-tender.module';
+import { UserTestimonialModule } from './user-testimonial/user-testimonial.module';
 
 @Module({
   imports: [
@@ -110,8 +114,6 @@ import { TenderCategoryModule } from './tender-category/tender-category.module';
         //crontab: `0 4 * * * notification-cron`,
       }),
     }),
-    UsersModule,
-    UsersTenantModule,
     FilesModule,
     AuthModule,
     OtpModule,
@@ -125,16 +127,22 @@ import { TenderCategoryModule } from './tender-category/tender-category.module';
     NotificationModule,
     OauthModule,
     ChatModule,
+    TokenCategoryModule,
+    PostCategoryModule,
+    TenderCategoryModule,
+    UsersModule,
+    UsersTenantModule,
+    UserRequestOfferModule,
+    UserTenderModule,
+    UserTestimonialModule,
     CompanyModule,
     CompanyCategoryModule,
     CompanyPostModule,
     CompanyOfferModule,
     CompanySubscriptionTokenModule,
-    TokenCategoryModule,
-    PostCategoryModule,
-    UserRequestOfferModule,
-    UserTenderModule,
-    TenderCategoryModule,
+    CompanyParticipationUserTenderModule,
+    CompanyTenderModule,
+    CompanyParticipationCompanyTenderModule,
   ],
 
   providers: [

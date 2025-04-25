@@ -1,8 +1,7 @@
+import { AutoMap } from 'automapper-classes';
 import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Notification } from './notification.entity';
-import { UserEntity } from '../../users/entities/user.entity';
 import EntityHelper from '../../utils/entities/entity-helper';
-import { AutoMap } from 'automapper-classes';
 
 @Entity()
 export class NotificationRecipient extends EntityHelper {
@@ -17,12 +16,13 @@ export class NotificationRecipient extends EntityHelper {
   })
   notification: Notification;
 
-  @AutoMap(() => UserEntity)
-  @ManyToOne(() => UserEntity, (user) => user.notifications, {
-    nullable: false,
-    onDelete: 'CASCADE',
-  })
-  user: UserEntity;
+  @AutoMap(() => Object)
+  @Column({ type: 'jsonb', nullable: true })
+  receivers: {
+    id: string;
+    name: string;
+    notificationToken: string;
+  };
 
   @AutoMap()
   @Column({ default: false })

@@ -17,6 +17,7 @@ import { FileDriver } from '@/enums/file-driver.enum';
 import { NullableType } from '../utils/types/nullable.type';
 import { PresignedUrlResponseDto } from '@/domains/files/presign-url-response.dto';
 import { WinstonLoggerService } from '../logger/winston-logger.service';
+import { FileDto } from '@/domains/files/file.dto';
 
 @Injectable()
 export class FilesService {
@@ -84,18 +85,6 @@ export class FilesService {
     );
   }
 
-  async updateMultipleFiles(
-    oldFiles: Array<FileEntity>,
-    files: Array<Express.Multer.File | Express.MulterS3.File>,
-  ): Promise<FileEntity[]> {
-    //Delete old documents
-    for (const file of oldFiles) {
-      await this.deleteFile(file.id);
-    }
-    // Upload new file to database
-    return await this.handleMultipleFilesUpload(files);
-  }
-
   async uploadMultipleFiles(
     files: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<FileEntity[]> {
@@ -156,6 +145,12 @@ export class FilesService {
       path: path[this.storage],
     });
     return this.fileRepository.save(updatedFile);
+  }
+
+  async deleteMultipleFiles(files: FileDto[]) {
+    for (const file of files) {
+      await this.deleteFile(file.id);
+    }
   }
 
   /**

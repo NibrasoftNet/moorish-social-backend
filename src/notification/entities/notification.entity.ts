@@ -4,12 +4,9 @@ import {
   BeforeUpdate,
   Column,
   Entity,
-  JoinTable,
-  ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { AutoMap } from 'automapper-classes';
-import { UserEntity } from '../../users/entities/user.entity';
 import { NotificationTypeOfSendingEnum } from '@/enums/notification-type-of-sending.enum';
 
 @Entity()
@@ -49,10 +46,13 @@ export class Notification extends EntityHelper {
   @Column({ default: true })
   active: boolean;
 
-  @AutoMap(() => [UserEntity])
-  @ManyToMany(() => UserEntity, { nullable: true })
-  @JoinTable()
-  users: UserEntity[];
+  @AutoMap(() => Object)
+  @Column({ type: 'jsonb', nullable: true })
+  receivers: Array<{
+    id: string;
+    name: string;
+    notificationToken: string;
+  }>;
 
   @AutoMap(() => Boolean)
   @Column({ default: false })

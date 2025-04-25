@@ -1,15 +1,16 @@
 import { AutoMap } from 'automapper-classes';
-import { Validate } from 'class-validator';
-import { IsExist } from '../../validators/is-exists.validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class FileDto {
+  @ApiProperty()
   @AutoMap()
-  @Validate(IsExist, ['FileEntity', 'id', 'validation.imageNotExists'])
   id: string;
 
+  @ApiProperty()
   @AutoMap()
   path: string;
 
+  @ApiProperty()
   @AutoMap()
   mimeType: string;
 }

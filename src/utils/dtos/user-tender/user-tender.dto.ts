@@ -18,6 +18,9 @@ export class UserTenderDto extends EntityHelperDto {
   @AutoMap()
   content: string;
 
+  @AutoMap()
+  active: boolean;
+
   @AutoMap(() => UserDto)
   creator: UserDto;
 

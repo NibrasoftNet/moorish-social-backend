@@ -15,6 +15,7 @@ import { IsNotExist } from 'src/utils/validators/is-not-exists.validator';
 import { lowerCaseTransformer } from '../../transformers/lower-case.transformer';
 import { CreateAddressDto } from '@/domains/address/create-address.dto';
 import { IsUniqueOrAppend } from '../../validators/is-unique-or-append';
+import { i18nValidationMessage } from 'nestjs-i18n';
 
 export class AuthEmailRegisterDto {
   @ApiProperty({ example: 'test@weavers.com' })
@@ -36,7 +37,7 @@ export class AuthEmailRegisterDto {
 
   @ApiProperty({ example: 'John' })
   @IsNotEmpty()
-  @IsString()
+  @IsString({ message: i18nValidationMessage('validation.week') })
   @MaxLength(16)
   @MinLength(2)
   @Validate(IsUniqueOrAppend, [
