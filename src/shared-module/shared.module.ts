@@ -13,6 +13,7 @@ import { IsExist } from '../utils/validators/is-exists.validator';
 import { IsNotExist } from '../utils/validators/is-not-exists.validator';
 import { ImageExistsInS3Validator } from '../utils/validators/image-exists-in-s3.validator';
 import { MulterModule } from '@nestjs/platform-express';
+import { EndLaterThanStartDateValidator } from '../utils/validators/end-later-than-start-date.validator';
 
 @Global()
 @Module({
@@ -112,6 +113,7 @@ import { MulterModule } from '@nestjs/platform-express';
     IsNotExist,
     ImageExistsInS3Validator,
     IsNotUsedByOthers,
+    EndLaterThanStartDateValidator,
   ],
 })
 export class SharedModule {}

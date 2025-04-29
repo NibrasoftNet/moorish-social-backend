@@ -1,6 +1,6 @@
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
 import { createMap, Mapper, MappingProfile } from 'automapper-core';
-import { NotificationRecipient } from '../entities/notification-recipient.entity';
+import { NotificationRecipientEntity } from '../entities/notification-recipient.entity';
 import { NotificationRecipientDto } from '@/domains/notification/notification-recipient.dto';
 
 export class NotificationRecipientSerializationProfile extends AutomapperProfile {
@@ -10,7 +10,7 @@ export class NotificationRecipientSerializationProfile extends AutomapperProfile
 
   override get profile(): MappingProfile {
     return (mapper) => {
-      createMap(mapper, NotificationRecipient, NotificationRecipientDto);
+      createMap(mapper, NotificationRecipientEntity, NotificationRecipientDto);
     };
   }
 }

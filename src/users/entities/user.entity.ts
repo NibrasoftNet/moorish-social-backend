@@ -18,7 +18,7 @@ import { FileEntity } from '../../files/entities/file.entity';
 import bcrypt from 'bcryptjs';
 import EntityHelper from '../../utils/entities/entity-helper';
 import { AddressEntity } from '../../address/entities/address.entity';
-import { AuthProvidersEnum } from '@/enums/auth-provider.enum';
+import { AuthProvidersEnum } from '@/enums/auth.enum';
 import { UserSocketEntity } from '../../chat/entities/user-socket.entity';
 
 @Entity()

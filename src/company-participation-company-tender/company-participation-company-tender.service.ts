@@ -23,7 +23,7 @@ import {
   CreateNotificationDto,
   ReceiverDto,
 } from '@/domains/notification/create-notification.dto';
-import { NotificationTypeOfSendingEnum } from '@/enums/notification-type-of-sending.enum';
+import { NotificationEnum } from '@/enums/notification.enum';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import { NotificationService } from '../notification/notification.service';
@@ -162,7 +162,7 @@ export class CompanyParticipationCompanyTenderService {
             message: `${participation.creator.firstName} accepted your request.`,
             forAllUsers: false,
             receivers: [approvedTenant],
-            typeOfSending: NotificationTypeOfSendingEnum.IMMEDIATELY,
+            typeOfSending: NotificationEnum.IMMEDIATELY,
           });
           await this.notificationService.create(createNotificationDto);
         }

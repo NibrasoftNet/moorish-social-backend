@@ -27,11 +27,17 @@ import { FileEntity } from './entities/file.entity';
 import { createReadStream } from 'fs';
 import { join } from 'path';
 import * as mime from 'mime-types';
-import { MapInterceptor } from 'automapper-nestjs';
+import { InjectMapper, MapInterceptor } from 'automapper-nestjs';
 import { FileDto } from '@/domains/files/file.dto';
 import { NullableType } from '../utils/types/nullable.type';
 import { PresignedUrlResponseDto } from '@/domains/files/presign-url-response.dto';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { ApiPaginationQuery, Paginate, PaginateQuery } from 'nestjs-paginate';
+import { filePaginationConfig } from './config/files-pagination.config';
+import { Roles } from '../roles/roles.decorator';
+import { RoleCodeEnum } from '@/enums/roles.enum';
+import { PaginatedDto } from '../utils/serialization/paginated.dto';
+import { Mapper } from 'automapper-core';
 
 @ApiTags('Files')
 @ApiBearerAuth()
@@ -40,7 +46,10 @@ import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
   version: '1',
 })
 export class FilesController {
-  constructor(private readonly filesService: FilesService) {}
+  constructor(
+    private readonly filesService: FilesService,
+    @InjectMapper() private readonly mapper: Mapper,
+  ) {}
 
   @ApiBearerAuth()
   @Post('upload')
@@ -116,6 +125,21 @@ export class FilesController {
     return await this.filesService.getPresignedUrl(type);
   }
 
+  @ApiPaginationQuery(filePaginationConfig)
+  @Roles(RoleCodeEnum.TENANTADMIN, RoleCodeEnum.USER, RoleCodeEnum.SUPERADMIN)
+  @HttpCode(HttpStatus.OK)
+  @Get()
+  async findAllPaginated(
+    @Paginate() query: PaginateQuery,
+  ): Promise<PaginatedDto<FileEntity, FileDto>> {
+    const files = await this.filesService.findAllPaginated(query);
+    return new PaginatedDto<FileEntity, FileDto>(
+      this.mapper,
+      files,
+      FileEntity,
+      FileDto,
+    );
+  }
   @UseInterceptors(MapInterceptor(FileEntity, FileDto))
   @HttpCode(HttpStatus.OK)
   @Get(':id')

@@ -1,20 +1,20 @@
 import { AutoMap } from 'automapper-classes';
 import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Notification } from './notification.entity';
+import { NotificationEntity } from './notification.entity';
 import EntityHelper from '../../utils/entities/entity-helper';
 
 @Entity()
-export class NotificationRecipient extends EntityHelper {
+export class NotificationRecipientEntity extends EntityHelper {
   @AutoMap()
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @AutoMap(() => Notification)
-  @ManyToOne(() => Notification, {
+  @AutoMap(() => NotificationEntity)
+  @ManyToOne(() => NotificationEntity, {
     nullable: false,
     onDelete: 'CASCADE',
   })
-  notification: Notification;
+  notification: NotificationEntity;
 
   @AutoMap(() => Object)
   @Column({ type: 'jsonb', nullable: true })

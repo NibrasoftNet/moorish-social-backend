@@ -1,6 +1,6 @@
 import { AutoMap } from 'automapper-classes';
 import { Expose } from 'class-transformer';
-import { NotificationTypeOfSendingEnum } from '@/enums/notification-type-of-sending.enum';
+import { NotificationEnum } from '@/enums/notification.enum';
 
 export class NotificationDto {
   @AutoMap()
@@ -21,7 +21,7 @@ export class NotificationDto {
 
   @AutoMap()
   @Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
-  typeOfSending: NotificationTypeOfSendingEnum;
+  typeOfSending: NotificationEnum;
 
   @AutoMap(() => Date)
   @Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })

@@ -36,6 +36,14 @@ export class CompanyPostEntity extends EntityHelper {
   @Column({ nullable: false })
   hashTag: string;
 
+  @AutoMap()
+  @Column({ default: 0 })
+  boostScore: number;
+
+  @AutoMap()
+  @Column({ default: true })
+  active: boolean;
+
   @AutoMap(() => CompanyEntity)
   @ManyToOne(() => CompanyEntity, {
     onDelete: 'CASCADE',

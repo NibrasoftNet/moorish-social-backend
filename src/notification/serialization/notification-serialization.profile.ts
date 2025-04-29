@@ -5,7 +5,7 @@ import {
   MappingProfile,
   typeConverter,
 } from 'automapper-core';
-import { Notification } from '../entities/notification.entity';
+import { NotificationEntity } from '../entities/notification.entity';
 import { NotificationDto } from '@/domains/notification/notification.dto';
 
 export class NotificationSerializationProfile extends AutomapperProfile {
@@ -17,7 +17,7 @@ export class NotificationSerializationProfile extends AutomapperProfile {
     return (mapper) => {
       createMap(
         mapper,
-        Notification,
+        NotificationEntity,
         NotificationDto,
         typeConverter(Date, String, (date) => date.toDateString()),
       );

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UpdateCompanyPostDto {
   @ApiProperty()
@@ -17,17 +17,33 @@ export class UpdateCompanyPostDto {
   @IsString()
   content?: string;
 
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  boostScore?: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsBoolean()
+  active?: boolean;
+
   constructor({
     title,
     content,
     hashTag,
+    boostScore,
+    active,
   }: {
     title?: string;
     content?: string;
     hashTag?: string;
+    boostScore?: number;
+    active?: boolean;
   }) {
     this.title = title;
     this.content = content;
     this.hashTag = hashTag;
+    this.boostScore = boostScore;
+    this.active = active;
   }
 }

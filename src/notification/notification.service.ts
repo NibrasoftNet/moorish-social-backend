@@ -8,7 +8,7 @@ import {
   FindOptionsWhere,
   Repository,
 } from 'typeorm';
-import { Notification } from './entities/notification.entity';
+import { NotificationEntity } from './entities/notification.entity';
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { notificationsPaginationConfig } from './config/notifications-pagination.config';
 import { NullableType } from '../utils/types/nullable.type';
@@ -22,24 +22,24 @@ import {
 } from 'nestjs-graphile-worker';
 import { WorkerEventMap } from 'graphile-worker';
 import { NotificationJobPayload } from './interfaces/notification-job-payload';
-import { NotificationTypeOfSendingEnum } from '@/enums/notification-type-of-sending.enum';
+import { NotificationEnum } from '@/enums/notification.enum';
 import {
   CreateNotificationDto,
   ReceiverDto,
 } from '@/domains/notification/create-notification.dto';
 import { NotificationMessageDto } from '@/domains/notification/notification-message.dto';
 import { UpdateNotificationDto } from '@/domains/notification/update-notification.dto';
-import { NotificationRecipient } from './entities/notification-recipient.entity';
+import { NotificationRecipientEntity } from './entities/notification-recipient.entity';
 import { notificationsRecipientPaginationConfig } from './config/notifications-recipient-pagination.config';
 
 @Injectable()
 @GraphileWorkerListener()
 export class NotificationService {
   constructor(
-    @InjectRepository(Notification)
-    private notificationsRepository: Repository<Notification>,
-    @InjectRepository(NotificationRecipient)
-    private notificationRecipientRepository: Repository<NotificationRecipient>,
+    @InjectRepository(NotificationEntity)
+    private notificationsRepository: Repository<NotificationEntity>,
+    @InjectRepository(NotificationRecipientEntity)
+    private notificationRecipientRepository: Repository<NotificationRecipientEntity>,
     private readonly usersService: UsersService,
     private readonly logger: WinstonLoggerService,
     private readonly graphileWorker: WorkerService,
@@ -64,7 +64,7 @@ export class NotificationService {
 
   async create(
     createNotificationDto: CreateNotificationDto,
-  ): Promise<Notification> {
+  ): Promise<NotificationEntity> {
     this.logger.info(`create-Notification`, {
       description: `Create a new Notification`,
       class: NotificationService.name,
@@ -72,21 +72,16 @@ export class NotificationService {
     });
 
     const notification = this.notificationsRepository.create(
-      createNotificationDto as DeepPartial<Notification>,
+      createNotificationDto as DeepPartial<NotificationEntity>,
     );
 
     const savedNotification =
       await this.notificationsRepository.save(notification);
 
-    if (
-      savedNotification.typeOfSending ===
-      NotificationTypeOfSendingEnum.IMMEDIATELY
-    ) {
+    if (savedNotification.typeOfSending === NotificationEnum.IMMEDIATELY) {
       await this.sendImmediateNotification(savedNotification);
     }
-    if (
-      savedNotification.typeOfSending === NotificationTypeOfSendingEnum.PUNCTUAL
-    ) {
+    if (savedNotification.typeOfSending === NotificationEnum.PUNCTUAL) {
       await this.sendPunctualNotification(savedNotification);
     }
     return savedNotification;
@@ -94,7 +89,7 @@ export class NotificationService {
 
   async findAllPaginated(
     query: PaginateQuery,
-  ): Promise<Paginated<Notification>> {
+  ): Promise<Paginated<NotificationEntity>> {
     this.logger.info(`find-All-Paginated-Notification`, {
       description: `find All Paginated Notification`,
       class: NotificationService.name,
@@ -107,7 +102,9 @@ export class NotificationService {
     );
   }
 
-  async findAllByDay(): Promise<(Notification & { scheduled_date: Date })[]> {
+  async findAllByDay(): Promise<
+    (NotificationEntity & { scheduled_date: Date })[]
+  > {
     this.logger.info(`find-All-By-Day-Notification`, {
       description: `find All By Day Notification`,
       class: NotificationService.name,
@@ -128,7 +125,7 @@ export class NotificationService {
   async findAllMyNotifications(
     user: JwtPayloadType,
     query: PaginateQuery,
-  ): Promise<Paginated<NotificationRecipient>> {
+  ): Promise<Paginated<NotificationRecipientEntity>> {
     const stopWatching = this.logger.watch(
       'notification-findAllMyNotifications',
       {
@@ -152,9 +149,9 @@ export class NotificationService {
   }
 
   async findOne(
-    fields: FindOptionsWhere<Notification>,
-    relations?: FindOptionsRelations<Notification> | string[],
-  ): Promise<NullableType<Notification>> {
+    fields: FindOptionsWhere<NotificationEntity>,
+    relations?: FindOptionsRelations<NotificationEntity>,
+  ): Promise<NullableType<NotificationEntity>> {
     this.logger.info(`find-one-Notifications`, {
       description: `find one Notifications`,
       class: NotificationService.name,
@@ -167,9 +164,9 @@ export class NotificationService {
   }
 
   async findOneOrFail(
-    fields: FindOptionsWhere<Notification>,
-    relations?: FindOptionsRelations<Notification> | string[],
-  ): Promise<Notification> {
+    fields: FindOptionsWhere<NotificationEntity>,
+    relations?: FindOptionsRelations<NotificationEntity> | string[],
+  ): Promise<NotificationEntity> {
     this.logger.info(`find-one-Or-Fail-Notifications`, {
       description: `find one Or Fail Notifications`,
       class: NotificationService.name,
@@ -184,7 +181,7 @@ export class NotificationService {
   async update(
     id: string,
     updateNotificationDto: UpdateNotificationDto,
-  ): Promise<Notification> {
+  ): Promise<NotificationEntity> {
     this.logger.info(`update-Notification`, {
       description: `update Notification`,
       class: NotificationService.name,
@@ -205,7 +202,7 @@ export class NotificationService {
     return await this.notificationsRepository.delete(id);
   }
 
-  async sendImmediateNotification(notification: Notification) {
+  async sendImmediateNotification(notification: NotificationEntity) {
     const message = await this.createNotificationMessage(notification);
     await this.graphileWorker.addJob(
       'notification',
@@ -219,7 +216,7 @@ export class NotificationService {
     );
   }
 
-  async sendPunctualNotification(notification: Notification) {
+  async sendPunctualNotification(notification: NotificationEntity) {
     const message = await this.createNotificationMessage(notification);
     await this.graphileWorker.addJob(
       'notification',
@@ -257,7 +254,7 @@ export class NotificationService {
     return await this.notificationRecipientRepository.manager.transaction(
       async (entityManager: EntityManager) => {
         const notificationRecipients = users.map((user) => {
-          const notificationRecipient = new NotificationRecipient();
+          const notificationRecipient = new NotificationRecipientEntity();
           notificationRecipient.notification = notification;
           notificationRecipient.receivers = user;
           return notificationRecipient;
@@ -265,7 +262,7 @@ export class NotificationService {
         await entityManager
           .createQueryBuilder()
           .insert()
-          .into(NotificationRecipient)
+          .into(NotificationRecipientEntity)
           .values(notificationRecipients)
           .execute();
         // Update isNotificationSent in the Notification entity
@@ -276,7 +273,7 @@ export class NotificationService {
   }
 
   async createNotificationMessage(
-    notification: Notification,
+    notification: NotificationEntity,
   ): Promise<NotificationMessageDto> {
     const tokens = await this.extractNotificationRecipientsTokens(notification);
 
@@ -295,7 +292,7 @@ export class NotificationService {
   }
 
   async extractNotificationRecipientsTokens(
-    notification: Notification,
+    notification: NotificationEntity,
   ): Promise<string[]> {
     if (!notification.forAllUsers) {
       return notification.receivers
@@ -306,7 +303,7 @@ export class NotificationService {
   }
 
   async handleNotificationRecipients(
-    notification: Notification,
+    notification: NotificationEntity,
   ): Promise<ReceiverDto[]> {
     if (!notification.forAllUsers) {
       return notification.receivers;

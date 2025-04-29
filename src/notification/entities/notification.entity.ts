@@ -7,10 +7,10 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { AutoMap } from 'automapper-classes';
-import { NotificationTypeOfSendingEnum } from '@/enums/notification-type-of-sending.enum';
+import { NotificationEnum } from '@/enums/notification.enum';
 
 @Entity()
-export class Notification extends EntityHelper {
+export class NotificationEntity extends EntityHelper {
   @AutoMap()
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -29,10 +29,10 @@ export class Notification extends EntityHelper {
 
   @AutoMap()
   @Column({
-    enum: NotificationTypeOfSendingEnum,
-    default: NotificationTypeOfSendingEnum.IMMEDIATELY,
+    enum: NotificationEnum,
+    default: NotificationEnum.IMMEDIATELY,
   })
-  typeOfSending: NotificationTypeOfSendingEnum;
+  typeOfSending: NotificationEnum;
 
   @AutoMap(() => Date)
   @Column({ type: Date, nullable: true })
@@ -61,13 +61,13 @@ export class Notification extends EntityHelper {
   @BeforeInsert()
   @BeforeUpdate()
   handleTypeOfSending() {
-    if (this.typeOfSending !== NotificationTypeOfSendingEnum.PROGRAMMED) {
+    if (this.typeOfSending !== NotificationEnum.PROGRAMMED) {
       this.scheduledNotification = null;
     }
-    if (this.typeOfSending !== NotificationTypeOfSendingEnum.PUNCTUAL) {
+    if (this.typeOfSending !== NotificationEnum.PUNCTUAL) {
       this.punctualSendDate = null;
     }
-    if (this.typeOfSending === NotificationTypeOfSendingEnum.IMMEDIATELY) {
+    if (this.typeOfSending === NotificationEnum.IMMEDIATELY) {
       this.scheduledNotification = null;
       this.punctualSendDate = null;
     }

@@ -14,7 +14,7 @@ import { I18nContext, I18nService } from 'nestjs-i18n';
 import { Status } from '../statuses/entities/status.entity';
 import { SessionResponseDto } from '@/domains/session/session-response.dto';
 import { AuthEmailLoginDto } from '@/domains/auth/auth-email-login.dto';
-import { AuthProvidersEnum } from '@/enums/auth-provider.enum';
+import { AuthProvidersEnum } from '@/enums/auth.enum';
 import { StatusCodeEnum } from '@/enums/statuses.enum';
 import { UserDto } from '@/domains/user/user.dto';
 import { AuthEmailRegisterDto } from '@/domains/auth/auth-email-register.dto';

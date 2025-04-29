@@ -1,3 +1,4 @@
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { FilesModule } from './files/files.module';
 import { AuthModule } from './auth/auth.module';
@@ -10,7 +11,6 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { AllConfigType } from './config/config.type';
 import { OtpModule } from './otp/otp.module';
 import { addTransactionalDataSource } from 'typeorm-transactional';
-import { EndLaterThanStartDateValidator } from './utils/validators/end-later-than-start-date.validator';
 import { AutomapperModule } from 'automapper-nestjs';
 import { classes } from 'automapper-classes';
 import { EntityHelperProfile } from './utils/serialization/entity-helper.profile';
@@ -21,11 +21,9 @@ import authConfig from './auth/config/auth.config';
 import appConfig from './config/app.config';
 import mailConfig from './mail/config/mail.config';
 import fileConfig from './files/config/file.config';
-import cloudinaryConfig from './utils/cloudinary/config/cloudinary.config';
 import path from 'path';
 import { HealthModule } from './health/health.module';
 import { AwsS3Module } from './utils/aws-s3/aws-s3.module';
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { WinstonLoggerModule } from './logger/winston-logger.module';
 import { GraphileWorkerModule } from 'nestjs-graphile-worker';
 import { NotificationModule } from './notification/notification.module';
@@ -65,7 +63,6 @@ import { UserTestimonialModule } from './user-testimonial/user-testimonial.modul
         mailConfig,
         fileConfig,
         googleConfig,
-        cloudinaryConfig,
       ],
       envFilePath: ['.env'],
     }),
@@ -145,12 +142,7 @@ import { UserTestimonialModule } from './user-testimonial/user-testimonial.modul
     CompanyParticipationCompanyTenderModule,
   ],
 
-  providers: [
-    EntityHelperProfile,
-    EndLaterThanStartDateValidator,
-    NotificationTask,
-    NotificationCronTask,
-  ],
+  providers: [EntityHelperProfile, NotificationTask, NotificationCronTask],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

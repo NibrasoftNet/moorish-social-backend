@@ -1,4 +1,4 @@
-export enum NotificationTypeOfSendingEnum {
+export enum NotificationEnum {
   IMMEDIATELY = 'IMMEDIATELY',
   PUNCTUAL = 'PUNCTUAL',
   PROGRAMMED = 'PROGRAMMED',

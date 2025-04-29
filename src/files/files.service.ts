@@ -18,6 +18,8 @@ import { NullableType } from '../utils/types/nullable.type';
 import { PresignedUrlResponseDto } from '@/domains/files/presign-url-response.dto';
 import { WinstonLoggerService } from '../logger/winston-logger.service';
 import { FileDto } from '@/domains/files/file.dto';
+import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
+import { filePaginationConfig } from './config/files-pagination.config';
 
 @Injectable()
 export class FilesService {
@@ -34,6 +36,14 @@ export class FilesService {
     this.storage = this.configService.getOrThrow('file.driver', {
       infer: true,
     });
+  }
+
+  async findAllPaginated(query: PaginateQuery): Promise<Paginated<FileEntity>> {
+    return await paginate<FileEntity>(
+      query,
+      this.fileRepository,
+      filePaginationConfig,
+    );
   }
 
   async findOne(

@@ -12,7 +12,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
-import { NotificationTypeOfSendingEnum } from '@/enums/notification-type-of-sending.enum';
+import { NotificationEnum } from '@/enums/notification.enum';
 import {
   CompareDate,
   DateComparisonMethod,
@@ -53,12 +53,12 @@ export class CreateNotificationDto {
   forAllUsers: boolean;
 
   @ApiProperty({
-    enum: NotificationTypeOfSendingEnum,
-    example: NotificationTypeOfSendingEnum.IMMEDIATELY,
+    enum: NotificationEnum,
+    example: NotificationEnum.IMMEDIATELY,
   })
-  @IsEnum(NotificationTypeOfSendingEnum)
+  @IsEnum(NotificationEnum)
   @IsNotEmpty()
-  typeOfSending: NotificationTypeOfSendingEnum;
+  typeOfSending: NotificationEnum;
 
   @ApiProperty({
     description: 'List of notification receivers',
@@ -75,9 +75,7 @@ export class CreateNotificationDto {
     description: 'Start date of the tournament',
     example: '2024-12-01T10:00:00.000Z',
   })
-  @ValidateIf(
-    (dto) => dto.typeOfSending === NotificationTypeOfSendingEnum.PUNCTUAL,
-  )
+  @ValidateIf((dto) => dto.typeOfSending === NotificationEnum.PUNCTUAL)
   @IsNotEmpty()
   @IsDate()
   @Type(() => Date)
@@ -88,9 +86,7 @@ export class CreateNotificationDto {
     type: Date,
     isArray: true,
   })
-  @ValidateIf(
-    (dto) => dto.typeOfSending === NotificationTypeOfSendingEnum.PROGRAMMED,
-  )
+  @ValidateIf((dto) => dto.typeOfSending === NotificationEnum.PROGRAMMED)
   @IsNotEmpty()
   @Transform(({ value }) => value && value.map((date) => new Date(date)))
   @IsDate({ each: true })

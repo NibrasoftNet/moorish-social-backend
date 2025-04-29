@@ -1,8 +1,8 @@
 import { FilterOperator, FilterSuffix, PaginateConfig } from 'nestjs-paginate';
 
-import { NotificationRecipient } from '../entities/notification-recipient.entity';
+import { NotificationRecipientEntity } from '../entities/notification-recipient.entity';
 
-export const notificationsRecipientPaginationConfig: PaginateConfig<NotificationRecipient> =
+export const notificationsRecipientPaginationConfig: PaginateConfig<NotificationRecipientEntity> =
   {
     defaultSortBy: [['createdAt', 'DESC']],
     relations: ['receivers', 'notification'],

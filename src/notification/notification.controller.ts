@@ -20,7 +20,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../roles/roles.guard';
 import { Roles } from '../roles/roles.decorator';
 import { InjectMapper, MapInterceptor } from 'automapper-nestjs';
-import { Notification } from './entities/notification.entity';
+import { NotificationEntity } from './entities/notification.entity';
 import { PaginatedDto } from '../utils/serialization/paginated.dto';
 import { Mapper } from 'automapper-core';
 import { notificationsPaginationConfig } from './config/notifications-pagination.config';
@@ -29,9 +29,11 @@ import { CreateNotificationDto } from '@/domains/notification/create-notificatio
 import { NotificationDto } from '@/domains/notification/notification.dto';
 import { UpdateNotificationDto } from '@/domains/notification/update-notification.dto';
 import { notificationsRecipientPaginationConfig } from './config/notifications-recipient-pagination.config';
-import { NotificationRecipient } from './entities/notification-recipient.entity';
+import { NotificationRecipientEntity } from './entities/notification-recipient.entity';
 import { NotificationRecipientDto } from '@/domains/notification/notification-recipient.dto';
 import { AuthRequest } from '../utils/types/auth-request.type';
+import { DeleteResult } from 'typeorm';
+import { NullableType } from '../utils/types/nullable.type';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -46,11 +48,11 @@ export class NotificationController {
 
   @Roles(RoleCodeEnum.TENANTADMIN, RoleCodeEnum.USER, RoleCodeEnum.SUPERADMIN)
   @Post()
-  @UseInterceptors(MapInterceptor(Notification, NotificationDto))
+  @UseInterceptors(MapInterceptor(NotificationEntity, NotificationDto))
   @HttpCode(HttpStatus.OK)
   async create(
     @Body() createNotificationDto: CreateNotificationDto,
-  ): Promise<Notification> {
+  ): Promise<NotificationEntity> {
     return await this.notificationService.create(createNotificationDto);
   }
 
@@ -58,18 +60,18 @@ export class NotificationController {
   @Get()
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(
-    MapInterceptor(Notification, NotificationDto, { isArray: true }),
+    MapInterceptor(NotificationEntity, NotificationDto, { isArray: true }),
   )
   @ApiPaginationQuery(notificationsPaginationConfig)
   async findAll(
     @Paginate() query: PaginateQuery,
-  ): Promise<PaginatedDto<Notification, NotificationDto>> {
+  ): Promise<PaginatedDto<NotificationEntity, NotificationDto>> {
     const notifications =
       await this.notificationService.findAllPaginated(query);
-    return new PaginatedDto<Notification, NotificationDto>(
+    return new PaginatedDto<NotificationEntity, NotificationDto>(
       this.mapper,
       notifications,
-      Notification,
+      NotificationEntity,
       NotificationDto,
     );
   }
@@ -81,42 +83,49 @@ export class NotificationController {
   async findAllMyNotifications(
     @Request() request: AuthRequest,
     @Paginate() query: PaginateQuery,
-  ): Promise<PaginatedDto<NotificationRecipient, NotificationRecipientDto>> {
+  ): Promise<
+    PaginatedDto<NotificationRecipientEntity, NotificationRecipientDto>
+  > {
     const notifications = await this.notificationService.findAllMyNotifications(
       request.user,
       query,
     );
-    return new PaginatedDto<NotificationRecipient, NotificationRecipientDto>(
+    return new PaginatedDto<
+      NotificationRecipientEntity,
+      NotificationRecipientDto
+    >(
       this.mapper,
       notifications,
-      NotificationRecipient,
+      NotificationRecipientEntity,
       NotificationRecipientDto,
     );
   }
 
   @Roles(RoleCodeEnum.TENANTADMIN, RoleCodeEnum.USER, RoleCodeEnum.SUPERADMIN)
   @Get(':id')
-  @UseInterceptors(MapInterceptor(Notification, NotificationDto))
+  @UseInterceptors(MapInterceptor(NotificationEntity, NotificationDto))
   @HttpCode(HttpStatus.OK)
-  async findOne(@Param('id') id: string) {
+  async findOne(
+    @Param('id') id: string,
+  ): Promise<NullableType<NotificationEntity>> {
     return await this.notificationService.findOne({ id });
   }
 
   @Roles(RoleCodeEnum.TENANTADMIN, RoleCodeEnum.USER, RoleCodeEnum.SUPERADMIN)
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
-  @UseInterceptors(MapInterceptor(Notification, NotificationDto))
+  @UseInterceptors(MapInterceptor(NotificationEntity, NotificationDto))
   async update(
     @Param('id') id: string,
     @Body() updateNotificationDto: UpdateNotificationDto,
-  ): Promise<Notification> {
+  ): Promise<NotificationEntity> {
     return await this.notificationService.update(id, updateNotificationDto);
   }
 
   @Roles(RoleCodeEnum.TENANTADMIN, RoleCodeEnum.USER, RoleCodeEnum.SUPERADMIN)
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  async remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string): Promise<DeleteResult> {
     return await this.notificationService.remove(id);
   }
 }

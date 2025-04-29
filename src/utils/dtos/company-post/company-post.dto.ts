@@ -21,6 +21,12 @@ export class CompanyPostDto extends EntityHelperDto {
   @AutoMap()
   hashTag: string;
 
+  @AutoMap()
+  boostScore: number;
+
+  @AutoMap()
+  active: boolean;
+
   @AutoMap(() => CompanyDto)
   company: CompanyDto;
 
