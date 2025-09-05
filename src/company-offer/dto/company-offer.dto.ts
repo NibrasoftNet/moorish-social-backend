@@ -24,7 +24,7 @@ export class CompanyOfferDto extends EntityHelperDto {
   @AutoMap()
   boostScore: number;
 
-  //@AutoMap(() => CompanyDto)
+  @AutoMap(() => CompanyDto)
   company: CompanyDto;
 
   @AutoMap(() => UserTenantDto)

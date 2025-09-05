@@ -5,7 +5,7 @@ FROM node:20.10.0-alpine AS builder
 WORKDIR /app
 
 # Copy package.json and package-lock.json
-COPY package.json ./
+COPY ../package.json ./
 COPY package-lock.json ./
 
 RUN npm install -g npm@10.8.3
@@ -14,7 +14,7 @@ RUN npm install -g npm@10.8.3
 RUN npm ci --legacy-peer-deps
 
 # Copy the rest of the application code to the container
-COPY . .
+COPY .. .
 
 RUN npm i -g @nestjs/cli
 
@@ -27,7 +27,7 @@ FROM node:20.10.0-alpine AS production
 # Set NODE_ENV to production
 ENV NODE_ENV=production
 
-COPY package.json ./
+COPY ../package.json ./
 COPY package-lock.json ./
 
 # Copy the build output and other required files from the builder stage

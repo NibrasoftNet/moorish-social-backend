@@ -41,8 +41,8 @@ services:
         condition: on-failure
   backend:
     build:
-      context: .
-      dockerfile: production.Dockerfile
+      context: ..
+      dockerfile: ../production.Dockerfile
     container_name: arena-book-server
     ports:
       - ${APP_PORT}:5001
