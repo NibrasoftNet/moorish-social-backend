@@ -21,12 +21,14 @@ import { WinstonLoggerService } from './logger/winston-logger.service';
 import { HttpExceptionFilter } from './utils/exceptions/http-exception.filter';
 import { WorkerService } from 'nestjs-graphile-worker';
 import { RolesSerializerInterceptor } from './utils/interceptors/role.serializer.interceptor';
+import { I18nService } from 'nestjs-i18n';
+import { ParameterObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 
 const logger = new Logger('Weavers-social');
 const whitelist = [
-  'http://localhost:5000',
+  'http://localhost:3000',
   'http://localhost:5001',
-  'http://127.0.0.1:5000',
+  'http://127.0.0.1:3000',
   'http://127.0.0.1:5001',
   'http://147.79.117.125:5000',
   'http://147.79.117.125:5001',
@@ -76,7 +78,12 @@ async function bootstrap() {
     type: VersioningType.URI,
   });
   app.useGlobalPipes(new ValidationPipe(validationOptions));
-  app.useGlobalFilters(new HttpExceptionFilter(app.get(WinstonLoggerService)));
+  app.useGlobalFilters(
+    new HttpExceptionFilter(
+      app.get(WinstonLoggerService),
+      app.get(I18nService),
+    ),
+  );
   app.useGlobalInterceptors(
     new ClassSerializerInterceptor(app.get(Reflector)),
     new RolesSerializerInterceptor(app.get(Reflector)),
@@ -84,14 +91,15 @@ async function bootstrap() {
   );
 
   const options = new DocumentBuilder()
-    .setTitle('Weavers social API')
+    .setTitle('Moorish social API')
     .setDescription('Swagger docs')
     .setVersion('1.0')
     .addGlobalParameters({
       name: configService.getOrThrow('app.headerLanguage', { infer: true }),
       required: true,
       in: 'header',
-    })
+      example: 'fr',
+    } as ParameterObject)
     .addBearerAuth()
     .build();
 
@@ -108,7 +116,7 @@ async function bootstrap() {
     }),
   );*/
 
-  SwaggerModule.setup('weavers-docs', app, document);
+  SwaggerModule.setup('moorish-docs', app, document);
   await app.get(WorkerService).run();
   await app.listen(
     configService.getOrThrow('app.port', { infer: true }),

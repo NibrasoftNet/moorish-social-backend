@@ -10,8 +10,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { NullableType } from '../utils/types/nullable.type';
 import { WinstonLoggerService } from '../logger/winston-logger.service';
 import { PostCategoryEntity } from './entities/post-category.entity';
-import { CreatePostCategoryDto } from '@/domains/post-category/create-post-category.dto';
-import { UpdatePostCategoryDto } from '@/domains/post-category/update-post-category.dto';
+import { CreatePostCategoryDto } from './dto/create-post-category.dto';
+import { UpdatePostCategoryDto } from './dto/update-post-category.dto';
 
 @Injectable()
 export class PostCategoryService {

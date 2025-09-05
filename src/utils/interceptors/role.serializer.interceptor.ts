@@ -16,7 +16,7 @@ export class RolesSerializerInterceptor extends ClassSerializerInterceptor {
 
     // Map role ID to serialization groups
     const groups = this.getSerializationGroups(userRoleId);
-
+    console.log('serialize', groups);
     // Merge with existing serialization options
     const contextOptions = this.getContextOptions(context);
     const options = {

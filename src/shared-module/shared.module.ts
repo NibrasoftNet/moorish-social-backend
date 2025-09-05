@@ -75,7 +75,10 @@ import { EndLaterThanStartDateValidator } from '../utils/validators/end-later-th
         };
         return {
           fileFilter: (request, file, callback) => {
-            if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
+            const allowedExtensions =
+              /\.(jpg|jpeg|png|avif|webp|pdf|xlsx|xls|docx|doc|pptx|ppt)$/i;
+
+            if (!file.originalname.match(allowedExtensions)) {
               return callback(
                 new HttpException(
                   {

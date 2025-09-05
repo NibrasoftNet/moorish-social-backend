@@ -8,21 +8,13 @@ import {
   Param,
   Post,
   Put,
-  UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { CompanyCategoryService } from './company-category.service';
-import { CreateCompanyCategoryDto } from '@/domains/company-category/create-company-category.dto';
-import { UpdateCompanyCategoryDto } from '@/domains/company-category/update-company-category.dto';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiConsumes,
-  ApiExtraModels,
-  ApiTags,
-  getSchemaPath,
-} from '@nestjs/swagger';
+import { CreateCompanyCategoryDto } from './dto/create-company-category.dto';
+import { UpdateCompanyCategoryDto } from './dto/update-company-category.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiPaginationQuery, Paginate, PaginateQuery } from 'nestjs-paginate';
 import { companyCategoryPaginationConfig } from './config/company-category-pagination-config';
@@ -32,13 +24,10 @@ import { Roles } from '../roles/roles.decorator';
 import { RolesGuard } from '../roles/roles.guard';
 import { InjectMapper, MapInterceptor } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
-import { CompanyCategoryDto } from '@/domains/company-category/company-category.dto';
+import { CompanyCategoryDto } from './dto/company-category.dto';
 import { PaginatedDto } from '../utils/serialization/paginated.dto';
 import { RoleCodeEnum } from '@/enums/roles.enum';
 import { CompanyCategoryEntity } from './entities/company-category.entity';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { Utils } from '../utils/utils';
-import { ParseFormdataPipe } from '../utils/pipes/parse-formdata.pipe';
 
 @ApiBearerAuth()
 @ApiTags('Company Categories')
@@ -52,79 +41,37 @@ export class CompanyCategoryController {
     @InjectMapper() private readonly mapper: Mapper,
   ) {}
 
-  @ApiConsumes('multipart/form-data')
-  @ApiExtraModels(CreateCompanyCategoryDto)
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        file: {
-          type: 'string',
-          format: 'binary',
-        },
-        data: {
-          $ref: getSchemaPath(CreateCompanyCategoryDto),
-        },
-      },
-    },
-  })
-  @Roles(RoleCodeEnum.SUPERADMIN)
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  //@Roles(RoleCodeEnum.SUPERADMIN)
+  //@UseGuards(AuthGuard('jwt'), RolesGuard)
   @UseInterceptors(MapInterceptor(CompanyCategoryEntity, CompanyCategoryDto))
-  @UseInterceptors(FileInterceptor('file'))
   @HttpCode(HttpStatus.CREATED)
   @Post('/main-category')
   async createMainCategory(
-    @Body('data', ParseFormdataPipe) data,
-    @UploadedFile() file?: Express.Multer.File | Express.MulterS3.File,
+    @Body() createCompanyCategoryDto: CreateCompanyCategoryDto,
   ): Promise<CompanyCategoryEntity> {
-    const createCompanyCategoryDto = new CreateCompanyCategoryDto(data);
-    await Utils.validateDtoOrFail(createCompanyCategoryDto);
     return await this.companyCategoryService.createCategory(
       createCompanyCategoryDto,
-      file,
     );
   }
 
-  @ApiConsumes('multipart/form-data')
-  @ApiExtraModels(CreateCompanyCategoryDto)
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        file: {
-          type: 'string',
-          format: 'binary',
-        },
-        data: {
-          $ref: getSchemaPath(CreateCompanyCategoryDto),
-        },
-      },
-    },
-  })
-  @Roles(RoleCodeEnum.SUPERADMIN)
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  //@Roles(RoleCodeEnum.SUPERADMIN)
+  //@UseGuards(AuthGuard('jwt'), RolesGuard)
   @UseInterceptors(MapInterceptor(CompanyCategoryEntity, CompanyCategoryDto))
-  @UseInterceptors(FileInterceptor('file'))
   @HttpCode(HttpStatus.CREATED)
   @Post('sub-category/:parentId')
   async createSubCategory(
+    @Body() createCompanyCategoryDto: CreateCompanyCategoryDto,
     @Param('parentId') parentId: string,
-    @Body('data', ParseFormdataPipe) data,
-    @UploadedFile() file?: Express.Multer.File | Express.MulterS3.File,
   ): Promise<CompanyCategoryEntity> {
-    const createCompanyCategoryDto = new CreateCompanyCategoryDto(data);
-    await Utils.validateDtoOrFail(createCompanyCategoryDto);
     return await this.companyCategoryService.createCategory(
       createCompanyCategoryDto,
-      file,
       parentId,
     );
   }
 
   @ApiPaginationQuery(companyCategoryPaginationConfig)
   @HttpCode(HttpStatus.OK)
-  @Get('parents')
+  @Get('list/parents')
   async findAllParent(
     @Paginate() query: PaginateQuery,
   ): Promise<PaginatedDto<CompanyCategoryEntity, CompanyCategoryDto>> {
@@ -153,6 +100,16 @@ export class CompanyCategoryController {
     );
   }
 
+  @UseInterceptors(
+    MapInterceptor(CompanyCategoryEntity, CompanyCategoryDto, {
+      isArray: true,
+    }),
+  )
+  @HttpCode(HttpStatus.OK)
+  @Get('list/children')
+  async findAllListed(): Promise<CompanyCategoryEntity[]> {
+    return await this.companyCategoryService.findAllChildren();
+  }
   /**
    * Get a category by ID
    * @returns {Promise<CompanyCategoryEntity>} retrieved category or undefined if not found
@@ -166,50 +123,26 @@ export class CompanyCategoryController {
   ): Promise<NullableType<CompanyCategoryEntity>> {
     return await this.companyCategoryService.findOne(
       { id: id },
-      { parent: true, children: true, image: true },
+      { parent: true, children: true },
     );
   }
 
   /**
    * Update a category
    * @param id {number} category ID
-   * @param data
-   * @param file
+   * @param updateCategoryDto
    * @returns {Promise<void>} updated category or undefined if not found
    */
-  @ApiConsumes('multipart/form-data')
-  @ApiExtraModels(UpdateCompanyCategoryDto)
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        file: {
-          type: 'string',
-          format: 'binary',
-        },
-        data: {
-          $ref: getSchemaPath(UpdateCompanyCategoryDto),
-        },
-      },
-    },
-  })
   @Roles(RoleCodeEnum.SUPERADMIN)
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @UseInterceptors(MapInterceptor(CompanyCategoryEntity, CompanyCategoryDto))
-  @UseInterceptors(FileInterceptor('file'))
   @HttpCode(HttpStatus.OK)
   @Put(':id')
   async update(
     @Param('id') id: string,
-    @Body('data', ParseFormdataPipe) data,
-    @UploadedFile() file?: Express.Multer.File | Express.MulterS3.File,
+    @Body() updateCategoryDto: UpdateCompanyCategoryDto,
   ): Promise<CompanyCategoryEntity> {
-    const updateCategoryDto = new UpdateCompanyCategoryDto(data);
-    return await this.companyCategoryService.update(
-      id,
-      updateCategoryDto,
-      file,
-    );
+    return await this.companyCategoryService.update(id, updateCategoryDto);
   }
 
   /**

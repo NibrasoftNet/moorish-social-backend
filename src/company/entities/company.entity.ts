@@ -3,6 +3,8 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -12,11 +14,10 @@ import EntityHelper from '../../utils/entities/entity-helper';
 import { AutoMap } from 'automapper-classes';
 import { FileEntity } from '../../files/entities/file.entity';
 import { UserTenantEntity } from '../../users-tenant/entities/user-tenant.entity';
-import { CompanySubscriptionTokenEntity } from '../../company-subscription-token/entities/company-subscription-token.entity';
 import { AddressEntity } from '../../address/entities/address.entity';
 import { CompanyCategoryEntity } from '../../company-category/entities/company-category.entity';
 
-@Entity()
+@Entity({ name: 'company' })
 export class CompanyEntity extends EntityHelper {
   @AutoMap()
   @PrimaryGeneratedColumn('uuid')
@@ -33,6 +34,10 @@ export class CompanyEntity extends EntityHelper {
   @AutoMap(() => String)
   @Column({ type: String, nullable: false })
   description: string;
+
+  @AutoMap(() => String)
+  @Column({ type: String, nullable: true })
+  registrationNumber: string;
 
   @AutoMap(() => [UserTenantEntity])
   @OneToMany(() => UserTenantEntity, (tenant) => tenant.company, {
@@ -57,23 +62,21 @@ export class CompanyEntity extends EntityHelper {
   @Column({ type: Number, nullable: false, default: 100 })
   availableSubscriptionTokens: number;
 
-  @AutoMap(() => [CompanySubscriptionTokenEntity])
-  @OneToMany(() => CompanySubscriptionTokenEntity, (tenant) => tenant.company, {
-    eager: true,
-    nullable: true,
-  })
-  subscriptions: CompanySubscriptionTokenEntity[];
-
-  @AutoMap(() => CompanyCategoryEntity)
-  @ManyToOne(() => CompanyCategoryEntity, (category) => category.companies, {
+  @AutoMap(() => [CompanyCategoryEntity])
+  @ManyToMany(() => CompanyCategoryEntity, {
     eager: true,
     nullable: false,
   })
-  category: CompanyCategoryEntity;
+  @JoinTable()
+  categories: CompanyCategoryEntity[];
 
   @AutoMap()
   @Column({ type: 'varchar', length: 7, default: '#5bb450' })
   hexColor: string;
+
+  @AutoMap()
+  @Column({ default: false })
+  verified: boolean;
 
   @AutoMap()
   @Column({ default: true })

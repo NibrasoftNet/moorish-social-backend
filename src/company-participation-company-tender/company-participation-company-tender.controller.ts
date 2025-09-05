@@ -35,12 +35,12 @@ import { PaginatedDto } from '../utils/serialization/paginated.dto';
 import { Utils } from '../utils/utils';
 import { NullableType } from '../utils/types/nullable.type';
 import { DeleteResult } from 'typeorm';
-import { CreateCompanyParticipationCompanyTenderDto } from '@/domains/company-participation-company-tender/create-company-participation-company-tender.dto';
+import { CreateCompanyParticipationCompanyTenderDto } from './dto/create-company-participation-company-tender.dto';
 import { CompanyParticipationCompanyTenderEntity } from './entities/company-participation-company-tender.entity';
-import { CompanyParticipationCompanyTenderDto } from '@/domains/company-participation-company-tender/company-participation-company-tender.dto';
+import { CompanyParticipationCompanyTenderDto } from './dto/company-participation-company-tender.dto';
 import { CompanyParticipationCompanyTenderService } from './company-participation-company-tender.service';
 import { companyParticipationCompanyTenderPaginationConfig } from './config/company-participation-company-tender-pagination-config';
-import { UpdateCompanyParticipationCompanyTenderDto } from '@/domains/company-participation-company-tender/update-company-participation-company-tender.dto';
+import { UpdateCompanyParticipationCompanyTenderDto } from './dto/update-company-participation-company-tender.dto';
 
 @ApiTags('Company Participation Company Tenders')
 @ApiBearerAuth()
@@ -88,7 +88,7 @@ export class CompanyParticipationCompanyTenderController {
     @Request() request: AuthRequest,
     @Param('tenderId') tenderId: string,
     @Param('companyId') companyId: string,
-    @Body('data', ParseFormdataPipe) data,
+    @Body('data', ParseFormdataPipe) data: any,
     @UploadedFiles() files?: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<CompanyParticipationCompanyTenderEntity> {
     const createTenderParticipationDto =
@@ -210,7 +210,7 @@ export class CompanyParticipationCompanyTenderController {
   @Put(':id')
   async update(
     @Param('id') id: string,
-    @Body('data', ParseFormdataPipe) data,
+    @Body('data', ParseFormdataPipe) data: any,
     @UploadedFiles() files?: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<CompanyParticipationCompanyTenderEntity> {
     const updateTenderDto = new UpdateCompanyParticipationCompanyTenderDto(

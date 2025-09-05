@@ -5,7 +5,7 @@ import { UserTenantEntity } from '../../users-tenant/entities/user-tenant.entity
 import { CompanyOfferEntity } from '../../company-offer/entities/company-offer.entity';
 import { UserEntity } from '../../users/entities/user.entity';
 
-@Entity()
+@Entity({ name: 'user_request_offer' })
 export class UserRequestOfferEntity extends EntityHelper {
   @AutoMap()
   @PrimaryGeneratedColumn('uuid')

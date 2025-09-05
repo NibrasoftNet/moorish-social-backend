@@ -21,9 +21,9 @@ import { RolesGuard } from '../roles/roles.guard';
 import { DeleteResult } from 'typeorm';
 import { TenderCategoryService } from './tender-category.service';
 import { TenderCategoryEntity } from './entities/tender-category.entity';
-import { TenderCategoryDto } from '@/domains/tender-category/tender-category.dto';
-import { CreateTenderCategoryDto } from '@/domains/tender-category/create-tender-category.dto';
-import { UpdateTenderCategoryDto } from '@/domains/tender-category/update-tender-category.dto';
+import { TenderCategoryDto } from './dto/tender-category.dto';
+import { CreateTenderCategoryDto } from './dto/create-tender-category.dto';
+import { UpdateTenderCategoryDto } from './dto/update-tender-category.dto';
 
 @ApiTags('Tender Categories')
 @ApiBearerAuth()

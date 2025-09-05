@@ -4,7 +4,13 @@ import { CompanyOfferEntity } from '../entities/company-offer.entity';
 export const companyOfferPaginationConfig: PaginateConfig<CompanyOfferEntity> =
   {
     defaultSortBy: [['createdAt', 'DESC']],
-    relations: ['company', 'creator', 'images', 'category'],
+    relations: [
+      'creator',
+      'creator.company',
+      'creator.company.image',
+      'files',
+      'category',
+    ],
     searchableColumns: ['title'],
     sortableColumns: ['createdAt', 'updatedAt', 'title'],
     maxLimit: 100,
@@ -12,5 +18,6 @@ export const companyOfferPaginationConfig: PaginateConfig<CompanyOfferEntity> =
     filterableColumns: {
       title: [FilterOperator.EQ, FilterSuffix.NOT],
       'category.id': [FilterOperator.EQ, FilterSuffix.NOT],
+      'company.id': [FilterOperator.EQ, FilterSuffix.NOT],
     },
   };

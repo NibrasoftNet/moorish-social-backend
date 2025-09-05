@@ -14,10 +14,10 @@ import { JwtPayloadType } from '../auth/strategies/types/jwt-payload.type';
 import { UserRequestOfferEntity } from './entities/user-request-offer.entity';
 import { CompanyOfferService } from '../company-offer/company-offer.service';
 import { UsersService } from '../users/users.service';
-import { CreateUserRequestOfferDto } from '@/domains/user-request-offer/create-user-request-offer.dto';
+import { CreateUserRequestOfferDto } from './dto/create-user-request-offer.dto';
 import { UsersTenantService } from '../users-tenant/users-tenant.service';
 import { userRequestOfferPaginationConfig } from './config/user-request-offer-pagination-config';
-import { UpdateUserRequestOfferDto } from '@/domains/user-request-offer/update-user-request-offer.dto';
+import { UpdateUserRequestOfferDto } from './dto/update-user-request-offer.dto';
 
 @Injectable()
 export class UserRequestOfferService {

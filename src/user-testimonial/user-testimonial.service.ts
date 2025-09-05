@@ -13,8 +13,8 @@ import { paginate, Paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { userTestimonialPaginationConfig } from './config/user-testimonial-pagination-config';
 import { NullableType } from '../utils/types/nullable.type';
 import { UserTestimonialEntity } from './entities/user-testimonial.entity';
-import { CreateUserTestimonialDto } from '@/domains/user-testimonial/create-user-testimonial.dto';
-import { UpdateUserTestimonialDto } from '@/domains/user-testimonial/update-user-testimonial.dto';
+import { CreateUserTestimonialDto } from './dto/create-user-testimonial.dto';
+import { UpdateUserTestimonialDto } from './dto/update-user-testimonial.dto';
 
 @Injectable()
 export class UserTestimonialService {

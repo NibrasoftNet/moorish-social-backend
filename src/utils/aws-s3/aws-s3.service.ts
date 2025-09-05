@@ -11,7 +11,7 @@ import {
 } from '@aws-sdk/client-s3';
 import { Readable } from 'stream';
 import { I18nContext, I18nService } from 'nestjs-i18n';
-import { PresignedUrlResponseDto } from '@/domains/files/presign-url-response.dto';
+import { PresignedUrlResponseDto } from '../../files/dto/presign-url-response.dto';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 

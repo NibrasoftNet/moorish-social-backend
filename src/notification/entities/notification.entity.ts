@@ -9,7 +9,7 @@ import {
 import { AutoMap } from 'automapper-classes';
 import { NotificationEnum } from '@/enums/notification.enum';
 
-@Entity()
+@Entity({ name: 'notification' })
 export class NotificationEntity extends EntityHelper {
   @AutoMap()
   @PrimaryGeneratedColumn('uuid')

@@ -8,8 +8,8 @@ import {
 } from 'typeorm';
 import { NullableType } from '../utils/types/nullable.type';
 import { TenderCategoryEntity } from './entities/tender-category.entity';
-import { CreateTenderCategoryDto } from '@/domains/tender-category/create-tender-category.dto';
-import { UpdateTenderCategoryDto } from '@/domains/tender-category/update-tender-category.dto';
+import { CreateTenderCategoryDto } from './dto/create-tender-category.dto';
+import { UpdateTenderCategoryDto } from './dto/update-tender-category.dto';
 
 @Injectable()
 export class TenderCategoryService {

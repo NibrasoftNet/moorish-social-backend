@@ -7,8 +7,8 @@ import {
 } from 'typeorm';
 import bcrypt from 'bcryptjs';
 
-@Entity()
-export class Otp {
+@Entity({ name: 'otp' })
+export class OtpEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

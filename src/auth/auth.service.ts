@@ -12,21 +12,22 @@ import { InjectMapper } from 'automapper-nestjs';
 import { OtpService } from 'src/otp/otp.service';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { Status } from '../statuses/entities/status.entity';
-import { SessionResponseDto } from '@/domains/session/session-response.dto';
-import { AuthEmailLoginDto } from '@/domains/auth/auth-email-login.dto';
+import { SessionResponseDto } from '../session/dto/session-response.dto';
+import { AuthEmailLoginDto } from './dto/auth-email-login.dto';
 import { AuthProvidersEnum } from '@/enums/auth.enum';
 import { StatusCodeEnum } from '@/enums/statuses.enum';
-import { UserDto } from '@/domains/user/user.dto';
-import { AuthEmailRegisterDto } from '@/domains/auth/auth-email-register.dto';
-import { CreateUserDto } from '@/domains/user/create-user.dto';
+import { UserDto } from '../users/user/user.dto';
+import { AuthEmailRegisterDto } from './dto/auth-email-register.dto';
+import { CreateUserDto } from '../users/user/create-user.dto';
 import { RoleCodeEnum } from '@/enums/roles.enum';
-import { RoleDto } from '@/domains/role/role.dto';
-import { StatusesDto } from '@/domains/status/statuses.dto';
-import { ConfirmOtpEmailDto } from '@/domains/otp/confirm-otp-email.dto';
-import { AuthResetPasswordDto } from '@/domains/auth/auth-reset-password.dto';
-import { AuthUpdateDto } from '@/domains/auth/auth-update.dto';
-import { AuthNewPasswordDto } from '@/domains/auth/auth-new-password.dto';
+import { RoleDto } from '../roles/dto/role.dto';
+import { StatusesDto } from '../statuses/dto/statuses.dto';
+import { ConfirmOtpEmailDto } from '../otp/dto/confirm-otp-email.dto';
+import { AuthResetPasswordDto } from './dto/auth-reset-password.dto';
+import { AuthUpdateDto } from './dto/auth-update.dto';
+import { AuthNewPasswordDto } from './dto/auth-new-password.dto';
 import { SharedService } from '../shared-module/shared.service';
+import { SessionService } from '../session/session.service';
 
 @Injectable()
 export class AuthService {
@@ -34,6 +35,7 @@ export class AuthService {
     private usersService: UsersService,
     private mailService: MailService,
     private otpService: OtpService,
+    private sessionService: SessionService,
     private sharedService: SharedService,
     @InjectMapper() private mapper: Mapper,
     private readonly i18n: I18nService,
@@ -103,7 +105,11 @@ export class AuthService {
         id: user.id,
         role: user.role,
       });
-
+    // Create or Update session
+    await this.sessionService.update(user.id, {
+      userId: user.id,
+      refreshToken: refreshToken,
+    });
     return new SessionResponseDto({
       accessToken,
       refreshToken,
@@ -112,7 +118,7 @@ export class AuthService {
     });
   }
 
-  async register(authEmailRegisterDto: AuthEmailRegisterDto): Promise<boolean> {
+  async register(authEmailRegisterDto: AuthEmailRegisterDto): Promise<string> {
     // Attempt to restore a soft-deleted user by email
     const restoredUser = await this.usersService.restoreUserByEmail(
       authEmailRegisterDto.email,
@@ -136,7 +142,7 @@ export class AuthService {
       ? restoredUser
       : await this.usersService.create(newUser);
     await this.sendConfirmEmail(user.email);
-    return true;
+    return user.email;
   }
 
   async confirmEmail(confirmOtpEmailDto: ConfirmOtpEmailDto): Promise<void> {
@@ -166,7 +172,7 @@ export class AuthService {
     await user.save();
   }
 
-  async forgotPassword(email: string): Promise<void> {
+  async forgotPassword(email: string): Promise<string> {
     const user = await this.usersService.findOne({
       email,
     });
@@ -185,6 +191,7 @@ export class AuthService {
       );
     }
     await this.sendForgetPasswordEmail(email);
+    return email;
   }
 
   async resetPassword(resetPasswordDto: AuthResetPasswordDto): Promise<void> {
@@ -216,14 +223,18 @@ export class AuthService {
     const user = await this.usersService.findOneOrFail({
       id: userJwtPayload.id,
     });
-    const { accessToken, refreshToken, tokenExpires } =
-      await this.sharedService.getTokensData({
+    const { accessToken, tokenExpires } =
+      await this.sharedService.getAccessTokensData({
         id: user.id,
         role: user.role,
       });
+    // Verify session
+    const session = await this.sessionService.findOneOrFail({
+      userId: user.id,
+    });
     return new SessionResponseDto({
       accessToken,
-      refreshToken,
+      refreshToken: session.refreshToken,
       tokenExpires,
       user: this.mapper.map(user, UserEntity, UserDto),
     });
@@ -279,25 +290,29 @@ export class AuthService {
       id: data.id,
     });
 
-    const { accessToken, refreshToken, tokenExpires } =
-      await this.sharedService.getTokensData({
+    const { accessToken, tokenExpires } =
+      await this.sharedService.getAccessTokensData({
         id: user.id,
         role: user.role,
       });
-
+    // Verify session
+    const session = await this.sessionService.findOneOrFail({
+      userId: user.id,
+    });
     return new SessionResponseDto({
       accessToken,
-      refreshToken,
+      refreshToken: session.refreshToken,
       tokenExpires,
       user: this.mapper.map(user, UserEntity, UserDto),
     });
   }
 
-  async softDelete(user: UserEntity): Promise<void> {
+  async softDelete(user: JwtPayloadType): Promise<void> {
     await this.usersService.softDelete(user.id);
   }
 
-  logout(data: Pick<JwtRefreshPayloadType, 'id'>) {
+  async logout(data: Pick<JwtRefreshPayloadType, 'id'>) {
+    await this.sessionService.remove(data.id);
     return data;
   }
 

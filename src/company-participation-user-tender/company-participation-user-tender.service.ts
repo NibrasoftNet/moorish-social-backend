@@ -15,16 +15,16 @@ import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { NullableType } from '../utils/types/nullable.type';
 import { CompanyParticipationUserTenderEntity } from './entities/company-participation-user-tender.entity';
 import { CompanyService } from 'src/company/company.service';
-import { CreateCompanyParticipationUserTenderDto } from '@/domains/company-participation-user-tender/create-company-participation-user-tender.dto';
+import { CreateCompanyParticipationUserTenderDto } from './dto/create-company-participation-user-tender.dto';
 import { companyParticipationUserTenderPaginationConfig } from './config/company-particiaption-user-tender-pagination-config';
 import { UserTenderService } from '../user-tender/user-tender.service';
 import { UsersTenantService } from '../users-tenant/users-tenant.service';
-import { UpdateCompanyParticipationUserTenderDto } from '@/domains/company-participation-user-tender/update-company-participation-user-tender.dto';
+import { UpdateCompanyParticipationUserTenderDto } from './dto/update-company-participation-user-tender.dto';
 import { RequestStatusEnum } from '@/enums/request-status.enum';
 import {
   CreateNotificationDto,
   ReceiverDto,
-} from '@/domains/notification/create-notification.dto';
+} from '../notification/dto/create-notification.dto';
 import { NotificationEnum } from '@/enums/notification.enum';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';

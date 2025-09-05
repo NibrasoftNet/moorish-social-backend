@@ -9,7 +9,7 @@ import {
   typeConverter,
 } from 'automapper-core';
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
-import { UserTenantDto } from '@/domains/user-tenant/user-tenant.dto';
+import { UserTenantDto } from '../dto/user-tenant.dto';
 import { UserTenantEntity } from '../entities/user-tenant.entity';
 
 @Injectable()

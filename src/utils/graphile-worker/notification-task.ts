@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Task, TaskHandler } from 'nestjs-graphile-worker';
 import { WinstonLoggerService } from '../../logger/winston-logger.service';
-import { NotificationMessageDto } from '@/domains/notification/notification-message.dto';
+import { NotificationMessageDto } from '../../notification/dto/notification-message.dto';
 import { FirebaseMessagingService } from '../firabase-fcm/firebase.service';
 
 @Injectable()

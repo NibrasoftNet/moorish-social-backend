@@ -11,7 +11,7 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { CompanySubscriptionTokenService } from './company-subscription-token.service';
-import { CreateCompanySubscriptionTokenDto } from '@/domains/company-subscription-token/create-company-subscription-token.dto';
+import { CreateCompanySubscriptionTokenDto } from './dto/create-company-subscription-token.dto';
 import { ApiBearerAuth, ApiHeader, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../roles/roles.guard';
@@ -20,7 +20,7 @@ import { Mapper } from 'automapper-core';
 import { Roles } from '../roles/roles.decorator';
 import { RoleCodeEnum } from '@/enums/roles.enum';
 import { CompanySubscriptionTokenEntity } from './entities/company-subscription-token.entity';
-import { CompanySubscriptionTokenDto } from '@/domains/company-subscription-token/company-subscription-token.dto';
+import { CompanySubscriptionTokenDto } from './dto/company-subscription-token.dto';
 import { ApiPaginationQuery, Paginate, PaginateQuery } from 'nestjs-paginate';
 import { companySubscriptionTokenPaginationConfig } from './config/company-subscription-token-pagination-config';
 import { PaginatedDto } from 'src/utils/serialization/paginated.dto';

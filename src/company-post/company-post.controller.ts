@@ -14,8 +14,8 @@ import {
   Put,
 } from '@nestjs/common';
 import { CompanyPostService } from './company-post.service';
-import { CreateCompanyPostDto } from '@/domains/company-post/create-company-post.dto';
-import { UpdateCompanyPostDto } from '@/domains/company-post/update-company-post.dto';
+import { CreateCompanyPostDto } from './dto/create-company-post.dto';
+import { UpdateCompanyPostDto } from './dto/update-company-post.dto';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -31,7 +31,7 @@ import { Mapper } from 'automapper-core';
 import { Roles } from '../roles/roles.decorator';
 import { RoleCodeEnum } from '@/enums/roles.enum';
 import { CompanyPostEntity } from './entities/company-post.entity';
-import { CompanyPostDto } from '@/domains/company-post/company-post.dto';
+import { CompanyPostDto } from './dto/company-post.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ParseFormdataPipe } from '../utils/pipes/parse-formdata.pipe';
 import { Utils } from '../utils/utils';
@@ -83,7 +83,7 @@ export class CompanyPostController {
     @Request() request: AuthRequest,
     @Param('companyId') companyId: string,
     @Param('categoryId') categoryId: string,
-    @Body('data', ParseFormdataPipe) data,
+    @Body('data', ParseFormdataPipe) data: any,
     @UploadedFiles() files?: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<CompanyPostEntity> {
     const createCompanyPostDto = new CreateCompanyPostDto(data);
@@ -145,11 +145,11 @@ export class CompanyPostController {
   @Roles(RoleCodeEnum.TENANTADMIN)
   @UseInterceptors(MapInterceptor(CompanyPostEntity, CompanyPostDto))
   @UseInterceptors(FilesInterceptor('files', 10))
-  @HttpCode(HttpStatus.CREATED)
+  @HttpCode(HttpStatus.OK)
   @Put(':id')
   async update(
     @Param('id') id: string,
-    @Body('data', ParseFormdataPipe) data,
+    @Body('data', ParseFormdataPipe) data: any,
     @UploadedFiles() files?: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<CompanyPostEntity> {
     const updateCompanyPostDto = new UpdateCompanyPostDto(data);
@@ -157,6 +157,8 @@ export class CompanyPostController {
     return this.companyPostService.update(id, updateCompanyPostDto, files);
   }
 
+  @Roles(RoleCodeEnum.TENANTADMIN)
+  @HttpCode(HttpStatus.OK)
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<DeleteResult> {
     return this.companyPostService.remove(id);

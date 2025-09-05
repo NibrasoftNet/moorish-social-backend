@@ -36,21 +36,15 @@ import { Mapper } from 'automapper-core';
 import { IsCreatorPipe } from '../utils/pipes/is-creator.pipe';
 import { DeleteResult } from 'typeorm';
 import { CompanyEntity } from './entities/company.entity';
-import { CompanyDto } from '@/domains/company/company.dto';
+import { CompanyDto } from './dto/company.dto';
 import { CompanyService } from './company.service';
-import { CreateCompanyDto } from '@/domains/company/create-company.dto';
-import { UpdateCompanyDto } from '@/domains/company/update-company.dto';
+import { CreateCompanyDto } from './dto/create-company.dto';
+import { UpdateCompanyDto } from './dto/update-company.dto';
 import { companyPaginationConfig } from './config/company-pagination-config';
 import { AuthRequest } from 'src/utils/types/auth-request.type';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Companies')
-@ApiHeader({
-  name: 'tenant-id',
-  required: true,
-  description: 'Tenant-Id header',
-  schema: { type: 'string' },
-})
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ version: '1', path: 'companies' })
@@ -60,6 +54,12 @@ export class CompanyController {
     @InjectMapper() private readonly mapper: Mapper,
   ) {}
 
+  @ApiHeader({
+    name: 'tenant-id',
+    required: true,
+    description: 'Tenant-Id header',
+    schema: { type: 'string' },
+  })
   @ApiConsumes('multipart/form-data')
   @ApiExtraModels(CreateCompanyDto)
   @ApiBody({
@@ -80,18 +80,16 @@ export class CompanyController {
   @UseInterceptors(FileInterceptor('file'))
   @Roles(RoleCodeEnum.TENANTADMIN)
   @HttpCode(HttpStatus.CREATED)
-  @Post('categories/categoryId')
+  @Post()
   async create(
     @Request() request: AuthRequest,
-    @Param('categoryId') categoryId: string,
-    @Body('data', ParseFormdataPipe) data,
+    @Body('data', ParseFormdataPipe) data: any,
     @UploadedFile() file?: Express.Multer.File | Express.MulterS3.File,
   ): Promise<CompanyEntity> {
     const createCompanyDto = new CreateCompanyDto(data);
     await Utils.validateDtoOrFail(createCompanyDto);
     return await this.companyService.create(
       request.user,
-      categoryId,
       createCompanyDto,
       file,
     );
@@ -118,9 +116,18 @@ export class CompanyController {
   @HttpCode(HttpStatus.OK)
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<NullableType<CompanyEntity>> {
-    return await this.companyService.findOne({ id }, { subscriptions: true });
+    return await this.companyService.findOne(
+      { id },
+      { categories: { parent: true } },
+    );
   }
 
+  @ApiHeader({
+    name: 'tenant-id',
+    required: true,
+    description: 'Tenant-Id header',
+    schema: { type: 'string' },
+  })
   @ApiConsumes('multipart/form-data')
   @ApiExtraModels(UpdateCompanyDto)
   @ApiBody({
@@ -144,7 +151,7 @@ export class CompanyController {
   @Put(':id')
   async update(
     @Param('id') id: string,
-    @Body('data', ParseFormdataPipe) data,
+    @Body('data', ParseFormdataPipe) data: any,
     @UploadedFile() file?: Express.Multer.File | Express.MulterS3.File,
   ): Promise<CompanyEntity> {
     const updateComplexDto = new UpdateCompanyDto(data);
@@ -152,6 +159,12 @@ export class CompanyController {
     return this.companyService.update(id, updateComplexDto, file);
   }
 
+  @ApiHeader({
+    name: 'tenant-id',
+    required: true,
+    description: 'Tenant-Id header',
+    schema: { type: 'string' },
+  })
   @Roles(RoleCodeEnum.TENANTADMIN)
   @HttpCode(HttpStatus.OK)
   @Delete(':id')

@@ -16,5 +16,6 @@
   "rewardNotExists": "Reward not found",
   "clientPackageNotExists": "Client package not found",
   "taskNotExists": "Task not found",
-  "unique": "must be unique"
+  "unique": "must be unique",
+  "notStrongPass": "password not strong"
 }

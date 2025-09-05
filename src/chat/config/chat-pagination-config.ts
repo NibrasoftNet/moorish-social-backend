@@ -1,7 +1,7 @@
 import { FilterOperator, FilterSuffix, PaginateConfig } from 'nestjs-paginate';
-import { Chat } from '../entities/chat.entity';
+import { ChatEntity } from '../entities/chat.entity';
 
-export const chatPaginationConfig: PaginateConfig<Chat> = {
+export const chatPaginationConfig: PaginateConfig<ChatEntity> = {
   defaultSortBy: [['updatedAt', 'DESC']],
   relations: ['creator', 'participants', 'sender', 'receiver'],
   searchableColumns: ['name'],

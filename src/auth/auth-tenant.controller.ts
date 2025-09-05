@@ -26,19 +26,19 @@ import { InjectMapper, MapInterceptor } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import { ParseFormdataPipe } from '../utils/pipes/parse-formdata.pipe';
 import { Utils } from '../utils/utils';
-import { AuthResetPasswordDto } from '@/domains/auth/auth-reset-password.dto';
-import { AuthUpdateDto } from '@/domains/auth/auth-update.dto';
-import { CreateUserDto } from '@/domains/user/create-user.dto';
-import { AuthNewPasswordDto } from '@/domains/auth/auth-new-password.dto';
+import { AuthResetPasswordDto } from './dto/auth-reset-password.dto';
+import { AuthUpdateDto } from './dto/auth-update.dto';
+import { CreateUserDto } from '../users/user/create-user.dto';
+import { AuthNewPasswordDto } from './dto/auth-new-password.dto';
 import { AuthTenantService } from './auth-tenant.service';
-import { SessionAdminResponseDto } from '@/domains/session/session-admin-response.dto';
+import { SessionAdminResponseDto } from '../session/dto/session-admin-response.dto';
 import { UserTenantEntity } from '../users-tenant/entities/user-tenant.entity';
-import { UserTenantDto } from '@/domains/user-tenant/user-tenant.dto';
-import { AuthAdminEmailLoginDto } from '@/domains/auth-admin/auth-admin-email-login.dto';
-import { AuthAdminForgotPasswordDto } from '@/domains/auth-admin/auth-admin-forgot-password.dto';
+import { UserTenantDto } from '../users-tenant/dto/user-tenant.dto';
+import { AuthAdminEmailLoginDto } from './dto-admin/auth-admin-email-login.dto';
+import { AuthAdminForgotPasswordDto } from './dto-admin/auth-admin-forgot-password.dto';
 import { AuthRequest } from '../utils/types/auth-request.type';
-import { CreateUserTenantDto } from '@/domains/user-tenant/create-user-tenant.dto';
-import { ConfirmOtpEmailDto } from '@/domains/otp/confirm-otp-email.dto';
+import { CreateUserTenantDto } from '../users-tenant/dto/create-user-tenant.dto';
+import { ConfirmOtpEmailDto } from '../otp/dto/confirm-otp-email.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Auth tenants')
@@ -63,7 +63,7 @@ export class AuthTenantController {
 
   @Post('email-register')
   @HttpCode(HttpStatus.CREATED)
-  async register(@Body() createUserDto: CreateUserTenantDto): Promise<boolean> {
+  async register(@Body() createUserDto: CreateUserTenantDto): Promise<string> {
     return await this.authTenantService.register(createUserDto);
   }
 
@@ -117,8 +117,8 @@ export class AuthTenantController {
   @Post('logout')
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
-  public adminLogout(@Request() request: AuthRequest): void {
-    this.authTenantService.adminLogout({
+  public async adminLogout(@Request() request: AuthRequest): Promise<void> {
+    await this.authTenantService.adminLogout({
       id: request.user.id,
     });
   }
@@ -147,7 +147,7 @@ export class AuthTenantController {
   @UseInterceptors(FileInterceptor('file'))
   public async update(
     @Request() request: AuthRequest,
-    @Body('data', ParseFormdataPipe) data,
+    @Body('data', ParseFormdataPipe) data: any,
     @UploadedFile() file?: Express.Multer.File | Express.MulterS3.File,
   ): Promise<NullableType<UserTenantEntity>> {
     const updateUserDto = new AuthUpdateDto(data);

@@ -3,7 +3,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { UserEntity } from '../../users/entities/user.entity';
 import EntityHelper from '../../utils/entities/entity-helper';
 
-@Entity()
+@Entity({ name: 'user_testimonial' })
 export class UserTestimonialEntity extends EntityHelper {
   @AutoMap()
   @PrimaryGeneratedColumn('uuid')

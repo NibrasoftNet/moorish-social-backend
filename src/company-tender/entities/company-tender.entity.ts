@@ -15,7 +15,7 @@ import { UserTenantEntity } from '../../users-tenant/entities/user-tenant.entity
 import { CompanyParticipationCompanyTenderEntity } from '../../company-participation-company-tender/entities/company-participation-company-tender.entity';
 import { CompanyEntity } from '../../company/entities/company.entity';
 
-@Entity()
+@Entity({ name: 'company_tender' })
 export class CompanyTenderEntity extends EntityHelper {
   @AutoMap()
   @PrimaryGeneratedColumn('uuid')

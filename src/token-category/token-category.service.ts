@@ -9,9 +9,9 @@ import {
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { NullableType } from '../utils/types/nullable.type';
 import { TokenCategoryEntity } from './entities/token-category.entity';
-import { CreateTokenCategoryDto } from '@/domains/token-category/create-token-category.dto';
+import { CreateTokenCategoryDto } from './dto/create-token-category.dto';
 import { tokenCategoryPaginationConfig } from './config/token-category-pagination-config';
-import { UpdateTokenCategoryDto } from '@/domains/token-category/update-token-category.dto';
+import { UpdateTokenCategoryDto } from './dto/update-token-category.dto';
 
 @Injectable()
 export class TokenCategoryService {

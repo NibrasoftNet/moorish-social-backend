@@ -3,7 +3,7 @@ import EntityHelper from '../../utils/entities/entity-helper';
 import { AutoMap } from 'automapper-classes';
 import { StatusCodeEnum } from '@/enums/statuses.enum';
 
-@Entity()
+@Entity({ name: 'status' })
 export class Status extends EntityHelper {
   @AutoMap()
   @PrimaryColumn()

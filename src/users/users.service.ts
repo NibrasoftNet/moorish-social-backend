@@ -11,13 +11,13 @@ import {
 import { UserEntity } from './entities/user.entity';
 import { AddressService } from '../address/address.service';
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
-import { usersPaginationConfig } from './configs/users-pagination.config';
+import { usersPaginationConfig } from './config/users-pagination.config';
 import { FilesService } from '../files/files.service';
 import { WinstonLoggerService } from '../logger/winston-logger.service';
 import { NullableType } from '../utils/types/nullable.type';
-import { CreateUserDto } from '@/domains/user/create-user.dto';
-import { AuthUpdateDto } from '@/domains/auth/auth-update.dto';
-import { ReceiverDto } from '@/domains/notification/create-notification.dto';
+import { CreateUserDto } from './user/create-user.dto';
+import { AuthUpdateDto } from '../auth/dto/auth-update.dto';
+import { ReceiverDto } from '../notification/dto/create-notification.dto';
 
 @Injectable()
 export class UsersService {

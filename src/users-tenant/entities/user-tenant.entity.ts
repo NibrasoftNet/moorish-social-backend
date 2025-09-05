@@ -18,7 +18,7 @@ import { FileEntity } from '../../files/entities/file.entity';
 import { UserSocketEntity } from '../../chat/entities/user-socket.entity';
 import { CompanyEntity } from '../../company/entities/company.entity';
 
-@Entity()
+@Entity({ name: 'user_tenant' })
 export class UserTenantEntity extends EntityHelper {
   @AutoMap()
   @PrimaryGeneratedColumn('uuid')
@@ -38,10 +38,6 @@ export class UserTenantEntity extends EntityHelper {
 
   public previousPassword: string;
 
-  @AutoMap()
-  @Column({ nullable: true, type: String, default: '0123456789' })
-  whatsApp: string;
-
   @AutoMap(() => String)
   @Column({ type: String, nullable: false })
   firstName: string;
@@ -50,11 +46,9 @@ export class UserTenantEntity extends EntityHelper {
   @Column({ type: String, nullable: false })
   lastName: string;
 
-  @AutoMap(() => CompanyEntity)
-  @ManyToOne(() => CompanyEntity, (company) => company.tenants, {
-    eager: true,
-  })
-  company: CompanyEntity;
+  @AutoMap()
+  @Column({ nullable: true, type: String, default: '0123456789' })
+  whatsApp: string;
 
   @AutoMap(() => FileEntity)
   @ManyToOne(() => FileEntity, {
@@ -73,6 +67,13 @@ export class UserTenantEntity extends EntityHelper {
     eager: true,
   })
   status: Status;
+
+  @AutoMap(() => CompanyEntity)
+  @ManyToOne(() => CompanyEntity, (company) => company.tenants, {
+    eager: true,
+    onDelete: 'SET NULL',
+  })
+  company: CompanyEntity;
 
   @DeleteDateColumn()
   deletedAt: Date;

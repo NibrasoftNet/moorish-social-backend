@@ -11,17 +11,18 @@ import { OtpService } from 'src/otp/otp.service';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { Status } from '../statuses/entities/status.entity';
 import { StatusCodeEnum } from '@/enums/statuses.enum';
-import { ConfirmOtpEmailDto } from '@/domains/otp/confirm-otp-email.dto';
-import { AuthResetPasswordDto } from '@/domains/auth/auth-reset-password.dto';
-import { AuthUpdateDto } from '@/domains/auth/auth-update.dto';
-import { AuthNewPasswordDto } from '@/domains/auth/auth-new-password.dto';
+import { ConfirmOtpEmailDto } from '../otp/dto/confirm-otp-email.dto';
+import { AuthResetPasswordDto } from './dto/auth-reset-password.dto';
+import { AuthUpdateDto } from './dto/auth-update.dto';
+import { AuthNewPasswordDto } from './dto/auth-new-password.dto';
 import { SharedService } from '../shared-module/shared.service';
 import { UsersTenantService } from '../users-tenant/users-tenant.service';
 import { UserTenantEntity } from '../users-tenant/entities/user-tenant.entity';
-import { UserTenantDto } from '@/domains/user-tenant/user-tenant.dto';
-import { SessionAdminResponseDto } from '@/domains/session/session-admin-response.dto';
-import { AuthAdminEmailLoginDto } from '@/domains/auth-admin/auth-admin-email-login.dto';
-import { CreateUserTenantDto } from '@/domains/user-tenant/create-user-tenant.dto';
+import { UserTenantDto } from '../users-tenant/dto/user-tenant.dto';
+import { SessionAdminResponseDto } from '../session/dto/session-admin-response.dto';
+import { AuthAdminEmailLoginDto } from './dto-admin/auth-admin-email-login.dto';
+import { CreateUserTenantDto } from '../users-tenant/dto/create-user-tenant.dto';
+import { SessionService } from '../session/session.service';
 
 @Injectable()
 export class AuthTenantService {
@@ -29,12 +30,13 @@ export class AuthTenantService {
     private usersTenantService: UsersTenantService,
     private mailService: MailService,
     private otpService: OtpService,
+    private sessionService: SessionService,
     private sharedService: SharedService,
     @InjectMapper() private mapper: Mapper,
     private readonly i18n: I18nService,
   ) {}
 
-  async register(authEmailRegisterDto: CreateUserTenantDto): Promise<boolean> {
+  async register(authEmailRegisterDto: CreateUserTenantDto): Promise<string> {
     // Attempt to restore a soft-deleted user by email
     const restoredUser = await this.usersTenantService.restoreUserByEmail(
       authEmailRegisterDto.email,
@@ -49,7 +51,7 @@ export class AuthTenantService {
       ? restoredUser
       : await this.usersTenantService.create(newUser);
     await this.sendConfirmEmail(user.email);
-    return true;
+    return user.email;
   }
 
   async validateLogin(
@@ -105,6 +107,11 @@ export class AuthTenantService {
         role: user.role,
       });
 
+    // Create or Update session
+    await this.sessionService.update(user.id, {
+      userId: user.id,
+      refreshToken: refreshToken,
+    });
     return new SessionAdminResponseDto({
       accessToken,
       refreshToken,
@@ -188,14 +195,18 @@ export class AuthTenantService {
     const user = await this.usersTenantService.findOneOrFail({
       id: userJwtPayload.id,
     });
-    const { accessToken, refreshToken, tokenExpires } =
-      await this.sharedService.getTokensData({
+    const { accessToken, tokenExpires } =
+      await this.sharedService.getAccessTokensData({
         id: user.id,
         role: user.role,
       });
+    // Verify session
+    const session = await this.sessionService.findOneOrFail({
+      userId: user.id,
+    });
     return new SessionAdminResponseDto({
       accessToken,
-      refreshToken,
+      refreshToken: session.refreshToken,
       tokenExpires,
       user: this.mapper.map(user, UserTenantEntity, UserTenantDto),
     });
@@ -251,15 +262,18 @@ export class AuthTenantService {
       id: data.id,
     });
 
-    const { accessToken, refreshToken, tokenExpires } =
-      await this.sharedService.getTokensData({
+    const { accessToken, tokenExpires } =
+      await this.sharedService.getAccessTokensData({
         id: user.id,
         role: user.role,
       });
-
+    // Verify session
+    const session = await this.sessionService.findOneOrFail({
+      userId: user.id,
+    });
     return new SessionAdminResponseDto({
       accessToken,
-      refreshToken,
+      refreshToken: session.refreshToken,
       tokenExpires,
       user: this.mapper.map(user, UserTenantEntity, UserTenantDto),
     });
@@ -269,7 +283,8 @@ export class AuthTenantService {
     await this.usersTenantService.softDelete(user.id);
   }
 
-  adminLogout(data: Pick<JwtRefreshPayloadType, 'id'>) {
+  async adminLogout(data: Pick<JwtRefreshPayloadType, 'id'>) {
+    await this.sessionService.remove(data.id);
     return data;
   }
 

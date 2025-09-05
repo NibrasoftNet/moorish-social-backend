@@ -1,41 +1,46 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import {
   DeepPartial,
   DeleteResult,
   FindOptionsRelations,
   FindOptionsSelect,
   FindOptionsWhere,
+  Repository,
 } from 'typeorm';
 import { FilesService } from '../files/files.service';
 import { AddressService } from '../address/address.service';
 import { WinstonLoggerService } from '../logger/winston-logger.service';
 import { JwtPayloadType } from '../auth/strategies/types/jwt-payload.type';
-import { Paginated, PaginateQuery } from 'nestjs-paginate';
+import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { NullableType } from '../utils/types/nullable.type';
 import { InjectTenantAwareRepository } from '../utils/repository/tenant-aware/inject-tenant-aware-repository.decorator';
 import { CompanyEntity } from './entities/company.entity';
 import { TenantAwareRepository } from '../utils/repository/tenant-aware/tenant-aware.repository';
-import { CreateCompanyDto } from '@/domains/company/create-company.dto';
+import { CreateCompanyDto } from './dto/create-company.dto';
 import { UsersTenantService } from '../users-tenant/users-tenant.service';
 import { companyPaginationConfig } from './config/company-pagination-config';
-import { UpdateCompanyDto } from '@/domains/company/update-company.dto';
+import { UpdateCompanyDto } from './dto/update-company.dto';
 import { CompanyCategoryService } from '../company-category/company-category.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { I18nContext, I18nService } from 'nestjs-i18n';
 
 @Injectable()
 export class CompanyService {
   constructor(
     @InjectTenantAwareRepository(CompanyEntity)
     private readonly companyRepository: TenantAwareRepository<CompanyEntity>,
+    @InjectRepository(CompanyEntity)
+    private readonly compRepository: Repository<CompanyEntity>,
     private readonly usersTenantService: UsersTenantService,
     private readonly companyCategoryService: CompanyCategoryService,
     private readonly fileService: FilesService,
     private readonly addressService: AddressService,
     private readonly logger: WinstonLoggerService,
+    private readonly i18n: I18nService,
   ) {}
 
   async create(
     userJwtPayload: JwtPayloadType,
-    categoryId: string,
     createCompanyDto: CreateCompanyDto,
     file?: Express.Multer.File | Express.MulterS3.File,
   ): Promise<CompanyEntity> {
@@ -44,12 +49,29 @@ export class CompanyService {
       class: CompanyService.name,
       function: 'create',
     });
+    console.log('ssss', userJwtPayload, createCompanyDto);
+    const { categories, ...filteredCreateCompanyDto } = createCompanyDto;
     const company = this.companyRepository.createTenantContext(
-      createCompanyDto as DeepPartial<CompanyEntity>,
+      filteredCreateCompanyDto as DeepPartial<CompanyEntity>,
     );
-    company.category = await this.companyCategoryService.findOneOrFail({
-      id: categoryId,
+    const tenant = await this.usersTenantService.findOneOrFail({
+      id: userJwtPayload.id,
     });
+    if (tenant.company) {
+      throw new HttpException(
+        {
+          status: HttpStatus.PRECONDITION_FAILED,
+          errors: {
+            user: this.i18n.t('company.alreadyCreated', {
+              lang: I18nContext.current()?.lang,
+            }),
+          },
+        },
+        HttpStatus.PRECONDITION_FAILED,
+      );
+    }
+    company.categories =
+      await this.companyCategoryService.findByIdsOrFail(categories);
     company.address = await this.addressService.create(
       createCompanyDto.address,
     );
@@ -57,16 +79,13 @@ export class CompanyService {
       company.image = await this.fileService.uploadFile(file);
     }
     const savedCompany = await this.companyRepository.save(company);
-    await this.usersTenantService.addCompanyToTenant(
-      userJwtPayload,
-      savedCompany,
-    );
+    await this.usersTenantService.addCompanyToTenant(tenant, savedCompany);
     // Save the team using the transaction manager
     return savedCompany;
   }
 
   async findAll(query: PaginateQuery): Promise<Paginated<CompanyEntity>> {
-    return await this.companyRepository.paginateTenantContext(
+    return await paginate(
       query,
       this.companyRepository,
       companyPaginationConfig,
@@ -78,11 +97,11 @@ export class CompanyService {
     relations?: FindOptionsRelations<CompanyEntity>,
     select?: FindOptionsSelect<CompanyEntity>,
   ): Promise<NullableType<CompanyEntity>> {
-    return await this.companyRepository.findOneTenantContext(
-      fields,
+    return await this.compRepository.findOne({
+      where: fields,
       relations,
       select,
-    );
+    });
   }
 
   async findOneOrFail(
@@ -90,11 +109,11 @@ export class CompanyService {
     relations?: FindOptionsRelations<CompanyEntity>,
     select?: FindOptionsSelect<CompanyEntity>,
   ): Promise<CompanyEntity> {
-    return await this.companyRepository.findOneOrFailTenantContext(
-      fields,
+    return await this.companyRepository.findOneOrFail({
+      where: fields,
       relations,
       select,
-    );
+    });
   }
 
   async update(

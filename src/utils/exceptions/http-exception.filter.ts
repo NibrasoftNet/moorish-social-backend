@@ -1,16 +1,22 @@
 import {
-  ExceptionFilter,
-  Catch,
   ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  ForbiddenException,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
 import { WinstonLoggerService } from '../../logger/winston-logger.service';
 import { EntityNotFoundError } from 'typeorm';
+import { I18nContext, I18nService } from 'nestjs-i18n';
+import { Request, Response } from 'express';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
-  constructor(private readonly loggerService: WinstonLoggerService) {}
+  constructor(
+    private readonly loggerService: WinstonLoggerService,
+    private readonly i18n: I18nService,
+  ) {}
 
   catch(exception: any, host: ArgumentsHost) {
     this.handleException(exception, host);
@@ -24,6 +30,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       this.handleEntityNotFoundError(exception, host),
     HttpException: (exception, host) =>
       this.handleHttpException(exception, host),
+    ForbiddenException: (exception, host) =>
+      this.handleForbiddenException(exception, host),
     UnauthorizedException: (exception, host) =>
       this.handleUnauthorizedException(exception, host),
   };
@@ -40,17 +48,46 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
   handleHttpException(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse();
-    const request = ctx.getRequest();
+    const request = ctx.getRequest<Request>();
+    const response = ctx.getResponse<Response>();
     const status = exception.getStatus();
+    const lang = I18nContext.current()?.lang;
 
-    this.logError(request, 'HttpException', exception);
+    const originalResponse = exception.getResponse();
+    let message: any = originalResponse;
+
+    if (
+      status === 422 &&
+      typeof originalResponse === 'object' &&
+      originalResponse !== null &&
+      'errors' in originalResponse
+    ) {
+      const errors = (originalResponse as any).errors;
+
+      const translatedErrors = Object.entries(errors).reduce(
+        (acc, [field, value]) => {
+          if (typeof value === 'string') {
+            acc[field] = value
+              .split(',')
+              .map((msg) => this.i18n.t(msg.trim(), { lang }) || msg.trim())
+              .join(', ');
+          }
+          return acc;
+        },
+        {} as Record<string, string>,
+      );
+
+      message = {
+        status: 422,
+        errors: translatedErrors,
+      };
+    }
 
     void response.status(status).send({
       status: false,
       statusCode: status,
       path: request.url,
-      message: exception.getResponse(),
+      message,
       stack: exception.stack,
     });
   }
@@ -60,8 +97,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
     host: ArgumentsHost,
   ) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse();
-    const request = ctx.getRequest();
+    const request = ctx.getRequest<Request>();
+    const response = ctx.getResponse<Response>();
     const status = HttpStatus.PRECONDITION_FAILED; // EntityNotFoundError is treated as 404
 
     this.logError(request, 'EntityNotFoundError', exception);
@@ -85,8 +122,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
     host: ArgumentsHost,
   ) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse();
-    const request = ctx.getRequest();
+    const request = ctx.getRequest<Request>();
+    const response = ctx.getResponse<Response>();
     const status = HttpStatus.UNAUTHORIZED; // UnauthorizedException is treated as 401
 
     this.logError(request, 'UnauthorizedException', exception);
@@ -105,10 +142,36 @@ export class HttpExceptionFilter implements ExceptionFilter {
     });
   }
 
+  private handleForbiddenException(
+    exception: ForbiddenException,
+    host: ArgumentsHost,
+  ) {
+    const ctx = host.switchToHttp();
+
+    const request = ctx.getRequest<Request>();
+    const response = ctx.getResponse<Response>();
+    const status = exception.getStatus();
+
+    this.logError(request, 'ForbiddenException', exception);
+
+    void response.status(status).send({
+      status: false,
+      statusCode: status,
+      path: request.url,
+      message: {
+        status: HttpStatus.FORBIDDEN,
+        errors: {
+          auth: exception.message,
+        },
+      },
+      stack: exception.stack,
+    });
+  }
+
   private handleUnknownException(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse();
-    const request = ctx.getRequest();
+    const request = ctx.getRequest<Request>();
+    const response = ctx.getResponse<Response>();
     const status = HttpStatus.INTERNAL_SERVER_ERROR; // Default to 500 for unknown exceptions
 
     this.logError(request, 'UnknownException', exception);
@@ -127,7 +190,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
     });
   }
 
-  private logError(request: any, exceptionType: string, exception: unknown) {
+  private logError(
+    request: Request,
+    exceptionType: string,
+    exception: unknown,
+  ) {
     this.loggerService.error(request.url, {
       description: request.url,
       class: exceptionType,

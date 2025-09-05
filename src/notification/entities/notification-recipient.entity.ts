@@ -3,7 +3,7 @@ import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { NotificationEntity } from './notification.entity';
 import EntityHelper from '../../utils/entities/entity-helper';
 
-@Entity()
+@Entity({ name: 'notification_recipient' })
 export class NotificationRecipientEntity extends EntityHelper {
   @AutoMap()
   @PrimaryGeneratedColumn('uuid')

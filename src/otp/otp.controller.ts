@@ -12,10 +12,10 @@ import {
 } from '@nestjs/common';
 import { OtpService } from './otp.service';
 import { ApiTags } from '@nestjs/swagger';
-import { Otp } from './entities/otp.entity';
+import { OtpEntity } from './entities/otp.entity';
 import { DeleteResult } from 'typeorm';
-import { ConfirmOtpEmailDto } from '@/domains/otp/confirm-otp-email.dto';
-import { ResendVerifyOtpDto } from '@/domains/otp/verifyotp.dto';
+import { ConfirmOtpEmailDto } from './dto/confirm-otp-email.dto';
+import { ResendVerifyOtpDto } from './dto/verifyotp.dto';
 
 @ApiTags('Otp')
 @Controller({
@@ -35,13 +35,13 @@ export class OtpController {
   }
   /**
    * Get all not confirmed otp
-   * @returns {Promise<Otp[]>} List of all non-confirmed otp
+   * @returns {Promise<OtpEntity[]>} List of all non-confirmed otp
    */
 
   @Get()
   @HttpCode(HttpStatus.OK)
   @Get()
-  async findAll(): Promise<Otp[]> {
+  async findAll(): Promise<OtpEntity[]> {
     return await this.otpService.findAll();
   }
 

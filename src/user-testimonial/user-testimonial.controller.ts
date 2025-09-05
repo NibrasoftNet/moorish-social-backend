@@ -25,11 +25,11 @@ import { PaginatedDto } from '../utils/serialization/paginated.dto';
 import { IsCreatorPipe } from '../utils/pipes/is-creator.pipe';
 import { NullableType } from '../utils/types/nullable.type';
 import { AuthRequest } from '../utils/types/auth-request.type';
-import { CreateUserTestimonialDto } from '@/domains/user-testimonial/create-user-testimonial.dto';
+import { CreateUserTestimonialDto } from './dto/create-user-testimonial.dto';
 import { UserTestimonialEntity } from './entities/user-testimonial.entity';
-import { UserTestimonialDto } from '@/domains/user-testimonial/user-testimonial.dto';
+import { UserTestimonialDto } from './dto/user-testimonial.dto';
 import { RoleCodeEnum } from '@/enums/roles.enum';
-import { UpdateUserTestimonialDto } from '@/domains/user-testimonial/update-user-testimonial.dto';
+import { UpdateUserTestimonialDto } from './dto/update-user-testimonial.dto';
 
 @ApiTags('User Testimonials')
 @ApiBearerAuth()

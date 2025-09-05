@@ -6,26 +6,28 @@ import {
   Repository,
 } from 'typeorm';
 import { NullableType } from '../utils/types/nullable.type';
-import { Chat } from './entities/chat.entity';
+import { ChatEntity } from './entities/chat.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Message } from './entities/message.entity';
+import { MessageEntity } from './entities/message.entity';
 import { UserEntity } from '../users/entities/user.entity';
-import { UpdateChatMessageDto } from '@/domains/chat/update-chat-message.dto';
-import { CreateChatMessageDto } from '@/domains/chat/create-chat-message.dto';
+import { UpdateChatMessageDto } from './dto/update-chat-message.dto';
+import { CreateChatMessageDto } from './dto/create-chat-message.dto';
 
 @Injectable()
 export class MessageService {
   constructor(
-    @InjectRepository(Message)
-    private messageRepository: Repository<Message>,
+    @InjectRepository(MessageEntity)
+    private messageRepository: Repository<MessageEntity>,
   ) {}
 
-  async create(createChatMessageDto: CreateChatMessageDto): Promise<Message> {
+  async create(
+    createChatMessageDto: CreateChatMessageDto,
+  ): Promise<MessageEntity> {
     const message = this.messageRepository.create(
-      createChatMessageDto as DeepPartial<Message>,
+      createChatMessageDto as DeepPartial<MessageEntity>,
     );
     message.sender = createChatMessageDto.sender as unknown as UserEntity;
-    message.chat = createChatMessageDto.chat as unknown as Chat;
+    message.chat = createChatMessageDto.chat as unknown as ChatEntity;
     message.content = createChatMessageDto.content;
     return await this.messageRepository.save(message);
   }
@@ -35,9 +37,9 @@ export class MessageService {
   }
 
   async findOne(
-    field: FindOptionsWhere<Message>,
-    relations?: FindOptionsRelations<Message>,
-  ): Promise<NullableType<Message>> {
+    field: FindOptionsWhere<MessageEntity>,
+    relations?: FindOptionsRelations<MessageEntity>,
+  ): Promise<NullableType<MessageEntity>> {
     return await this.messageRepository.findOne({
       where: field,
       relations,
@@ -45,9 +47,9 @@ export class MessageService {
   }
 
   async findOneOrFail(
-    field: FindOptionsWhere<Message>,
-    relations?: FindOptionsRelations<Message>,
-  ): Promise<Message> {
+    field: FindOptionsWhere<MessageEntity>,
+    relations?: FindOptionsRelations<MessageEntity>,
+  ): Promise<MessageEntity> {
     return await this.messageRepository.findOneOrFail({
       where: field,
       relations,

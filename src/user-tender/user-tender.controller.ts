@@ -14,8 +14,8 @@ import {
   Put,
 } from '@nestjs/common';
 import { UserTenderService } from './user-tender.service';
-import { CreateUserTenderDto } from '@/domains/user-tender/create-user-tender.dto';
-import { UpdateUserTenderDto } from '@/domains/user-tender/update-user-tender.dto';
+import { CreateUserTenderDto } from './dto/create-user-tender.dto';
+import { UpdateUserTenderDto } from './dto/update-user-tender.dto';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -32,7 +32,7 @@ import { Roles } from '../roles/roles.decorator';
 import { RoleCodeEnum } from '@/enums/roles.enum';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { UserTenderEntity } from './entities/user-tender.entity';
-import { UserTenderDto } from '@/domains/user-tender/user-tender.dto';
+import { UserTenderDto } from './dto/user-tender.dto';
 import { AuthRequest } from '../utils/types/auth-request.type';
 import { ParseFormdataPipe } from '../utils/pipes/parse-formdata.pipe';
 import { userTenderPaginationConfig } from './config/user-tender-pagination.config';
@@ -82,7 +82,7 @@ export class UserTenderController {
   async create(
     @Request() request: AuthRequest,
     @Param('categoryId') categoryId: string,
-    @Body('data', ParseFormdataPipe) data,
+    @Body('data', ParseFormdataPipe) data: any,
     @UploadedFiles() files?: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<UserTenderEntity> {
     const createTenderDto = new CreateUserTenderDto(data);
@@ -164,7 +164,7 @@ export class UserTenderController {
   @Put(':id')
   async update(
     @Param('id') id: string,
-    @Body('data', ParseFormdataPipe) data,
+    @Body('data', ParseFormdataPipe) data: any,
     @UploadedFiles() files?: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<UserTenderEntity> {
     const updateTenderDto = new UpdateUserTenderDto(data);

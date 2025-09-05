@@ -4,7 +4,7 @@ import { AutoMap } from 'automapper-classes';
 import { CompanyEntity } from '../../company/entities/company.entity';
 import { TokenCategoryEntity } from '../../token-category/entities/token-category.entity';
 
-@Entity()
+@Entity({ name: 'company_subscription_token' })
 export class CompanySubscriptionTokenEntity extends EntityHelper {
   @AutoMap()
   @PrimaryGeneratedColumn('uuid')
@@ -15,7 +15,7 @@ export class CompanySubscriptionTokenEntity extends EntityHelper {
   tenantId: string;
 
   @AutoMap(() => CompanyEntity)
-  @ManyToOne(() => CompanyEntity, (company) => company.subscriptions, {
+  @ManyToOne(() => CompanyEntity, {
     nullable: false,
   })
   company: CompanyEntity;

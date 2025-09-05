@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserTenderDto } from '@/domains/user-tender/create-user-tender.dto';
-import { UpdateUserTenderDto } from '@/domains/user-tender/update-user-tender.dto';
+import { CreateUserTenderDto } from './dto/create-user-tender.dto';
+import { UpdateUserTenderDto } from './dto/update-user-tender.dto';
 import { JwtPayloadType } from '../auth/strategies/types/jwt-payload.type';
 import { InjectRepository } from '@nestjs/typeorm';
 import {

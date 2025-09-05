@@ -1,28 +1,28 @@
 import { Injectable } from '@nestjs/common';
-import { CreateOneToOneChatDto } from '@/domains/chat/create-one-to-one-chat.dto';
+import { CreateOneToOneChatDto } from './dto/create-one-to-one-chat.dto';
 import { FindOptionsRelations, FindOptionsWhere, Repository } from 'typeorm';
 import { NullableType } from '../utils/types/nullable.type';
-import { Chat } from './entities/chat.entity';
+import { ChatEntity } from './entities/chat.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersService } from '../users/users.service';
-import { CreateGroupDto } from '@/domains/chat/create-group.dto';
+import { CreateGroupDto } from './dto/create-group.dto';
 import { JwtPayloadType } from '../auth/strategies/types/jwt-payload.type';
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { chatPaginationConfig } from './config/chat-pagination-config';
-import { UpdateChatDto } from '@/domains/chat/update-chat.dto';
+import { UpdateChatDto } from './dto/update-chat.dto';
 import { UsersTenantService } from '../users-tenant/users-tenant.service';
 
 @Injectable()
 export class ChatService {
   constructor(
-    @InjectRepository(Chat)
-    private chatRepository: Repository<Chat>,
+    @InjectRepository(ChatEntity)
+    private chatRepository: Repository<ChatEntity>,
     private readonly userService: UsersService,
     private readonly userTenantService: UsersTenantService,
   ) {}
   async createOneToOne(
     createOneToOneChatDto: CreateOneToOneChatDto,
-  ): Promise<Chat> {
+  ): Promise<ChatEntity> {
     const existingChat = await this.chatRepository
       .createQueryBuilder('chat')
       .where('chat.sender @> :senderToReceiver', {
@@ -64,7 +64,7 @@ export class ChatService {
   async createGroup(
     userJwtPayload: JwtPayloadType,
     createGroupChatDto: CreateGroupDto,
-  ): Promise<Chat> {
+  ): Promise<ChatEntity> {
     const chat = this.chatRepository.create({
       name: createGroupChatDto.name,
     });
@@ -75,8 +75,8 @@ export class ChatService {
     return await this.chatRepository.save(chat);
   }
 
-  async findAll(query: PaginateQuery): Promise<Paginated<Chat>> {
-    return await paginate<Chat>(
+  async findAll(query: PaginateQuery): Promise<Paginated<ChatEntity>> {
+    return await paginate<ChatEntity>(
       query,
       this.chatRepository,
       chatPaginationConfig,
@@ -86,7 +86,7 @@ export class ChatService {
   async findAllMe(
     userJwtPayload: JwtPayloadType,
     query: PaginateQuery,
-  ): Promise<Paginated<Chat>> {
+  ): Promise<Paginated<ChatEntity>> {
     const queryBuilder = this.chatRepository
       .createQueryBuilder('chat')
       .leftJoinAndSelect('chat.sender', 'sender')
@@ -97,7 +97,11 @@ export class ChatService {
       .orWhere('receiver.id = :userId', { userId: userJwtPayload.id })
       .orWhere('creator.id = :userId', { userId: userJwtPayload.id })
       .orWhere('participants.id = :userId', { userId: userJwtPayload.id });
-    return await paginate<Chat>(query, queryBuilder, chatPaginationConfig);
+    return await paginate<ChatEntity>(
+      query,
+      queryBuilder,
+      chatPaginationConfig,
+    );
   }
 
   async getUserChatIds(userId: string): Promise<string[]> {
@@ -120,9 +124,9 @@ export class ChatService {
   }
 
   async findOne(
-    field: FindOptionsWhere<Chat>,
-    relations?: FindOptionsRelations<Chat>,
-  ): Promise<NullableType<Chat>> {
+    field: FindOptionsWhere<ChatEntity>,
+    relations?: FindOptionsRelations<ChatEntity>,
+  ): Promise<NullableType<ChatEntity>> {
     return await this.chatRepository.findOne({
       where: field,
       relations,
@@ -130,16 +134,16 @@ export class ChatService {
   }
 
   async findOneOrFail(
-    field: FindOptionsWhere<Chat>,
-    relations?: FindOptionsRelations<Chat>,
-  ): Promise<Chat> {
+    field: FindOptionsWhere<ChatEntity>,
+    relations?: FindOptionsRelations<ChatEntity>,
+  ): Promise<ChatEntity> {
     return await this.chatRepository.findOneOrFail({
       where: field,
       relations,
     });
   }
 
-  async update(id: string, updateChatDto: UpdateChatDto): Promise<Chat> {
+  async update(id: string, updateChatDto: UpdateChatDto): Promise<ChatEntity> {
     const chat = await this.findOneOrFail({ id });
     Object.assign(chat, updateChatDto);
     return await chat.save();

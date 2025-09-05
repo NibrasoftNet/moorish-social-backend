@@ -13,7 +13,7 @@ import { CompanyEntity } from '../../company/entities/company.entity';
 import { UserTenantEntity } from '../../users-tenant/entities/user-tenant.entity';
 import { PostCategoryEntity } from '../../post-category/entities/post-category.entity';
 
-@Entity()
+@Entity({ name: 'company_post' })
 export class CompanyPostEntity extends EntityHelper {
   @AutoMap()
   @PrimaryGeneratedColumn('uuid')
@@ -46,6 +46,7 @@ export class CompanyPostEntity extends EntityHelper {
 
   @AutoMap(() => CompanyEntity)
   @ManyToOne(() => CompanyEntity, {
+    eager: true,
     onDelete: 'CASCADE',
     nullable: false,
   })
@@ -53,14 +54,16 @@ export class CompanyPostEntity extends EntityHelper {
 
   @AutoMap(() => UserTenantEntity)
   @ManyToOne(() => UserTenantEntity, {
+    eager: true,
     onDelete: 'CASCADE',
     nullable: false,
   })
   creator: UserTenantEntity;
 
   @AutoMap(() => PostCategoryEntity)
-  @ManyToOne(() => PostCategoryEntity, (category) => category.posts, {
-    onDelete: 'CASCADE',
+  @ManyToOne(() => PostCategoryEntity, {
+    eager: true,
+    onDelete: 'SET NULL',
     nullable: false,
   })
   category: PostCategoryEntity;

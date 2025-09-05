@@ -53,4 +53,30 @@ export class SharedService {
       tokenExpires: Number(tokenExpires),
     };
   }
+  async getAccessTokensData(data: {
+    id: UserEntity['id'];
+    role: UserEntity['role'];
+  }) {
+    const tokenExpiresIn = this.configService.getOrThrow('auth.expires', {
+      infer: true,
+    });
+
+    const tokenExpires = Date.now() + ms(tokenExpiresIn as unknown as number);
+
+    const accessToken = await this.jwtService.signAsync(
+      {
+        id: data.id,
+        role: data.role,
+      },
+      {
+        secret: this.configService.getOrThrow('auth.secret', { infer: true }),
+        expiresIn: tokenExpiresIn,
+      },
+    );
+
+    return {
+      accessToken,
+      tokenExpires: Number(tokenExpires),
+    };
+  }
 }

@@ -10,6 +10,7 @@ import { OAuthGoogleResponseDto } from '../auth/dto/oAuth-google-response.dto';
 })
 export class OauthController {
   constructor(private readonly usersService: UsersService) {}
+
   @Get()
   @UseGuards(GoogleAuthGuard)
   loginGoogle() {}

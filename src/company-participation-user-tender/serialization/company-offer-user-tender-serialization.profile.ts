@@ -1,6 +1,6 @@
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
 import { createMap, Mapper, MappingProfile } from 'automapper-core';
-import { CompanyParticipationUserTenderDto } from '@/domains/company-participation-user-tender/company-participation-user-tender.dto';
+import { CompanyParticipationUserTenderDto } from '../dto/company-participation-user-tender.dto';
 import { CompanyParticipationUserTenderEntity } from '../entities/company-participation-user-tender.entity';
 
 export class CompanyOfferUserTenderSerializationProfile extends AutomapperProfile {

@@ -21,13 +21,12 @@ import { MapInterceptor } from 'automapper-nestjs';
 import { RoleCodeEnum } from '@/enums/roles.enum';
 import { PostCategoryService } from './post-category.service';
 import { PostCategoryEntity } from './entities/post-category.entity';
-import { PostCategoryDto } from '@/domains/post-category/post-category.dto';
-import { CreatePostCategoryDto } from '@/domains/post-category/create-post-category.dto';
-import { UpdatePostCategoryDto } from '@/domains/post-category/update-post-category.dto';
+import { PostCategoryDto } from './dto/post-category.dto';
+import { CreatePostCategoryDto } from './dto/create-post-category.dto';
+import { UpdatePostCategoryDto } from './dto/update-post-category.dto';
 
 @ApiTags('Post Categories')
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
   path: 'post-categories',
   version: '1',
@@ -35,6 +34,7 @@ import { UpdatePostCategoryDto } from '@/domains/post-category/update-post-categ
 export class PostCategoryController {
   constructor(private readonly companyCategoryService: PostCategoryService) {}
 
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(RoleCodeEnum.SUPERADMIN)
   @UseInterceptors(MapInterceptor(PostCategoryEntity, PostCategoryDto))
   @HttpCode(HttpStatus.CREATED)
@@ -67,10 +67,7 @@ export class PostCategoryController {
   async findOne(
     @Param('id') id: string,
   ): Promise<NullableType<PostCategoryEntity>> {
-    return await this.companyCategoryService.findOne(
-      { id: id },
-      { posts: true },
-    );
+    return await this.companyCategoryService.findOne({ id: id });
   }
 
   /**
@@ -79,6 +76,7 @@ export class PostCategoryController {
    * @param id
    * @param updatePostCategoryDto
    */
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(RoleCodeEnum.SUPERADMIN)
   @UseInterceptors(MapInterceptor(PostCategoryEntity, PostCategoryDto))
   @HttpCode(HttpStatus.OK)

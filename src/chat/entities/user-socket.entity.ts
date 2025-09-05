@@ -11,7 +11,7 @@ import EntityHelper from '../../utils/entities/entity-helper';
 import { AutoMap } from 'automapper-classes';
 import { UserTenantEntity } from '../../users-tenant/entities/user-tenant.entity';
 
-@Entity()
+@Entity({ name: 'user_socket' })
 export class UserSocketEntity extends EntityHelper {
   @AutoMap()
   @PrimaryGeneratedColumn('uuid')

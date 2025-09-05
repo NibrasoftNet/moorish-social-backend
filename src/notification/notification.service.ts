@@ -26,9 +26,9 @@ import { NotificationEnum } from '@/enums/notification.enum';
 import {
   CreateNotificationDto,
   ReceiverDto,
-} from '@/domains/notification/create-notification.dto';
-import { NotificationMessageDto } from '@/domains/notification/notification-message.dto';
-import { UpdateNotificationDto } from '@/domains/notification/update-notification.dto';
+} from './dto/create-notification.dto';
+import { NotificationMessageDto } from './dto/notification-message.dto';
+import { UpdateNotificationDto } from './dto/update-notification.dto';
 import { NotificationRecipientEntity } from './entities/notification-recipient.entity';
 import { notificationsRecipientPaginationConfig } from './config/notifications-recipient-pagination.config';
 

@@ -9,13 +9,13 @@ import {
   BeforeInsert,
   BeforeUpdate,
 } from 'typeorm';
-import { Message } from './message.entity';
+import { MessageEntity } from './message.entity';
 import EntityHelper from '../../utils/entities/entity-helper';
 import { UserEntity } from '../../users/entities/user.entity';
 import { AutoMap } from 'automapper-classes';
 
-@Entity()
-export class Chat extends EntityHelper {
+@Entity({ name: 'chat' })
+export class ChatEntity extends EntityHelper {
   @AutoMap()
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -45,9 +45,8 @@ export class Chat extends EntityHelper {
   @Column({ type: 'jsonb', nullable: true })
   receiver?: Record<string, any> | null;
 
-  @AutoMap(() => [UserEntity])
-  @OneToMany(() => Message, (message) => message.chat)
-  messages: Message[];
+  @OneToMany(() => MessageEntity, (message) => message.chat)
+  messages: MessageEntity[];
 
   @BeforeInsert()
   @BeforeUpdate()

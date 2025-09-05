@@ -14,7 +14,7 @@ import { CompanyEntity } from '../../company/entities/company.entity';
 import { RequestStatusEnum } from '@/enums/request-status.enum';
 import { UserTenantEntity } from '../../users-tenant/entities/user-tenant.entity';
 
-@Entity()
+@Entity({ name: 'company_participation_user_tender' })
 export class CompanyParticipationUserTenderEntity extends EntityHelper {
   @AutoMap()
   @PrimaryGeneratedColumn('uuid')

@@ -36,11 +36,11 @@ import { Utils } from '../utils/utils';
 import { NullableType } from '../utils/types/nullable.type';
 import { DeleteResult } from 'typeorm';
 import { CompanyTenderService } from './company-tender.service';
-import { CreateCompanyTenderDto } from '@/domains/company-tender/create-company-tender.dto';
+import { CreateCompanyTenderDto } from './dto/create-company-tender.dto';
 import { CompanyTenderEntity } from './entities/company-tender.entity';
-import { CompanyTenderDto } from '@/domains/company-tender/company-tender.dto';
+import { CompanyTenderDto } from './dto/company-tender.dto';
 import { companyTenderPaginationConfig } from './config/company-tender-pagination.config';
-import { UpdateCompanyTenderDto } from '@/domains/company-tender/update-company-tender.dto';
+import { UpdateCompanyTenderDto } from './dto/update-company-tender.dto';
 
 @ApiTags('Company Tenders')
 @ApiBearerAuth()
@@ -83,7 +83,7 @@ export class CompanyTenderController {
     @Request() request: AuthRequest,
     @Param('companyId') companyId: string,
     @Param('categoryId') categoryId: string,
-    @Body('data', ParseFormdataPipe) data,
+    @Body('data', ParseFormdataPipe) data: any,
     @UploadedFiles() files?: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<CompanyTenderEntity> {
     const createTenderDto = new CreateCompanyTenderDto(data);
@@ -169,7 +169,7 @@ export class CompanyTenderController {
   @Put(':id')
   async update(
     @Param('id') id: string,
-    @Body('data', ParseFormdataPipe) data,
+    @Body('data', ParseFormdataPipe) data: any,
     @UploadedFiles() files?: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<CompanyTenderEntity> {
     const updateTenderDto = new UpdateCompanyTenderDto(data);

@@ -16,8 +16,8 @@ import { PostCategoryService } from '../post-category/post-category.service';
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { companyOfferPaginationConfig } from './config/company-offer-pagination-config';
 import { NullableType } from 'src/utils/types/nullable.type';
-import { CreateCompanyOfferDto } from '@/domains/company-offer/create-company-offer.dto';
-import { UpdateCompanyOfferDto } from '@/domains/company-offer/update-company-offer.dto';
+import { CreateCompanyOfferDto } from './dto/create-company-offer.dto';
+import { UpdateCompanyOfferDto } from './dto/update-company-offer.dto';
 
 @Injectable()
 export class CompanyOfferService {
@@ -37,20 +37,20 @@ export class CompanyOfferService {
     createCompanyOfferDto: CreateCompanyOfferDto,
     files?: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<CompanyOfferEntity> {
-    const post = this.companyOfferRepository.create(
+    const offer = this.companyOfferRepository.create(
       createCompanyOfferDto as DeepPartial<CompanyOfferEntity>,
     );
-    post.creator = await this.userTenantService.findOneOrFail({
+    offer.creator = await this.userTenantService.findOneOrFail({
       id: userJwtPayload.id,
     });
-    post.company = await this.companyService.findOneOrFail({ id: companyId });
-    post.category = await this.postCategoryService.findOneOrFail({
+    offer.company = await this.companyService.findOneOrFail({ id: companyId });
+    offer.category = await this.postCategoryService.findOneOrFail({
       id: categoryId,
     });
     if (files) {
-      post.images = await this.filesService.uploadMultipleFiles(files);
+      offer.files = await this.filesService.uploadMultipleFiles(files);
     }
-    return await this.companyOfferRepository.save(post);
+    return await this.companyOfferRepository.save(offer);
   }
 
   async findAll(query: PaginateQuery): Promise<Paginated<CompanyOfferEntity>> {
@@ -86,12 +86,29 @@ export class CompanyOfferService {
     updateCompanyOfferDto: UpdateCompanyOfferDto,
     files?: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<CompanyOfferEntity> {
-    const post = await this.findOneOrFail({ id });
-    Object.assign(post, updateCompanyOfferDto);
-    if (files) {
-      post.images = await this.filesService.uploadMultipleFiles(files);
+    const { categoryId, deleteImages, ...updateOfferDto } =
+      updateCompanyOfferDto;
+    const offer = await this.findOneOrFail({ id });
+    Object.assign(offer, updateOfferDto);
+    if (categoryId) {
+      offer.category = await this.postCategoryService.findOneOrFail({
+        id: categoryId,
+      });
     }
-    return await this.companyOfferRepository.save(post);
+    if (deleteImages && deleteImages.length) {
+      await this.filesService.deleteMultipleFiles(deleteImages);
+      offer.files = offer.files?.filter(
+        (image) =>
+          !deleteImages.some((deletedImage) => deletedImage.id === image.id),
+      );
+    }
+
+    if (files && files.length) {
+      const newUploadedFiles =
+        await this.filesService.uploadMultipleFiles(files);
+      offer.files = [...(offer.files || []), ...newUploadedFiles];
+    }
+    return await this.companyOfferRepository.save(offer);
   }
 
   async remove(id: string): Promise<DeleteResult> {

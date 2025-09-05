@@ -12,11 +12,11 @@ import { FilesService } from '../files/files.service';
 import { TenderCategoryService } from '../tender-category/tender-category.service';
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { NullableType } from '../utils/types/nullable.type';
-import { CreateCompanyTenderDto } from '@/domains/company-tender/create-company-tender.dto';
+import { CreateCompanyTenderDto } from './dto/create-company-tender.dto';
 import { UsersTenantService } from '../users-tenant/users-tenant.service';
 import { CompanyTenderEntity } from './entities/company-tender.entity';
 import { companyTenderPaginationConfig } from './config/company-tender-pagination.config';
-import { UpdateCompanyTenderDto } from '@/domains/company-tender/update-company-tender.dto';
+import { UpdateCompanyTenderDto } from './dto/update-company-tender.dto';
 import { CompanyService } from '../company/company.service';
 
 @Injectable()

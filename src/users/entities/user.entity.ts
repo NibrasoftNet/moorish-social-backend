@@ -21,7 +21,7 @@ import { AddressEntity } from '../../address/entities/address.entity';
 import { AuthProvidersEnum } from '@/enums/auth.enum';
 import { UserSocketEntity } from '../../chat/entities/user-socket.entity';
 
-@Entity()
+@Entity({ name: 'user' })
 export class UserEntity extends EntityHelper {
   @AutoMap()
   @PrimaryGeneratedColumn('uuid')

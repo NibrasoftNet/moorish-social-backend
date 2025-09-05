@@ -15,7 +15,7 @@ import { UserTenantEntity } from '../../users-tenant/entities/user-tenant.entity
 import { PostCategoryEntity } from '../../post-category/entities/post-category.entity';
 import { UserRequestOfferEntity } from '../../user-request-offer/entities/user-request-offer.entity';
 
-@Entity()
+@Entity({ name: 'company_offer' })
 export class CompanyOfferEntity extends EntityHelper {
   @AutoMap()
   @PrimaryGeneratedColumn('uuid')
@@ -24,7 +24,7 @@ export class CompanyOfferEntity extends EntityHelper {
   @AutoMap(() => [FileEntity])
   @ManyToMany(() => FileEntity, { eager: true })
   @JoinTable()
-  images: FileEntity[];
+  files: FileEntity[];
 
   @AutoMap()
   @Column({ nullable: false })
@@ -40,10 +40,11 @@ export class CompanyOfferEntity extends EntityHelper {
 
   @AutoMap()
   @Column({ default: 10 })
-  token: number;
+  boostScore: number;
 
   @AutoMap(() => CompanyEntity)
   @ManyToOne(() => CompanyEntity, {
+    eager: true,
     onDelete: 'CASCADE',
     nullable: false,
   })
@@ -51,13 +52,15 @@ export class CompanyOfferEntity extends EntityHelper {
 
   @AutoMap(() => UserTenantEntity)
   @ManyToOne(() => UserTenantEntity, {
+    eager: true,
     onDelete: 'CASCADE',
     nullable: false,
   })
   creator: UserTenantEntity;
 
   @AutoMap(() => PostCategoryEntity)
-  @ManyToOne(() => PostCategoryEntity, (category) => category.posts, {
+  @ManyToOne(() => PostCategoryEntity, {
+    eager: true,
     onDelete: 'CASCADE',
     nullable: false,
   })

@@ -15,6 +15,7 @@ import { OtpModule } from 'src/otp/otp.module';
 import { AuthTenantService } from './auth-tenant.service';
 import { UsersTenantModule } from '../users-tenant/users-tenant.module';
 import { AuthTenantController } from './auth-tenant.controller';
+import { SessionModule } from '../session/session.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { AuthTenantController } from './auth-tenant.controller';
     JwtModule.register({}),
     FilesModule,
     OtpModule,
+    SessionModule,
   ],
   controllers: [AuthController, AuthTenantController],
   providers: [

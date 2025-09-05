@@ -10,7 +10,7 @@ import {
 } from 'automapper-core';
 import { UserEntity } from '../entities/user.entity';
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
-import { UserDto } from '@/domains/user/user.dto';
+import { UserDto } from '../user/user.dto';
 
 @Injectable()
 export class UserSerializationProfile extends AutomapperProfile {

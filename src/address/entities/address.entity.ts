@@ -2,7 +2,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import EntityHelper from '../../utils/entities/entity-helper';
 import { AutoMap } from 'automapper-classes';
 
-@Entity()
+@Entity({ name: 'address' })
 export class AddressEntity extends EntityHelper {
   @AutoMap()
   @PrimaryGeneratedColumn('uuid')

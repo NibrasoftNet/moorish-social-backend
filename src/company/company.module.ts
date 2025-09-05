@@ -8,10 +8,12 @@ import { UsersTenantModule } from '../users-tenant/users-tenant.module';
 import { TenantAwareRepositoryModule } from '../utils/repository/tenant-aware/tenant-aware.module';
 import { AddressModule } from '../address/address.module';
 import { CompanyCategoryModule } from '../company-category/company-category.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
     TenantAwareRepositoryModule.forEntities([CompanyEntity]),
+    TypeOrmModule.forFeature([CompanyEntity]),
     FilesModule,
     AddressModule,
     UsersTenantModule,

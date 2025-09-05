@@ -25,10 +25,10 @@ import { Mapper } from 'automapper-core';
 import { PaginatedDto } from '../utils/serialization/paginated.dto';
 import { RoleCodeEnum } from '@/enums/roles.enum';
 import { UserTenantEntity } from './entities/user-tenant.entity';
-import { usersTenantPaginationConfig } from './configs/users-tenant-pagination.config';
-import { UserTenantDto } from '@/domains/user-tenant/user-tenant.dto';
-import { CreateUserTenantDto } from '@/domains/user-tenant/create-user-tenant.dto';
-import { UpdateUserTenantDto } from '@/domains/user-tenant/update-user-tenant.dto';
+import { usersTenantPaginationConfig } from './config/users-tenant-pagination.config';
+import { UserTenantDto } from './dto/user-tenant.dto';
+import { CreateUserTenantDto } from './dto/create-user-tenant.dto';
+import { UpdateUserTenantDto } from './dto/update-user-tenant.dto';
 
 @ApiBearerAuth()
 @ApiTags('User Tenants')

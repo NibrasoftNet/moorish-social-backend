@@ -6,7 +6,7 @@ import {
   typeConverter,
 } from 'automapper-core';
 import { NotificationEntity } from '../entities/notification.entity';
-import { NotificationDto } from '@/domains/notification/notification.dto';
+import { NotificationDto } from '../dto/notification.dto';
 
 export class NotificationSerializationProfile extends AutomapperProfile {
   constructor(@InjectMapper() mapper: Mapper) {

@@ -15,9 +15,9 @@ import { AwsS3Service } from '../utils/aws-s3/aws-s3.service';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { FileDriver } from '@/enums/file-driver.enum';
 import { NullableType } from '../utils/types/nullable.type';
-import { PresignedUrlResponseDto } from '@/domains/files/presign-url-response.dto';
+import { PresignedUrlResponseDto } from './dto/presign-url-response.dto';
 import { WinstonLoggerService } from '../logger/winston-logger.service';
-import { FileDto } from '@/domains/files/file.dto';
+import { FileDto } from './dto/file.dto';
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { filePaginationConfig } from './config/files-pagination.config';
 

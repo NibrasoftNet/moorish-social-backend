@@ -7,7 +7,7 @@ import {
 } from 'automapper-core';
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
 import { CompanyEntity } from '../entities/company.entity';
-import { CompanyDto } from '@/domains/company/company.dto';
+import { CompanyDto } from '../dto/company.dto';
 
 @Injectable()
 export class CompanySerializationProfile extends AutomapperProfile {

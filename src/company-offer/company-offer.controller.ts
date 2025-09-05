@@ -14,8 +14,8 @@ import {
   Put,
 } from '@nestjs/common';
 import { CompanyOfferService } from './company-offer.service';
-import { CreateCompanyOfferDto } from '@/domains/company-offer/create-company-offer.dto';
-import { UpdateCompanyOfferDto } from '@/domains/company-offer/update-company-offer.dto';
+import { CreateCompanyOfferDto } from './dto/create-company-offer.dto';
+import { UpdateCompanyOfferDto } from './dto/update-company-offer.dto';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -31,7 +31,7 @@ import { Mapper } from 'automapper-core';
 import { Roles } from '../roles/roles.decorator';
 import { RoleCodeEnum } from '@/enums/roles.enum';
 import { CompanyOfferEntity } from './entities/company-offer.entity';
-import { CompanyOfferDto } from '@/domains/company-offer/company-offer.dto';
+import { CompanyOfferDto } from './dto/company-offer.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ParseFormdataPipe } from '../utils/pipes/parse-formdata.pipe';
 import { Utils } from '../utils/utils';
@@ -83,7 +83,7 @@ export class CompanyOfferController {
     @Request() request: AuthRequest,
     @Param('companyId') companyId: string,
     @Param('categoryId') categoryId: string,
-    @Body('data', ParseFormdataPipe) data,
+    @Body('data', ParseFormdataPipe) data: any,
     @UploadedFiles() files?: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<CompanyOfferEntity> {
     const createCompanyOfferDto = new CreateCompanyOfferDto(data);
@@ -124,7 +124,7 @@ export class CompanyOfferController {
   }
 
   @ApiConsumes('multipart/form-data')
-  @ApiExtraModels(CreateCompanyOfferDto)
+  @ApiExtraModels(UpdateCompanyOfferDto)
   @ApiBody({
     schema: {
       type: 'object',
@@ -137,7 +137,7 @@ export class CompanyOfferController {
           },
         },
         data: {
-          $ref: getSchemaPath(CreateCompanyOfferDto),
+          $ref: getSchemaPath(UpdateCompanyOfferDto),
         },
       },
     },
@@ -149,7 +149,7 @@ export class CompanyOfferController {
   @Put(':id')
   async update(
     @Param('id') id: string,
-    @Body('data', ParseFormdataPipe) data,
+    @Body('data', ParseFormdataPipe) data: any,
     @UploadedFiles() files?: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<CompanyOfferEntity> {
     const updateCompanyOfferDto = new UpdateCompanyOfferDto(data);

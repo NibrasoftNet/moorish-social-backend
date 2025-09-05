@@ -6,47 +6,47 @@ import {
   FindOptionsWhere,
   Repository,
 } from 'typeorm';
-import { Otp } from './entities/otp.entity';
+import { OtpEntity } from './entities/otp.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import bcrypt from 'bcryptjs';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { NullableType } from '../utils/types/nullable.type';
 import { MailService } from '../mail/mail.service';
-import { ResendVerifyOtpDto } from '@/domains/otp/verifyotp.dto';
-import { CreateOtpDto } from '@/domains/otp/create-otp.dto';
-import { OtpDto } from '@/domains/otp/otp.dto';
-import { ConfirmOtpEmailDto } from '@/domains/otp/confirm-otp-email.dto';
+import { ResendVerifyOtpDto } from './dto/verifyotp.dto';
+import { CreateOtpDto } from './dto/create-otp.dto';
+import { OtpDto } from './dto/otp.dto';
+import { ConfirmOtpEmailDto } from './dto/confirm-otp-email.dto';
 import otpGenerator from 'otp-generator';
 
 @Injectable()
 export class OtpService {
   public constructor(
     private readonly configService: ConfigService,
-    @InjectRepository(Otp)
-    private readonly otpRepository: Repository<Otp>,
+    @InjectRepository(OtpEntity)
+    private readonly otpRepository: Repository<OtpEntity>,
     private readonly i18n: I18nService, // Inject i18n service
     private mailService: MailService,
   ) {}
 
   /**
    * Get all non-confirmed otp list
-   * @returns {Otp[]} created otp
+   * @returns {OtpEntity[]} created otp
    */
-  async findAll(): Promise<Otp[]> {
+  async findAll(): Promise<OtpEntity[]> {
     return await this.otpRepository.find();
   }
 
   /**
    * Send single pending otp
-   * @returns {Promise<Otp>} created otp
+   * @returns {Promise<OtpEntity>} created otp
    * @param field
    * @param relations
    */
   async findOne(
-    field: FindOptionsWhere<Otp>,
-    relations?: FindOptionsRelations<Otp>,
-  ): Promise<NullableType<Otp>> {
+    field: FindOptionsWhere<OtpEntity>,
+    relations?: FindOptionsRelations<OtpEntity>,
+  ): Promise<NullableType<OtpEntity>> {
     return await this.otpRepository.findOne({
       where: field,
       relations,
@@ -54,9 +54,9 @@ export class OtpService {
   }
 
   async findOneOrFail(
-    field: FindOptionsWhere<Otp>,
-    relations?: FindOptionsRelations<Otp>,
-  ): Promise<Otp> {
+    field: FindOptionsWhere<OtpEntity>,
+    relations?: FindOptionsRelations<OtpEntity>,
+  ): Promise<OtpEntity> {
     return await this.otpRepository.findOneOrFail({
       where: field,
       relations,
@@ -82,9 +82,9 @@ export class OtpService {
     const oldOtp = await this.findOne({ email: resendVerifyOtpDto.email });
     const otp = oldOtp
       ? oldOtp
-      : this.otpRepository.create(resendVerifyOtpDto as DeepPartial<Otp>);
+      : this.otpRepository.create(resendVerifyOtpDto as DeepPartial<OtpEntity>);
     // Generate new OTP
-    const otpNumber = otpGenerator.generate(4, {
+    const otpNumber = otpGenerator.generate(6, {
       upperCaseAlphabets: false,
       specialChars: false,
       lowerCaseAlphabets: false,
@@ -107,7 +107,7 @@ export class OtpService {
 
   async createOtp(createOtpDto: CreateOtpDto): Promise<string> {
     // Generate a random 6-digit OTP
-    const otpNumber = otpGenerator.generate(4, {
+    const otpNumber = otpGenerator.generate(6, {
       upperCaseAlphabets: false,
       specialChars: false,
       lowerCaseAlphabets: false,
@@ -127,7 +127,6 @@ export class OtpService {
       existingOtp.expireIn = expireIn.getTime();
 
       await this.otpRepository.save(existingOtp);
-      console.log(`Updated OTP for email ${createOtpDto.email}`, otpNumber);
     } else {
       // Create new OTP entity if not found
       const otpData = new OtpDto(

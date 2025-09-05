@@ -28,15 +28,15 @@ import { InjectMapper, MapInterceptor } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import { ParseFormdataPipe } from '../utils/pipes/parse-formdata.pipe';
 import { Utils } from '../utils/utils';
-import { AuthEmailLoginDto } from '@/domains/auth/auth-email-login.dto';
-import { SessionResponseDto } from '@/domains/session/session-response.dto';
-import { AuthEmailRegisterDto } from '@/domains/auth/auth-email-register.dto';
-import { ConfirmOtpEmailDto } from '@/domains/otp/confirm-otp-email.dto';
-import { AuthForgotPasswordDto } from '@/domains/auth/auth-forgot-password.dto';
-import { AuthResetPasswordDto } from '@/domains/auth/auth-reset-password.dto';
-import { AuthUpdateDto } from '@/domains/auth/auth-update.dto';
-import { UserDto } from '@/domains/user/user.dto';
-import { AuthNewPasswordDto } from '@/domains/auth/auth-new-password.dto';
+import { AuthEmailLoginDto } from './dto/auth-email-login.dto';
+import { SessionResponseDto } from '../session/dto/session-response.dto';
+import { AuthEmailRegisterDto } from './dto/auth-email-register.dto';
+import { ConfirmOtpEmailDto } from '../otp/dto/confirm-otp-email.dto';
+import { AuthForgotPasswordDto } from './dto/auth-forgot-password.dto';
+import { AuthResetPasswordDto } from './dto/auth-reset-password.dto';
+import { AuthUpdateDto } from './dto/auth-update.dto';
+import { UserDto } from '../users/user/user.dto';
+import { AuthNewPasswordDto } from './dto/auth-new-password.dto';
 import { AuthRequest } from '../utils/types/auth-request.type';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -62,9 +62,7 @@ export class AuthController {
 
   @Post('email-register')
   @HttpCode(HttpStatus.CREATED)
-  async register(
-    @Body() createUserDto: AuthEmailRegisterDto,
-  ): Promise<boolean> {
+  async register(@Body() createUserDto: AuthEmailRegisterDto): Promise<string> {
     return await this.service.register(createUserDto);
   }
 
@@ -80,7 +78,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async forgotPassword(
     @Body() forgotPasswordDto: AuthForgotPasswordDto,
-  ): Promise<void> {
+  ): Promise<string> {
     return await this.service.forgotPassword(forgotPasswordDto.email);
   }
 
@@ -106,7 +104,9 @@ export class AuthController {
   @Post('refresh')
   @UseGuards(AuthGuard('jwt-refresh'))
   @HttpCode(HttpStatus.OK)
-  public async refresh(@Request() request): Promise<SessionResponseDto> {
+  public async refresh(
+    @Request() request: AuthRequest,
+  ): Promise<SessionResponseDto> {
     return await this.service.refreshToken({
       id: request.user.id,
     });
@@ -116,7 +116,7 @@ export class AuthController {
   @Post('logout')
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
-  async logout(@Request() request): Promise<void> {
+  async logout(@Request() request: AuthRequest): Promise<void> {
     await this.service.logout({
       id: request.user.id,
     });
@@ -146,7 +146,7 @@ export class AuthController {
   @UseInterceptors(FileInterceptor('file'))
   public async update(
     @Request() request: AuthRequest,
-    @Body('data', ParseFormdataPipe) data,
+    @Body('data', ParseFormdataPipe) data: any,
     @UploadedFile() file?: Express.Multer.File | Express.MulterS3.File,
   ): Promise<NullableType<UserEntity>> {
     const updateUserDto = new AuthUpdateDto(data);
@@ -169,7 +169,7 @@ export class AuthController {
   @Delete('me')
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
-  public async delete(@Request() request): Promise<void> {
+  public async delete(@Request() request: AuthRequest): Promise<void> {
     return await this.service.softDelete(request.user);
   }
 }

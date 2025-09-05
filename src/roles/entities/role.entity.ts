@@ -3,7 +3,7 @@ import EntityHelper from '../../utils/entities/entity-helper';
 import { AutoMap } from 'automapper-classes';
 import { RoleCodeEnum } from '@/enums/roles.enum';
 
-@Entity()
+@Entity({ name: 'role' })
 export class Role extends EntityHelper {
   @PrimaryColumn()
   id: number;

@@ -16,9 +16,9 @@ import { ApiTags } from '@nestjs/swagger';
 import { InjectMapper, MapInterceptor } from 'automapper-nestjs';
 import { AddressEntity } from './entities/address.entity';
 import { Mapper } from 'automapper-core';
-import { AddressDto } from '@/domains/address/address.dto';
-import { CreateAddressDto } from '@/domains/address/create-address.dto';
-import { UpdateAddressDto } from '@/domains/address/update-address.dto';
+import { AddressDto } from './dto/address.dto';
+import { CreateAddressDto } from './dto/create-address.dto';
+import { UpdateAddressDto } from './dto/update-address.dto';
 import { NullableType } from '../utils/types/nullable.type';
 import { DeleteResult } from 'typeorm';
 

@@ -1,6 +1,6 @@
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
 import { createMap, Mapper, MappingProfile } from 'automapper-core';
-import { CompanyCategoryDto } from '@/domains/company-category/company-category.dto';
+import { CompanyCategoryDto } from '../dto/company-category.dto';
 import { CompanyCategoryEntity } from '../entities/company-category.entity';
 
 export class CompanyCategorySerializationProfile extends AutomapperProfile {

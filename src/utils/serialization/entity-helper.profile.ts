@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import EntityHelper from '../entities/entity-helper';
 import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
 import { createMap, Mapper, MappingProfile } from 'automapper-core';
-import { EntityHelperDto } from '@/domains/general/entity-helper.dto';
+import { EntityHelperDto } from '@/domains/entity-helper.dto';
 
 @Injectable()
 export class EntityHelperProfile extends AutomapperProfile {

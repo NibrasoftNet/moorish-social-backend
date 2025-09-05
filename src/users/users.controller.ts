@@ -21,14 +21,14 @@ import { UserEntity } from './entities/user.entity';
 import { NullableType } from '../utils/types/nullable.type';
 import { UpdateResult } from 'typeorm';
 import { Paginate, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate';
-import { usersPaginationConfig } from './configs/users-pagination.config';
+import { usersPaginationConfig } from './config/users-pagination.config';
 import { InjectMapper, MapInterceptor } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import { PaginatedDto } from '../utils/serialization/paginated.dto';
 import { RoleCodeEnum } from '@/enums/roles.enum';
-import { UserDto } from '@/domains/user/user.dto';
-import { CreateUserDto } from '@/domains/user/create-user.dto';
-import { UpdateUserDto } from '@/domains/user/update-user.dto';
+import { UserDto } from './user/user.dto';
+import { CreateUserDto } from './user/create-user.dto';
+import { UpdateUserDto } from './user/update-user.dto';
 
 @ApiBearerAuth()
 @ApiTags('Users')

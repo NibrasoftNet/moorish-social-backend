@@ -24,9 +24,9 @@ import { RolesGuard } from '../roles/roles.guard';
 import { DeleteResult } from 'typeorm';
 import { TokenCategoryService } from './token-category.service';
 import { TokenCategoryEntity } from './entities/token-category.entity';
-import { TokenCategoryDto } from '@/domains/token-category/token-category.dto';
-import { CreateTokenCategoryDto } from '@/domains/token-category/create-token-category.dto';
-import { UpdateTokenCategoryDto } from '@/domains/token-category/update-token-category.dto';
+import { TokenCategoryDto } from './dto/token-category.dto';
+import { CreateTokenCategoryDto } from './dto/create-token-category.dto';
+import { UpdateTokenCategoryDto } from './dto/update-token-category.dto';
 import { tokenCategoryPaginationConfig } from './config/token-category-pagination-config';
 
 @ApiTags('Token Categories')

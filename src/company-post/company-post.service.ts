@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCompanyPostDto } from '@/domains/company-post/create-company-post.dto';
-import { UpdateCompanyPostDto } from '@/domains/company-post/update-company-post.dto';
+import { CreateCompanyPostDto } from './dto/create-company-post.dto';
+import { UpdateCompanyPostDto } from './dto/update-company-post.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   DeepPartial,

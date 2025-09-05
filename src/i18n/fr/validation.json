@@ -17,5 +17,6 @@
   "rewardNotExists": "Recompense introuvable",
   "clientPackageNotExists": "Pack client introuvable",
   "taskNotExists": "Tâche introuvable",
-  "unique": "doit etre unique"
+  "unique": "doit etre unique",
+  "notStrongPass": "mdp faible"
 }

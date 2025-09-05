@@ -13,10 +13,10 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { Chat } from './entities/chat.entity';
-import { CreateGroupDto } from '@/domains/chat/create-group.dto';
+import { ChatEntity } from './entities/chat.entity';
+import { CreateGroupDto } from './dto/create-group.dto';
 import { InjectMapper, MapInterceptor } from 'automapper-nestjs';
-import { ChatDto } from '@/domains/chat/chat.dto';
+import { ChatDto } from './dto/chat.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../roles/roles.guard';
@@ -27,7 +27,7 @@ import { RoleCodeEnum } from '@/enums/roles.enum';
 import { PaginatedDto } from '../utils/serialization/paginated.dto';
 import { chatPaginationConfig } from './config/chat-pagination-config';
 import { Mapper } from 'automapper-core';
-import { UpdateChatDto } from '@/domains/chat/update-chat.dto';
+import { UpdateChatDto } from './dto/update-chat.dto';
 import { DeleteResult } from 'typeorm';
 import { AuthRequest } from '../utils/types/auth-request.type';
 
@@ -42,13 +42,13 @@ export class ChatController {
   ) {}
 
   @Roles(RoleCodeEnum.USER, RoleCodeEnum.SUPERADMIN)
-  @UseInterceptors(MapInterceptor(Chat, ChatDto))
+  @UseInterceptors(MapInterceptor(ChatEntity, ChatDto))
   @HttpCode(HttpStatus.CREATED)
   @Post('group')
   async createGroup(
     @Request() request: AuthRequest,
     @Body() createGroupChatDto: CreateGroupDto,
-  ): Promise<Chat> {
+  ): Promise<ChatEntity> {
     return await this.chatService.createGroup(request.user, createGroupChatDto);
   }
 
@@ -58,9 +58,14 @@ export class ChatController {
   @Get()
   async findAll(
     @Paginate() query: PaginateQuery,
-  ): Promise<PaginatedDto<Chat, ChatDto>> {
+  ): Promise<PaginatedDto<ChatEntity, ChatDto>> {
     const chats = await this.chatService.findAll(query);
-    return new PaginatedDto<Chat, ChatDto>(this.mapper, chats, Chat, ChatDto);
+    return new PaginatedDto<ChatEntity, ChatDto>(
+      this.mapper,
+      chats,
+      ChatEntity,
+      ChatDto,
+    );
   }
 
   @ApiPaginationQuery(chatPaginationConfig)
@@ -70,27 +75,32 @@ export class ChatController {
   async findAllMe(
     @Request() request: AuthRequest,
     @Paginate() query: PaginateQuery,
-  ): Promise<PaginatedDto<Chat, ChatDto>> {
+  ): Promise<PaginatedDto<ChatEntity, ChatDto>> {
     const chats = await this.chatService.findAllMe(request.user, query);
-    return new PaginatedDto<Chat, ChatDto>(this.mapper, chats, Chat, ChatDto);
+    return new PaginatedDto<ChatEntity, ChatDto>(
+      this.mapper,
+      chats,
+      ChatEntity,
+      ChatDto,
+    );
   }
 
   @Roles(RoleCodeEnum.TENANTADMIN, RoleCodeEnum.USER)
-  @UseInterceptors(MapInterceptor(Chat, ChatDto))
+  @UseInterceptors(MapInterceptor(ChatEntity, ChatDto))
   @HttpCode(HttpStatus.OK)
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<NullableType<Chat>> {
+  async findOne(@Param('id') id: string): Promise<NullableType<ChatEntity>> {
     return await this.chatService.findOne({ id });
   }
 
   @Roles(RoleCodeEnum.TENANTADMIN, RoleCodeEnum.USER)
-  @UseInterceptors(MapInterceptor(Chat, ChatDto))
+  @UseInterceptors(MapInterceptor(ChatEntity, ChatDto))
   @HttpCode(HttpStatus.OK)
   @Put(':id')
   async update(
     @Param('id') id: string,
     @Body() updateChatDto: UpdateChatDto,
-  ): Promise<Chat> {
+  ): Promise<ChatEntity> {
     return await this.chatService.update(id, updateChatDto);
   }
 

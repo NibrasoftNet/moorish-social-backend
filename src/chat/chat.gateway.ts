@@ -13,20 +13,20 @@ import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 import { UsersService } from '../users/users.service';
 import { MessageService } from './message.service';
-import { CreateChatDto } from '@/domains/chat/create-chat.dto';
-import { UserDto } from '@/domains/user/user.dto';
-import { ChatDto } from '@/domains/chat/chat.dto';
+import { CreateChatDto } from './dto/create-chat.dto';
+import { UserDto } from '../users/user/user.dto';
+import { ChatDto } from './dto/chat.dto';
 import { WinstonLoggerService } from '../logger/winston-logger.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserSocketEntity } from './entities/user-socket.entity';
 import { Repository } from 'typeorm';
-import { CreateChatGroupDto } from '@/domains/chat/create-chat-group.dto';
+import { CreateChatGroupDto } from './dto/create-chat-group.dto';
 import { UseGuards } from '@nestjs/common';
 import { WsGuard } from './guard/chat.guard';
 import { InjectMapper } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
-import { Message } from './entities/message.entity';
-import { MessageDto } from '@/domains/chat/message.dto';
+import { MessageEntity } from './entities/message.entity';
+import { MessageDto } from './dto/message.dto';
 import { UsersTenantService } from '../users-tenant/users-tenant.service';
 
 @WebSocketGateway({ cors: { origin: '*' } })
@@ -142,7 +142,7 @@ export class ChatGateway
         'sender id',
         client.rooms.has(roomId),
       );
-      const mappedMessage = this.mapper.map(message, Message, MessageDto);
+      const mappedMessage = this.mapper.map(message, MessageEntity, MessageDto);
       this.server
         .to(roomId)
         .emit('receive_message', { chatId: resolvedChat.id, mappedMessage });
@@ -191,7 +191,7 @@ export class ChatGateway
       if (!client.rooms.has(roomId)) {
         await client.join(roomId);
       }
-      const mappedMessage = this.mapper.map(message, Message, MessageDto);
+      const mappedMessage = this.mapper.map(message, MessageEntity, MessageDto);
       // Emit to the group chat room
       this.server
         .to(chatId)

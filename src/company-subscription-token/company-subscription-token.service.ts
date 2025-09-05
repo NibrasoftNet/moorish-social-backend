@@ -9,7 +9,7 @@ import {
 import { Paginated, PaginateQuery } from 'nestjs-paginate';
 import { NullableType } from '../utils/types/nullable.type';
 import { Mapper } from 'automapper-core';
-import { CreateCompanySubscriptionTokenDto } from '@/domains/company-subscription-token/create-company-subscription-token.dto';
+import { CreateCompanySubscriptionTokenDto } from './dto/create-company-subscription-token.dto';
 import { CompanySubscriptionTokenEntity } from './entities/company-subscription-token.entity';
 import { CompanyService } from '../company/company.service';
 import { TokenCategoryService } from '../token-category/token-category.service';

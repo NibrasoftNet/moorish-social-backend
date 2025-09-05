@@ -11,15 +11,14 @@ import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { FilesService } from '../files/files.service';
 import { WinstonLoggerService } from '../logger/winston-logger.service';
 import { NullableType } from '../utils/types/nullable.type';
-import { AuthUpdateDto } from '@/domains/auth/auth-update.dto';
-import { CreateUserTenantDto } from '@/domains/user-tenant/create-user-tenant.dto';
-import { usersTenantPaginationConfig } from './configs/users-tenant-pagination.config';
+import { AuthUpdateDto } from '../auth/dto/auth-update.dto';
+import { CreateUserTenantDto } from './dto/create-user-tenant.dto';
+import { usersTenantPaginationConfig } from './config/users-tenant-pagination.config';
 import { plainToClass } from 'class-transformer';
 import { Status } from '../statuses/entities/status.entity';
 import { StatusCodeEnum } from '@/enums/statuses.enum';
 import { RoleCodeEnum } from '@/enums/roles.enum';
 import { Role } from '../roles/entities/role.entity';
-import { JwtPayloadType } from '../auth/strategies/types/jwt-payload.type';
 import { CompanyEntity } from '../company/entities/company.entity';
 import { nanoid } from 'nanoid';
 
@@ -152,7 +151,7 @@ export class UsersTenantService {
   }
 
   async addCompanyToTenant(
-    userJwtPayload: JwtPayloadType,
+    tenant: UserTenantEntity,
     company: CompanyEntity,
   ): Promise<UserTenantEntity> {
     this.logger.watch('users-addCompanyToTenant', {
@@ -160,8 +159,6 @@ export class UsersTenantService {
       class: UsersTenantService.name,
       function: 'addCompanyToTenant',
     });
-
-    const tenant = await this.findOneOrFail({ id: userJwtPayload.id });
     tenant.company = company;
     return await this.usersTenantRepository.save(tenant);
   }

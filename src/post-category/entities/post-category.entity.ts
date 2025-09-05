@@ -1,20 +1,18 @@
-import { Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { AutoMap } from 'automapper-classes';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import EntityHelper from '../../utils/entities/entity-helper';
-import { CompanyPostEntity } from '../../company-post/entities/company-post.entity';
 
-@Entity()
+@Entity({ name: 'post_category' })
 export class PostCategoryEntity extends EntityHelper {
   @AutoMap()
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @AutoMap()
-  name: string;
+  @Column()
+  label: string;
 
-  @AutoMap(() => [CompanyPostEntity])
-  @OneToMany(() => CompanyPostEntity, (post) => post.category, {
-    nullable: true,
-  })
-  posts: CompanyPostEntity[];
+  @AutoMap()
+  @Column()
+  value: string;
 }

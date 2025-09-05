@@ -2,7 +2,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { AutoMap } from 'automapper-classes';
 import EntityHelper from '../../utils/entities/entity-helper';
 
-@Entity()
+@Entity({ name: 'tender_category' })
 export class TenderCategoryEntity extends EntityHelper {
   @AutoMap()
   @PrimaryGeneratedColumn('uuid')
@@ -10,5 +10,9 @@ export class TenderCategoryEntity extends EntityHelper {
 
   @AutoMap()
   @Column()
-  name: string;
+  label: string;
+
+  @AutoMap()
+  @Column()
+  value: string;
 }

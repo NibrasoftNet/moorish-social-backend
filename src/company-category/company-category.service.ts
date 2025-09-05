@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCompanyCategoryDto } from '@/domains/company-category/create-company-category.dto';
-import { UpdateCompanyCategoryDto } from '@/domains/company-category/update-company-category.dto';
+import { CreateCompanyCategoryDto } from './dto/create-company-category.dto';
+import { UpdateCompanyCategoryDto } from './dto/update-company-category.dto';
 import {
   DeepPartial,
   DeleteResult,
   FindOptionsRelations,
   FindOptionsWhere,
+  In,
   Repository,
 } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -27,7 +28,6 @@ export class CompanyCategoryService {
 
   async createCategory(
     createCategoryDto: CreateCompanyCategoryDto,
-    file?: Express.Multer.File | Express.MulterS3.File,
     parentId?: string,
   ): Promise<CompanyCategoryEntity> {
     this.logger.info(`category-createCategory`, {
@@ -42,9 +42,6 @@ export class CompanyCategoryService {
       category.parent = await this.findOneOrFail({
         id: parentId,
       });
-    }
-    if (!!file) {
-      category.image = await this.fileService.uploadFile(file);
     }
     return await this.companyCategoryRepository.save(category);
   }
@@ -83,19 +80,18 @@ export class CompanyCategoryService {
     return await paginate(query, queryBuilder, companyCategoryPaginationConfig);
   }
 
-  async findAll(
-    fields?: FindOptionsWhere<CompanyCategoryEntity>,
-    relations?: FindOptionsRelations<CompanyCategoryEntity>,
-  ): Promise<CompanyCategoryEntity[]> {
+  async findAllChildren(): Promise<CompanyCategoryEntity[]> {
     this.logger.info(`category-findAll`, {
       description: `category-findAll`,
       class: CompanyCategoryService.name,
       function: 'findAll',
     });
-    return await this.companyCategoryRepository.find({
-      where: fields,
-      relations: relations,
-    });
+    return await this.companyCategoryRepository
+      .createQueryBuilder('category')
+      .leftJoinAndSelect('category.parent', 'parent')
+      .leftJoinAndSelect('category.children', 'children')
+      .where('category.parent IS NOT NULL')
+      .getMany();
   }
 
   /**
@@ -140,33 +136,27 @@ export class CompanyCategoryService {
     });
   }
 
+  async findByIdsOrFail(ids: string[]): Promise<CompanyCategoryEntity[]> {
+    return await this.companyCategoryRepository.findBy({ id: In(ids) });
+  }
+
   /**
    * Update a category
    * @param id {number} category ID
    * @param updateCategoryDto {UpdateCompanyCategoryDto} data to update a category
-   * @param file
    * @returns {Promise<CompanyCategoryEntity | undefined>} updated category or undefined if not found
    */
   async update(
     id: string,
     updateCategoryDto: UpdateCompanyCategoryDto,
-    file?: Express.Multer.File | Express.MulterS3.File,
   ): Promise<CompanyCategoryEntity> {
     this.logger.info(`category-update`, {
       description: `category-update`,
       class: CompanyCategoryService.name,
       function: 'update',
     });
-    const existingCategory = await this.findOneOrFail(
-      { id: id },
-      { image: true },
-    );
+    const existingCategory = await this.findOneOrFail({ id });
     Object.assign(existingCategory, updateCategoryDto);
-    if (file) {
-      existingCategory.image = existingCategory.image?.id
-        ? await this.fileService.updateFile(existingCategory.image.id, file)
-        : await this.fileService.uploadFile(file);
-    }
     return await this.companyCategoryRepository.save(existingCategory);
   }
 
@@ -181,10 +171,6 @@ export class CompanyCategoryService {
       class: CompanyCategoryService.name,
       function: 'remove',
     });
-    const categoryToDelete = await this.findOneOrFail({ id: id });
-    if (categoryToDelete.image) {
-      await this.fileService.deleteFile(categoryToDelete.image.id);
-    }
     return await this.companyCategoryRepository.delete(id);
   }
 }
