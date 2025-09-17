@@ -46,7 +46,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Companies')
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ version: '1', path: 'companies' })
 export class CompanyController {
   constructor(
@@ -54,6 +53,7 @@ export class CompanyController {
     @InjectMapper() private readonly mapper: Mapper,
   ) {}
 
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiHeader({
     name: 'tenant-id',
     required: true,
@@ -96,7 +96,6 @@ export class CompanyController {
   }
 
   @ApiPaginationQuery(companyPaginationConfig)
-  @Roles(RoleCodeEnum.TENANTADMIN, RoleCodeEnum.USER, RoleCodeEnum.SUPERADMIN)
   @HttpCode(HttpStatus.OK)
   @Get()
   async findAll(
@@ -111,17 +110,17 @@ export class CompanyController {
     );
   }
 
-  @Roles(RoleCodeEnum.TENANTADMIN, RoleCodeEnum.USER)
   @UseInterceptors(MapInterceptor(CompanyEntity, CompanyDto))
   @HttpCode(HttpStatus.OK)
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<NullableType<CompanyEntity>> {
     return await this.companyService.findOne(
       { id },
-      { categories: { parent: true } },
+      { categories: { parent: true }, tenants: true },
     );
   }
 
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiHeader({
     name: 'tenant-id',
     required: true,
@@ -159,6 +158,7 @@ export class CompanyController {
     return this.companyService.update(id, updateComplexDto, file);
   }
 
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiHeader({
     name: 'tenant-id',
     required: true,

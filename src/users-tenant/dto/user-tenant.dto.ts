@@ -23,6 +23,9 @@ export class UserTenantDto extends EntityHelperDto {
   lastName: string;
 
   @AutoMap()
+  position: string;
+
+  @AutoMap()
   whatsApp: string;
 
   @AutoMap(() => FileDto)

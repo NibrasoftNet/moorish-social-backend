@@ -25,11 +25,11 @@ export class CompanyDto extends EntityHelperDto {
   description: string;
 
   @AutoMap()
-  @Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
+  //@Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
   registrationNumber: string;
 
   @AutoMap(() => [UserTenantDto])
-  @Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
+  //@Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
   tenants: UserTenantDto[];
 
   @AutoMap(() => FileDto)
@@ -37,7 +37,7 @@ export class CompanyDto extends EntityHelperDto {
   image: FileDto;
 
   @AutoMap(() => AddressDto)
-  @Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
+  //@Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
   address: AddressDto;
 
   @AutoMap()
@@ -45,7 +45,7 @@ export class CompanyDto extends EntityHelperDto {
   deletedAt: Date;
 
   @AutoMap()
-  @Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
+  //@Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
   availableSubscriptionTokens: number;
 
   @AutoMap(() => [CompanySubscriptionTokenDto])
@@ -53,18 +53,18 @@ export class CompanyDto extends EntityHelperDto {
   subscriptions: CompanySubscriptionTokenDto[];
 
   @AutoMap(() => [CompanyCategoryDto])
-  @Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
+  //@Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
   categories: CompanyCategoryDto;
 
   @AutoMap()
-  @Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
+  //@Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
   hexColor: string;
 
   @AutoMap()
-  @Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
+  //@Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
   verified: boolean;
 
   @AutoMap()
-  @Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
+  //@Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
   active: boolean;
 }

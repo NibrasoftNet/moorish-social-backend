@@ -44,4 +44,9 @@ export class CreateUserTenantDto {
   @IsOptional()
   @IsString()
   whatsApp?: string;
+
+  @ApiProperty({ example: 'Manager' })
+  @IsOptional()
+  @IsString()
+  position?: string;
 }

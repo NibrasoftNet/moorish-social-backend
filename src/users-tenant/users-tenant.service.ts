@@ -11,7 +11,6 @@ import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { FilesService } from '../files/files.service';
 import { WinstonLoggerService } from '../logger/winston-logger.service';
 import { NullableType } from '../utils/types/nullable.type';
-import { AuthUpdateDto } from '../auth/dto/auth-update.dto';
 import { CreateUserTenantDto } from './dto/create-user-tenant.dto';
 import { usersTenantPaginationConfig } from './config/users-tenant-pagination.config';
 import { plainToClass } from 'class-transformer';
@@ -21,6 +20,7 @@ import { RoleCodeEnum } from '@/enums/roles.enum';
 import { Role } from '../roles/entities/role.entity';
 import { CompanyEntity } from '../company/entities/company.entity';
 import { nanoid } from 'nanoid';
+import { AuthTenantUpdateDto } from '../auth/dto/tenant/auth-tenant-update.dto';
 
 @Injectable()
 export class UsersTenantService {
@@ -81,7 +81,7 @@ export class UsersTenantService {
 
   async update(
     id: string,
-    updateUserDto: AuthUpdateDto,
+    updateUserDto: AuthTenantUpdateDto,
     file?: Express.Multer.File | Express.MulterS3.File,
   ): Promise<UserTenantEntity> {
     const user = await this.findOneOrFail({ id });

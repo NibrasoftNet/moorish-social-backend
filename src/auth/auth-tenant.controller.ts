@@ -21,7 +21,6 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { NullableType } from '../utils/types/nullable.type';
 import { InjectMapper, MapInterceptor } from 'automapper-nestjs';
 import { Mapper } from 'automapper-core';
 import { ParseFormdataPipe } from '../utils/pipes/parse-formdata.pipe';
@@ -40,6 +39,7 @@ import { AuthRequest } from '../utils/types/auth-request.type';
 import { CreateUserTenantDto } from '../users-tenant/dto/create-user-tenant.dto';
 import { ConfirmOtpEmailDto } from '../otp/dto/confirm-otp-email.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { AuthTenantUpdateDto } from './dto/tenant/auth-tenant-update.dto';
 
 @ApiTags('Auth tenants')
 @Controller({
@@ -149,8 +149,8 @@ export class AuthTenantController {
     @Request() request: AuthRequest,
     @Body('data', ParseFormdataPipe) data: any,
     @UploadedFile() file?: Express.Multer.File | Express.MulterS3.File,
-  ): Promise<NullableType<UserTenantEntity>> {
-    const updateUserDto = new AuthUpdateDto(data);
+  ): Promise<UserTenantEntity> {
+    const updateUserDto = new AuthTenantUpdateDto(data);
     await Utils.validateDtoOrFail(updateUserDto);
     return await this.authTenantService.update(
       request.user,

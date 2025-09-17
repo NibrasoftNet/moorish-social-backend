@@ -3,7 +3,7 @@ import { CompanyEntity } from '../entities/company.entity';
 
 export const companyPaginationConfig: PaginateConfig<CompanyEntity> = {
   defaultSortBy: [['createdAt', 'DESC']],
-  relations: [],
+  relations: ['tenants', 'image', 'address', 'categories'],
   searchableColumns: ['name'],
   sortableColumns: ['createdAt', 'updatedAt', 'name'],
   maxLimit: 100,

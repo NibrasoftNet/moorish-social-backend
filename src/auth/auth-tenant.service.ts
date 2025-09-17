@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import { plainToClass } from 'class-transformer';
 import { MailService } from '../mail/mail.service';
-import { NullableType } from '../utils/types/nullable.type';
 import { JwtRefreshPayloadType } from './strategies/types/jwt-refresh-payload.type';
 import { JwtPayloadType } from './strategies/types/jwt-payload.type';
 import { Mapper } from 'automapper-core';
@@ -13,7 +12,6 @@ import { Status } from '../statuses/entities/status.entity';
 import { StatusCodeEnum } from '@/enums/statuses.enum';
 import { ConfirmOtpEmailDto } from '../otp/dto/confirm-otp-email.dto';
 import { AuthResetPasswordDto } from './dto/auth-reset-password.dto';
-import { AuthUpdateDto } from './dto/auth-update.dto';
 import { AuthNewPasswordDto } from './dto/auth-new-password.dto';
 import { SharedService } from '../shared-module/shared.service';
 import { UsersTenantService } from '../users-tenant/users-tenant.service';
@@ -23,6 +21,7 @@ import { SessionAdminResponseDto } from '../session/dto/session-admin-response.d
 import { AuthAdminEmailLoginDto } from './dto-admin/auth-admin-email-login.dto';
 import { CreateUserTenantDto } from '../users-tenant/dto/create-user-tenant.dto';
 import { SessionService } from '../session/session.service';
+import { AuthTenantUpdateDto } from './dto/tenant/auth-tenant-update.dto';
 
 @Injectable()
 export class AuthTenantService {
@@ -46,6 +45,7 @@ export class AuthTenantService {
     newUser.firstName = authEmailRegisterDto.firstName;
     newUser.lastName = authEmailRegisterDto.lastName;
     newUser.password = authEmailRegisterDto.password;
+    newUser.position = authEmailRegisterDto.position;
 
     const user = restoredUser
       ? restoredUser
@@ -214,9 +214,9 @@ export class AuthTenantService {
 
   async update(
     userJwtPayload: JwtPayloadType,
-    updateUserDto: AuthUpdateDto,
+    updateUserDto: AuthTenantUpdateDto,
     files?: Express.Multer.File | Express.MulterS3.File,
-  ): Promise<NullableType<UserTenantEntity>> {
+  ): Promise<UserTenantEntity> {
     return await this.usersTenantService.update(
       userJwtPayload.id,
       updateUserDto,
@@ -249,10 +249,9 @@ export class AuthTenantService {
         HttpStatus.FORBIDDEN,
       );
     }
-
-    await this.usersTenantService.update(userJwtPayload.id, {
-      password: newPasswordDto.newPassword,
-    });
+    console.log('wsxx', user);
+    user.password = newPasswordDto.newPassword;
+    await user.save();
   }
 
   async refreshToken(

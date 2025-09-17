@@ -47,6 +47,10 @@ export class UserTenantEntity extends EntityHelper {
   lastName: string;
 
   @AutoMap()
+  @Column({ type: String, nullable: true })
+  position: string;
+
+  @AutoMap()
   @Column({ nullable: true, type: String, default: '0123456789' })
   whatsApp: string;
 
