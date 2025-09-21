@@ -9,6 +9,12 @@ export const companyPaginationConfig: PaginateConfig<CompanyEntity> = {
   maxLimit: 100,
   loadEagerRelations: true,
   filterableColumns: {
-    name: [FilterOperator.EQ, FilterSuffix.NOT],
+    verified: [FilterOperator.EQ, FilterSuffix.NOT],
+    'address.country': [
+      FilterOperator.EQ,
+      FilterSuffix.NOT,
+      FilterOperator.ILIKE,
+    ],
+    'categories.id': [FilterOperator.EQ, FilterSuffix.NOT],
   },
 };

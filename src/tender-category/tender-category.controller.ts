@@ -27,13 +27,13 @@ import { UpdateTenderCategoryDto } from './dto/update-tender-category.dto';
 
 @ApiTags('Tender Categories')
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ version: '1', path: 'tender-categories' })
 export class TenderCategoryController {
   constructor(private readonly tenderCategoryService: TenderCategoryService) {}
 
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @UseInterceptors(MapInterceptor(TenderCategoryEntity, TenderCategoryDto))
-  @Roles(RoleCodeEnum.SUPERADMIN, RoleCodeEnum.TENANTADMIN, RoleCodeEnum.USER)
+  @Roles(RoleCodeEnum.SUPERADMIN, RoleCodeEnum.TENANTADMIN)
   @HttpCode(HttpStatus.CREATED)
   @Post()
   async create(
@@ -62,6 +62,7 @@ export class TenderCategoryController {
     return await this.tenderCategoryService.findOne({ id });
   }
 
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @UseInterceptors(MapInterceptor(TenderCategoryEntity, TenderCategoryDto))
   @Roles(RoleCodeEnum.SUPERADMIN, RoleCodeEnum.TENANTADMIN, RoleCodeEnum.USER)
   @HttpCode(HttpStatus.OK)
@@ -73,6 +74,7 @@ export class TenderCategoryController {
     return await this.tenderCategoryService.update(id, updateTenderCategoryDto);
   }
 
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(RoleCodeEnum.SUPERADMIN, RoleCodeEnum.TENANTADMIN, RoleCodeEnum.USER)
   @HttpCode(HttpStatus.OK)
   @Delete(':id')

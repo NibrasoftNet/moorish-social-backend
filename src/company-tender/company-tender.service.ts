@@ -63,6 +63,23 @@ export class CompanyTenderService {
     );
   }
 
+  async findAllOthers(
+    companyId: string,
+    query: PaginateQuery,
+  ): Promise<Paginated<CompanyTenderEntity>> {
+    const queryBuilder = this.tenderRepository
+      .createQueryBuilder('tender')
+      .leftJoinAndSelect('tender.participants', 'participants')
+      .leftJoinAndSelect('tender.company', 'company')
+      .where('company.id <> :companyId', { companyId });
+
+    return await paginate<CompanyTenderEntity>(
+      query,
+      queryBuilder,
+      companyTenderPaginationConfig,
+    );
+  }
+
   async findAllMe(
     userJwtPayload: JwtPayloadType,
     query: PaginateQuery,

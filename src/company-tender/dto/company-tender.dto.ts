@@ -5,6 +5,7 @@ import { EntityHelperDto } from '@/domains/entity-helper.dto';
 import { TenderCategoryDto } from '../../tender-category/dto/tender-category.dto';
 import { UserTenantDto } from '../../users-tenant/dto/user-tenant.dto';
 import { CompanyDto } from '../../company/dto/company.dto';
+import { CompanyParticipationCompanyTenderDto } from '../../company-participation-company-tender/dto/company-participation-company-tender.dto';
 
 export class CompanyTenderDto extends EntityHelperDto {
   @AutoMap()
@@ -30,4 +31,16 @@ export class CompanyTenderDto extends EntityHelperDto {
 
   @AutoMap(() => TenderCategoryDto)
   category: TenderCategoryDto;
+
+  @AutoMap(() => [Object])
+  specifications: { key: string; value: string };
+
+  @AutoMap(() => Date)
+  lastSubmissionDate: Date;
+
+  @AutoMap()
+  totalParticipation: number;
+
+  @AutoMap(() => [CompanyParticipationCompanyTenderDto])
+  participants: CompanyParticipationCompanyTenderDto[];
 }

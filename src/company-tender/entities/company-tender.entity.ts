@@ -62,6 +62,18 @@ export class CompanyTenderEntity extends EntityHelper {
   @Column({ default: true })
   active: boolean;
 
+  @AutoMap(() => [Object])
+  @Column('jsonb', { nullable: true })
+  specifications: { key: string; value: string }[] | null;
+
+  @AutoMap(() => Date)
+  @Column({ type: Date, nullable: false })
+  lastSubmissionDate: Date;
+
+  @AutoMap()
+  @Column({ default: 0 })
+  totalParticipation: number;
+
   @AutoMap(() => [CompanyParticipationCompanyTenderEntity])
   @OneToMany(
     () => CompanyParticipationCompanyTenderEntity,

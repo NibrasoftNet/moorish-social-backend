@@ -74,7 +74,7 @@ export class CompanyTenderController {
       },
     },
   })
-  @Roles(RoleCodeEnum.USER)
+  @Roles(RoleCodeEnum.SUPERADMIN, RoleCodeEnum.TENANTADMIN)
   @UseInterceptors(MapInterceptor(CompanyTenderEntity, CompanyTenderDto))
   @UseInterceptors(FilesInterceptor('files', 10))
   @HttpCode(HttpStatus.CREATED)
@@ -116,6 +116,26 @@ export class CompanyTenderController {
   @ApiPaginationQuery(companyTenderPaginationConfig)
   @Roles(RoleCodeEnum.TENANTADMIN, RoleCodeEnum.USER, RoleCodeEnum.SUPERADMIN)
   @HttpCode(HttpStatus.OK)
+  @Get('companies/:companyId')
+  async findAllOthers(
+    @Param('companyId') companyId: string,
+    @Paginate() query: PaginateQuery,
+  ): Promise<PaginatedDto<CompanyTenderEntity, CompanyTenderDto>> {
+    const tenders = await this.companyTenderService.findAllOthers(
+      companyId,
+      query,
+    );
+    return new PaginatedDto<CompanyTenderEntity, CompanyTenderDto>(
+      this.mapper,
+      tenders,
+      CompanyTenderEntity,
+      CompanyTenderDto,
+    );
+  }
+
+  @ApiPaginationQuery(companyTenderPaginationConfig)
+  @Roles(RoleCodeEnum.TENANTADMIN, RoleCodeEnum.USER, RoleCodeEnum.SUPERADMIN)
+  @HttpCode(HttpStatus.OK)
   @Get('me')
   async findAllMe(
     @Request() request: AuthRequest,
@@ -140,7 +160,10 @@ export class CompanyTenderController {
   async findOne(
     @Param('id') id: string,
   ): Promise<NullableType<CompanyTenderEntity>> {
-    return await this.companyTenderService.findOne({ id });
+    return await this.companyTenderService.findOne(
+      { id },
+      { participants: true },
+    );
   }
 
   @ApiConsumes('multipart/form-data')

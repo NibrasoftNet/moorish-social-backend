@@ -6,5 +6,8 @@ export class TenderCategoryDto extends EntityHelperDto {
   id: string;
 
   @AutoMap()
-  name: string;
+  label: string;
+
+  @AutoMap()
+  value: string;
 }
