@@ -162,7 +162,7 @@ export class CompanyTenderController {
   ): Promise<NullableType<CompanyTenderEntity>> {
     return await this.companyTenderService.findOne(
       { id },
-      { participants: true },
+      { participants: { company: { image: true } } },
     );
   }
 
