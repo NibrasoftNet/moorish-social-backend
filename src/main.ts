@@ -23,6 +23,7 @@ import { WorkerService } from 'nestjs-graphile-worker';
 import { RolesSerializerInterceptor } from './utils/interceptors/role.serializer.interceptor';
 import { I18nService } from 'nestjs-i18n';
 import { ParameterObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
+import * as fs from 'fs';
 
 const logger = new Logger('Weavers-social');
 const whitelist = [
@@ -117,6 +118,11 @@ async function bootstrap() {
   );*/
 
   SwaggerModule.setup('moorish-docs', app, document);
+  app.use('/moorish-docs.json', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(document);
+  });
+  fs.writeFileSync('./openapi.json', JSON.stringify(document, null, 2));
   await app.get(WorkerService).run();
   await app.listen(
     configService.getOrThrow('app.port', { infer: true }),
