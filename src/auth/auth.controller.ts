@@ -25,8 +25,8 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { UserEntity } from '../users/entities/user.entity';
 import { NullableType } from '../utils/types/nullable.type';
-import { InjectMapper, MapInterceptor } from 'automapper-nestjs';
-import { Mapper } from 'automapper-core';
+import { InjectMapper, MapInterceptor } from '@automapper/nestjs';
+import { Mapper } from '@automapper/core';
 import { ParseFormdataPipe } from '../utils/pipes/parse-formdata.pipe';
 import { Utils } from '../utils/utils';
 import { AuthEmailLoginDto } from './dto/auth-email-login.dto';

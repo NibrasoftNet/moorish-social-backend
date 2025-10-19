@@ -1,4 +1,4 @@
-import { AutoMap } from 'automapper-classes';
+import { AutoMap } from '@automapper/classes';
 import { NotificationDto } from './notification.dto';
 import { EntityHelperDto } from '@/domains/entity-helper.dto';
 

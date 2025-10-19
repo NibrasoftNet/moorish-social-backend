@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import EntityHelper from '../../utils/entities/entity-helper';
 import { ChatEntity } from './chat.entity';
 import { MessageTypeEnum } from '@/enums/message-type.enum';
-import { AutoMap } from 'automapper-classes';
+import { AutoMap } from '@automapper/classes';
 import { UserEntity } from '../../users/entities/user.entity';
 
 @Entity({ name: 'chat_message' })

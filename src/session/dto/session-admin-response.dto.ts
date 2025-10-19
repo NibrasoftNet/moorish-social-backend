@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { AutoMap } from 'automapper-classes';
+import { AutoMap } from '@automapper/classes';
 import { UserTenantDto } from '../../users-tenant/dto/user-tenant.dto';
 
 export class SessionAdminResponseDto {

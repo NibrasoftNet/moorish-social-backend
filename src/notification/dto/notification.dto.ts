@@ -1,4 +1,4 @@
-import { AutoMap } from 'automapper-classes';
+import { AutoMap } from '@automapper/classes';
 import { Expose } from 'class-transformer';
 import { NotificationEnum } from '@/enums/notification.enum';
 

@@ -1,6 +1,6 @@
-import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
+import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { Injectable } from '@nestjs/common';
-import { createMap, Mapper, MappingProfile } from 'automapper-core';
+import { createMap, Mapper, MappingProfile } from '@automapper/core';
 import { AddressEntity } from '../entities/address.entity';
 import { AddressDto } from '../dto/address.dto';
 

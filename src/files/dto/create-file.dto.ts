@@ -1,4 +1,4 @@
-import { AutoMap } from 'automapper-classes';
+import { AutoMap } from '@automapper/classes';
 import { Validate } from 'class-validator';
 import { IsExist } from '../../utils/validators/is-exists.validator';
 

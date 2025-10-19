@@ -4,8 +4,8 @@ import {
   Mapper,
   MappingProfile,
   typeConverter,
-} from 'automapper-core';
-import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
+} from '@automapper/core';
+import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { CompanyEntity } from '../entities/company.entity';
 import { CompanyDto } from '../dto/company.dto';
 

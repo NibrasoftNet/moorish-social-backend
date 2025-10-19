@@ -1,10 +1,10 @@
-import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
+import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import {
   createMap,
   Mapper,
   MappingProfile,
   typeConverter,
-} from 'automapper-core';
+} from '@automapper/core';
 import { NotificationEntity } from '../entities/notification.entity';
 import { NotificationDto } from '../dto/notification.dto';
 

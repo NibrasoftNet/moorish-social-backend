@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import EntityHelper from '../../utils/entities/entity-helper';
-import { AutoMap } from 'automapper-classes';
+import { AutoMap } from '@automapper/classes';
 import { CompanyEntity } from '../../company/entities/company.entity';
 import { TokenCategoryEntity } from '../../token-category/entities/token-category.entity';
 

@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { AutoMap } from 'automapper-classes';
+import { AutoMap } from '@automapper/classes';
 import EntityHelper from '../../utils/entities/entity-helper';
 import { UserTenantEntity } from '../../users-tenant/entities/user-tenant.entity';
 import { CompanyOfferEntity } from '../../company-offer/entities/company-offer.entity';

@@ -12,7 +12,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { MapInterceptor } from 'automapper-nestjs';
+import { MapInterceptor } from '@automapper/nestjs';
 import { NullableType } from '../utils/types/nullable.type';
 import { Roles } from '../roles/roles.decorator';
 import { RoleCodeEnum } from '@/enums/roles.enum';

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
-import { createMap, Mapper, MappingProfile } from 'automapper-core';
-import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
+import { createMap, Mapper, MappingProfile } from '@automapper/core';
+import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { UserTenderDto } from '../dto/user-tender.dto';
 import { UserTenderEntity } from '../entities/user-tender.entity';
 

@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { UserEntity } from '../../users/entities/user.entity';
 import EntityHelper from '../../utils/entities/entity-helper';
-import { AutoMap } from 'automapper-classes';
+import { AutoMap } from '@automapper/classes';
 import { UserTenantEntity } from '../../users-tenant/entities/user-tenant.entity';
 
 @Entity({ name: 'user_socket' })

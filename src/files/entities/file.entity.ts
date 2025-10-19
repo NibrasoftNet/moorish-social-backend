@@ -9,7 +9,7 @@ import { Allow } from 'class-validator';
 import EntityHelper from '../../utils/entities/entity-helper';
 import appConfig from '../../config/app.config';
 import { AppConfig } from 'src/config/app-config.type';
-import { AutoMap } from 'automapper-classes';
+import { AutoMap } from '@automapper/classes';
 
 @Entity({ name: 'file' })
 export class FileEntity extends EntityHelper {

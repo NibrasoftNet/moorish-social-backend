@@ -1,6 +1,6 @@
 import { MessageTypeEnum } from '@/enums/message-type.enum';
 import { EntityHelperDto } from '@/domains/entity-helper.dto';
-import { AutoMap } from 'automapper-classes';
+import { AutoMap } from '@automapper/classes';
 import { ChatDto } from './chat.dto';
 import { UserDto } from '../../users/user/user.dto';
 import { Expose } from 'class-transformer';

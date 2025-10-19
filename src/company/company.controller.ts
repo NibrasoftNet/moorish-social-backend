@@ -24,7 +24,7 @@ import {
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../roles/roles.guard';
-import { InjectMapper, MapInterceptor } from 'automapper-nestjs';
+import { InjectMapper, MapInterceptor } from '@automapper/nestjs';
 import { Roles } from '../roles/roles.decorator';
 import { RoleCodeEnum } from '@/enums/roles.enum';
 import { ParseFormdataPipe } from '../utils/pipes/parse-formdata.pipe';
@@ -32,7 +32,7 @@ import { Utils } from '../utils/utils';
 import { NullableType } from '../utils/types/nullable.type';
 import { ApiPaginationQuery, Paginate, PaginateQuery } from 'nestjs-paginate';
 import { PaginatedDto } from '../utils/serialization/paginated.dto';
-import { Mapper } from 'automapper-core';
+import { Mapper } from '@automapper/core';
 import { IsCreatorPipe } from '../utils/pipes/is-creator.pipe';
 import { DeleteResult } from 'typeorm';
 import { CompanyEntity } from './entities/company.entity';

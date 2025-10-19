@@ -4,7 +4,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { AutoMap } from 'automapper-classes';
+import { AutoMap } from '@automapper/classes';
 
 export default class EntityHelper extends BaseEntity {
   __entity?: string;

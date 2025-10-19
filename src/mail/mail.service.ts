@@ -9,6 +9,8 @@ import nodemailer from 'nodemailer';
 import fs from 'node:fs/promises';
 import Handlebars from 'handlebars';
 import { ISendMailOptions, MailerService } from '@nestjs-modules/mailer';
+import { SendInterencheresExportDto } from './dto/send-interencheres-export.dto';
+import { SendInvoiceEmailDto } from './dto/send-invoice-email.dto';
 
 @Injectable()
 export class MailService {
@@ -17,6 +19,77 @@ export class MailService {
     private readonly mailerService: MailerService,
     private readonly configService: ConfigService<AllConfigType>,
   ) {}
+
+  async sendInvoiceEmail(
+    sendInvoiceEmailDto: SendInvoiceEmailDto,
+  ): Promise<void> {
+    const {
+      to,
+      civility,
+      firstName,
+      name,
+      invoiceNumber,
+      title,
+      date,
+      balanceToBePaid,
+      companyLogo,
+      subject = 'Bordereau de vente aux enchères',
+    } = sendInvoiceEmailDto;
+
+    const context = {
+      companyLogo: companyLogo || '',
+      invoiceNumber,
+      civility,
+      firstName,
+      name,
+      title,
+      date,
+      balanceToBePaid,
+      currentYear: new Date().getFullYear(),
+    };
+    await this.sendEmail({
+      to,
+      subject,
+      text: 'Veuillez utiliser le code de vérification fourni.',
+      templatePath: path.join(__dirname, 'templates', 'invoice.hbs'),
+      context,
+    });
+  }
+
+  // ✅ NEW METHOD: Send Double-Factor Authentication Email
+  async sendDoubleFactorAuthEmail(): Promise<void> {
+    const currentYear = new Date().getFullYear();
+    await this.sendEmail({
+      to: 'user@example.com',
+      subject: 'Authentification à double facteur',
+      text: 'Veuillez utiliser le code de vérification fourni.',
+      templatePath: path.join(__dirname, 'templates', 'double-fa.hbs'),
+      context: {
+        code: '123456',
+        link: 'https://cheops.com/auth/verify?token=abc123',
+        currentYear,
+      },
+    });
+  }
+
+  async sendInterencheresExportEmail(
+    dto: SendInterencheresExportDto,
+  ): Promise<void> {
+    const currentYear = new Date().getFullYear();
+
+    await this.sendEmail({
+      to: dto.email,
+      subject: `Export pour Interenchère - ${dto.title}`,
+      text: `Export de la vente "${dto.title}" du ${dto.date}`,
+      templatePath: path.join(__dirname, 'templates', 'interenchere.hbs'),
+      context: {
+        title: dto.title,
+        date: dto.date,
+        companyLogo: './logo-cheops.png',
+        currentYear,
+      },
+    });
+  }
 
   async userSignUp(mailData: MailData<{ otp: string }>): Promise<void> {
     const i18n = I18nContext.current();
@@ -118,7 +191,7 @@ export class MailService {
         to,
         subject,
         html: html,
-        //context,
+        context,
       };
       await this.mailerService.sendMail(sendingExportEmailOptions);
     } catch (error) {
@@ -134,6 +207,7 @@ export class MailService {
       );
     }
   }
+
   async sendDummyMail() {
     const result = await this.mailerService.sendMail({
       from: 'help@weavers.com',

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
-import { createMap, Mapper, MappingProfile } from 'automapper-core';
-import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
+import { createMap, Mapper, MappingProfile } from '@automapper/core';
+import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { FileEntity } from '../entities/file.entity';
 import { FileDto } from '../dto/file.dto';
 

@@ -1,4 +1,4 @@
-import { AutoMap } from 'automapper-classes';
+import { AutoMap } from '@automapper/classes';
 import { FileDto } from '../../files/dto/file.dto';
 import { CompanyDto } from '../../company/dto/company.dto';
 import { UserTenantDto } from '../../users-tenant/dto/user-tenant.dto';
