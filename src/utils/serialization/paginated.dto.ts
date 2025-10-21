@@ -1,6 +1,6 @@
 import { OmitType } from '@nestjs/swagger';
 import { Paginated } from 'nestjs-paginate';
-import { Mapper, ModelIdentifier } from 'automapper-core';
+import { Mapper, ModelIdentifier } from '@automapper/core';
 
 export class PaginatedDto<T, V> extends OmitType(Paginated, ['data'] as const) {
   data: V[];

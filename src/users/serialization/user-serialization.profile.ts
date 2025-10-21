@@ -7,9 +7,9 @@ import {
   Mapper,
   MappingProfile,
   typeConverter,
-} from 'automapper-core';
+} from '@automapper/core';
 import { UserEntity } from '../entities/user.entity';
-import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
+import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { UserDto } from '../user/user.dto';
 
 @Injectable()

@@ -1,4 +1,4 @@
-import { AutoMap } from 'automapper-classes';
+import { AutoMap } from '@automapper/classes';
 import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { NotificationEntity } from './notification.entity';
 import EntityHelper from '../../utils/entities/entity-helper';

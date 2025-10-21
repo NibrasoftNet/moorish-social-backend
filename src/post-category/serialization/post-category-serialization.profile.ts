@@ -1,5 +1,5 @@
-import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
-import { createMap, Mapper, MappingProfile } from 'automapper-core';
+import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
+import { createMap, Mapper, MappingProfile } from '@automapper/core';
 import { PostCategoryEntity } from '../entities/post-category.entity';
 import { PostCategoryDto } from '../dto/post-category.dto';
 

@@ -13,9 +13,9 @@ import {
 } from '@nestjs/common';
 import { AddressService } from './address.service';
 import { ApiTags } from '@nestjs/swagger';
-import { InjectMapper, MapInterceptor } from 'automapper-nestjs';
+import { InjectMapper, MapInterceptor } from '@automapper/nestjs';
 import { AddressEntity } from './entities/address.entity';
-import { Mapper } from 'automapper-core';
+import { Mapper } from '@automapper/core';
 import { AddressDto } from './dto/address.dto';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';

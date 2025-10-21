@@ -1,5 +1,5 @@
-import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
-import { createMap, Mapper, MappingProfile } from 'automapper-core';
+import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
+import { createMap, Mapper, MappingProfile } from '@automapper/core';
 import { CompanySubscriptionTokenEntity } from '../entities/company-subscription-token.entity';
 import { CompanySubscriptionTokenDto } from '../dto/company-subscription-token.dto';
 

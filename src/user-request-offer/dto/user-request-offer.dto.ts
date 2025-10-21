@@ -1,4 +1,4 @@
-import { AutoMap } from 'automapper-classes';
+import { AutoMap } from '@automapper/classes';
 import { EntityHelperDto } from '@/domains/entity-helper.dto';
 import { CompanyOfferDto } from '../../company-offer/dto/company-offer.dto';
 import { UserDto } from '../../users/user/user.dto';

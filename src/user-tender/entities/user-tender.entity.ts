@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { FileEntity } from '../../files/entities/file.entity';
-import { AutoMap } from 'automapper-classes';
+import { AutoMap } from '@automapper/classes';
 import EntityHelper from '../../utils/entities/entity-helper';
 import { UserEntity } from '../../users/entities/user.entity';
 import { TenderCategoryEntity } from '../../tender-category/entities/tender-category.entity';

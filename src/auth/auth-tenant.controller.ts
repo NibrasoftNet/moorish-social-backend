@@ -21,8 +21,8 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { InjectMapper, MapInterceptor } from 'automapper-nestjs';
-import { Mapper } from 'automapper-core';
+import { InjectMapper, MapInterceptor } from '@automapper/nestjs';
+import { Mapper } from '@automapper/core';
 import { ParseFormdataPipe } from '../utils/pipes/parse-formdata.pipe';
 import { Utils } from '../utils/utils';
 import { AuthResetPasswordDto } from './dto/auth-reset-password.dto';

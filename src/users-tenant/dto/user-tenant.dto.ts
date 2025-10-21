@@ -1,4 +1,4 @@
-import { AutoMap } from 'automapper-classes';
+import { AutoMap } from '@automapper/classes';
 import { FileDto } from '../../files/dto/file.dto';
 import { RoleDto } from '../../roles/dto/role.dto';
 import { StatusesDto } from '../../statuses/dto/statuses.dto';

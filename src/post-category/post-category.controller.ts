@@ -17,7 +17,7 @@ import { NullableType } from '../utils/types/nullable.type';
 import { DeleteResult } from 'typeorm';
 import { Roles } from '../roles/roles.decorator';
 import { RolesGuard } from '../roles/roles.guard';
-import { MapInterceptor } from 'automapper-nestjs';
+import { MapInterceptor } from '@automapper/nestjs';
 import { RoleCodeEnum } from '@/enums/roles.enum';
 import { PostCategoryService } from './post-category.service';
 import { PostCategoryEntity } from './entities/post-category.entity';

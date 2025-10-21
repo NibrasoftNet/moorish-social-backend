@@ -13,7 +13,7 @@ import { Role } from '../../roles/entities/role.entity';
 import { Status } from '../../statuses/entities/status.entity';
 import bcrypt from 'bcryptjs';
 import EntityHelper from '../../utils/entities/entity-helper';
-import { AutoMap } from 'automapper-classes';
+import { AutoMap } from '@automapper/classes';
 import { FileEntity } from '../../files/entities/file.entity';
 import { UserSocketEntity } from '../../chat/entities/user-socket.entity';
 import { CompanyEntity } from '../../company/entities/company.entity';

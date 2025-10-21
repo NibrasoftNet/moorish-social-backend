@@ -15,7 +15,7 @@ import {
 } from '@nestjs/common';
 import { ChatEntity } from './entities/chat.entity';
 import { CreateGroupDto } from './dto/create-group.dto';
-import { InjectMapper, MapInterceptor } from 'automapper-nestjs';
+import { InjectMapper, MapInterceptor } from '@automapper/nestjs';
 import { ChatDto } from './dto/chat.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
@@ -26,7 +26,7 @@ import { Roles } from '../roles/roles.decorator';
 import { RoleCodeEnum } from '@/enums/roles.enum';
 import { PaginatedDto } from '../utils/serialization/paginated.dto';
 import { chatPaginationConfig } from './config/chat-pagination-config';
-import { Mapper } from 'automapper-core';
+import { Mapper } from '@automapper/core';
 import { UpdateChatDto } from './dto/update-chat.dto';
 import { DeleteResult } from 'typeorm';
 import { AuthRequest } from '../utils/types/auth-request.type';

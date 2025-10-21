@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { InjectMapper } from 'automapper-nestjs';
+import { InjectMapper } from '@automapper/nestjs';
 import {
   DeleteResult,
   FindOptionsRelations,
@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { Paginated, PaginateQuery } from 'nestjs-paginate';
 import { NullableType } from '../utils/types/nullable.type';
-import { Mapper } from 'automapper-core';
+import { Mapper } from '@automapper/core';
 import { CreateCompanySubscriptionTokenDto } from './dto/create-company-subscription-token.dto';
 import { CompanySubscriptionTokenEntity } from './entities/company-subscription-token.entity';
 import { CompanyService } from '../company/company.service';

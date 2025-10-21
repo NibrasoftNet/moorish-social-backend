@@ -1,4 +1,4 @@
-import { AutoMap } from 'automapper-classes';
+import { AutoMap } from '@automapper/classes';
 import { RequestStatusEnum } from '@/enums/request-status.enum';
 import { FileDto } from '../../files/dto/file.dto';
 import { EntityHelperDto } from '@/domains/entity-helper.dto';

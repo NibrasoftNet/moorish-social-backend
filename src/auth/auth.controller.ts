@@ -18,14 +18,15 @@ import {
   ApiBody,
   ApiConsumes,
   ApiExtraModels,
+  ApiResponse,
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { UserEntity } from '../users/entities/user.entity';
 import { NullableType } from '../utils/types/nullable.type';
-import { InjectMapper, MapInterceptor } from 'automapper-nestjs';
-import { Mapper } from 'automapper-core';
+import { InjectMapper, MapInterceptor } from '@automapper/nestjs';
+import { Mapper } from '@automapper/core';
 import { ParseFormdataPipe } from '../utils/pipes/parse-formdata.pipe';
 import { Utils } from '../utils/utils';
 import { AuthEmailLoginDto } from './dto/auth-email-login.dto';
@@ -53,6 +54,7 @@ export class AuthController {
   ) {}
 
   @Post('email-login')
+  @ApiResponse({ type: SessionResponseDto })
   @HttpCode(HttpStatus.OK)
   public async login(
     @Body() loginDto: AuthEmailLoginDto,
@@ -61,12 +63,14 @@ export class AuthController {
   }
 
   @Post('email-register')
+  @ApiResponse({ type: String })
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() createUserDto: AuthEmailRegisterDto): Promise<string> {
     return await this.service.register(createUserDto);
   }
 
   @Post('email-confirm')
+  @ApiResponse({ type: Boolean })
   @HttpCode(HttpStatus.OK)
   async confirmEmail(
     @Body() confirmOtpEmailDto: ConfirmOtpEmailDto,
@@ -74,8 +78,9 @@ export class AuthController {
     return await this.service.confirmEmail(confirmOtpEmailDto);
   }
 
-  @Post('forgot-password')
+  @ApiResponse({ type: String })
   @HttpCode(HttpStatus.OK)
+  @Post('forgot-password')
   async forgotPassword(
     @Body() forgotPasswordDto: AuthForgotPasswordDto,
   ): Promise<string> {
@@ -90,16 +95,18 @@ export class AuthController {
     return await this.service.resetPassword(resetPasswordDto);
   }
 
+  @ApiResponse({ type: SessionResponseDto })
   @ApiBearerAuth()
-  @Get('me')
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
+  @Get('me')
   public async me(
     @Request() request: AuthRequest,
   ): Promise<SessionResponseDto> {
     return await this.service.me(request.user);
   }
 
+  @ApiResponse({ type: SessionResponseDto })
   @ApiBearerAuth()
   @Post('refresh')
   @UseGuards(AuthGuard('jwt-refresh'))

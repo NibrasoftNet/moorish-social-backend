@@ -1,5 +1,5 @@
-import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
-import { createMap, Mapper, MappingProfile } from 'automapper-core';
+import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
+import { createMap, Mapper, MappingProfile } from '@automapper/core';
 import { CompanyParticipationCompanyTenderEntity } from '../entities/company-participation-company-tender.entity';
 import { CompanyParticipationCompanyTenderDto } from '../dto/company-participation-company-tender.dto';
 

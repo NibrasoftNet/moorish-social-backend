@@ -8,8 +8,8 @@ import {
 } from 'typeorm';
 import { Paginate, paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { NullableType } from '../utils/types/nullable.type';
-import { InjectMapper } from 'automapper-nestjs';
-import { Mapper } from 'automapper-core';
+import { InjectMapper } from '@automapper/nestjs';
+import { Mapper } from '@automapper/core';
 import { JwtPayloadType } from '../auth/strategies/types/jwt-payload.type';
 import { UserRequestOfferEntity } from './entities/user-request-offer.entity';
 import { CompanyOfferService } from '../company-offer/company-offer.service';

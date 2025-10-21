@@ -1,5 +1,5 @@
-import { AutomapperProfile, InjectMapper } from 'automapper-nestjs';
-import { createMap, Mapper, MappingProfile } from 'automapper-core';
+import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
+import { createMap, Mapper, MappingProfile } from '@automapper/core';
 import { NotificationRecipientEntity } from '../entities/notification-recipient.entity';
 import { NotificationRecipientDto } from '../dto/notification-recipient.dto';
 

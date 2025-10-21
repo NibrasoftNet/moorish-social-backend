@@ -14,8 +14,8 @@ import {
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { PaginatedDto } from '../utils/serialization/paginated.dto';
 import { ApiPaginationQuery, Paginate, PaginateQuery } from 'nestjs-paginate';
-import { Mapper } from 'automapper-core';
-import { InjectMapper, MapInterceptor } from 'automapper-nestjs';
+import { Mapper } from '@automapper/core';
+import { InjectMapper, MapInterceptor } from '@automapper/nestjs';
 import { NullableType } from '../utils/types/nullable.type';
 import { Roles } from '../roles/roles.decorator';
 import { RoleCodeEnum } from '@/enums/roles.enum';

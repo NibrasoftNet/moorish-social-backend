@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 import EntityHelper from '../../utils/entities/entity-helper';
-import { AutoMap } from 'automapper-classes';
+import { AutoMap } from '@automapper/classes';
 import { StatusCodeEnum } from '@/enums/statuses.enum';
 
 @Entity({ name: 'status' })

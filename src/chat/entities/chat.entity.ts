@@ -12,7 +12,7 @@ import {
 import { MessageEntity } from './message.entity';
 import EntityHelper from '../../utils/entities/entity-helper';
 import { UserEntity } from '../../users/entities/user.entity';
-import { AutoMap } from 'automapper-classes';
+import { AutoMap } from '@automapper/classes';
 
 @Entity({ name: 'chat' })
 export class ChatEntity extends EntityHelper {

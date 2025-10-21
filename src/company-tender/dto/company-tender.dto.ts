@@ -1,4 +1,4 @@
-import { AutoMap } from 'automapper-classes';
+import { AutoMap } from '@automapper/classes';
 import { FileEntity } from '../../files/entities/file.entity';
 import { FileDto } from '../../files/dto/file.dto';
 import { EntityHelperDto } from '@/domains/entity-helper.dto';

@@ -24,8 +24,8 @@ import {
   ReceiverDto,
 } from '../notification/dto/create-notification.dto';
 import { NotificationEnum } from '@/enums/notification.enum';
-import { InjectMapper } from 'automapper-nestjs';
-import { Mapper } from 'automapper-core';
+import { InjectMapper } from '@automapper/nestjs';
+import { Mapper } from '@automapper/core';
 import { NotificationService } from '../notification/notification.service';
 import { UserTenderEntity } from '../user-tender/entities/user-tender.entity';
 import { CompanyTenderService } from 'src/company-tender/company-tender.service';

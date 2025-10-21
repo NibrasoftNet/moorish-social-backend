@@ -11,8 +11,6 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { AllConfigType } from './config/config.type';
 import { OtpModule } from './otp/otp.module';
 import { addTransactionalDataSource } from 'typeorm-transactional';
-import { AutomapperModule } from 'automapper-nestjs';
-import { classes } from 'automapper-classes';
 import { EntityHelperProfile } from './utils/serialization/entity-helper.profile';
 import { OauthModule } from './oauth/oauth.module';
 import googleConfig from './oauth/config/google.config';
@@ -52,6 +50,8 @@ import { CompanyTenderModule } from './company-tender/company-tender.module';
 import { CompanyParticipationCompanyTenderModule } from './company-participation-company-tender/company-participation-company-tender.module';
 import { UserTestimonialModule } from './user-testimonial/user-testimonial.module';
 import { SessionModule } from './session/session.module';
+import { AutomapperModule } from '@automapper/nestjs';
+import { classes } from '@automapper/classes';
 
 @Module({
   imports: [

@@ -1,4 +1,4 @@
-import { AutoMap } from 'automapper-classes';
+import { AutoMap } from '@automapper/classes';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import EntityHelper from '../../utils/entities/entity-helper';
 

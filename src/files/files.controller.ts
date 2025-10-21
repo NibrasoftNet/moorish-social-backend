@@ -27,7 +27,7 @@ import { FileEntity } from './entities/file.entity';
 import { createReadStream } from 'fs';
 import { join } from 'path';
 import * as mime from 'mime-types';
-import { InjectMapper, MapInterceptor } from 'automapper-nestjs';
+import { InjectMapper, MapInterceptor } from '@automapper/nestjs';
 import { FileDto } from './dto/file.dto';
 import { NullableType } from '../utils/types/nullable.type';
 import { PresignedUrlResponseDto } from './dto/presign-url-response.dto';
@@ -37,7 +37,7 @@ import { filePaginationConfig } from './config/files-pagination.config';
 import { Roles } from '../roles/roles.decorator';
 import { RoleCodeEnum } from '@/enums/roles.enum';
 import { PaginatedDto } from '../utils/serialization/paginated.dto';
-import { Mapper } from 'automapper-core';
+import { Mapper } from '@automapper/core';
 
 @ApiTags('Files')
 @ApiBearerAuth()

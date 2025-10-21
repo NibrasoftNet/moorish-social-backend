@@ -14,8 +14,8 @@ import {
 } from '@nestjs/common';
 import { UserTestimonialService } from './user-testimonial.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { InjectMapper, MapInterceptor } from 'automapper-nestjs';
-import { Mapper } from 'automapper-core';
+import { InjectMapper, MapInterceptor } from '@automapper/nestjs';
+import { Mapper } from '@automapper/core';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../roles/roles.guard';
 import { Roles } from '../roles/roles.decorator';
