@@ -15,7 +15,7 @@ services:
     container_name: weavers-social-maildev
     build:
       context: ..
-      dockerfile: ../maildev.Dockerfile
+      dockerfile: maildev.Dockerfile
     ports:
       - ${MAIL_CLIENT_PORT}:1080
       - ${MAIL_PORT}:1025

@@ -40,3 +40,4 @@ lerna-debug.log*
 .env.*
 pnpm-lock.yaml
 /ormconfig.json
+/src/database/migrations/*
