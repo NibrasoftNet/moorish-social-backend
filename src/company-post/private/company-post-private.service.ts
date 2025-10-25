@@ -1,29 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCompanyPostDto } from './dto/create-company-post.dto';
-import { UpdateCompanyPostDto } from './dto/update-company-post.dto';
-import { InjectRepository } from '@nestjs/typeorm';
+import { CreateCompanyPostDto } from '../dto/create-company-post.dto';
+import { UpdateCompanyPostDto } from '../dto/update-company-post.dto';
 import {
   DeepPartial,
   DeleteResult,
   FindOptionsRelations,
   FindOptionsWhere,
-  Repository,
 } from 'typeorm';
-import { CompanyPostEntity } from './entities/company-post.entity';
-import { JwtPayloadType } from '../auth/strategies/types/jwt-payload.type';
-import { UsersTenantService } from '../users-tenant/users-tenant.service';
-import { FilesService } from '../files/files.service';
-import { PostCategoryService } from '../post-category/post-category.service';
+import { CompanyPostEntity } from '../entities/company-post.entity';
+import { JwtPayloadType } from '../../auth/strategies/types/jwt-payload.type';
+import { UsersTenantService } from '../../users-tenant/users-tenant.service';
+import { FilesService } from '../../files/files.service';
+import { PostCategoryService } from '../../post-category/post-category.service';
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
-import { companyPostPaginationConfig } from './config/company-post-pagination-config';
-import { NullableType } from 'src/utils/types/nullable.type';
-import { CompanyPublicService } from '../company/public/company-public.service';
+import { companyPostPaginationConfig } from '../config/company-post-pagination-config';
+import { NullableType } from '../../utils/types/nullable.type';
+import { CompanyPublicService } from '../../company/public/company-public.service';
+import {
+  InjectTenantAwareRepository,
+  TenantAwareRepository,
+} from '../../utils/repository/tenant-aware';
 
 @Injectable()
-export class CompanyPostService {
+export class CompanyPostPrivateService {
   constructor(
-    @InjectRepository(CompanyPostEntity)
-    private readonly companyPostRepository: Repository<CompanyPostEntity>,
+    @InjectTenantAwareRepository(CompanyPostEntity)
+    private readonly companyPostRepository: TenantAwareRepository<CompanyPostEntity>,
     private readonly companyService: CompanyPublicService,
     private readonly userTenantService: UsersTenantService,
     private readonly filesService: FilesService,

@@ -53,6 +53,7 @@ import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { CompanyPrivateController } from './company/private/company-private.controller';
 import { CompanyOfferPrivateController } from './company-offer/private/company-offer-private.controller';
+import { CompanyPostPrivateController } from './company-post/private/company-post-private.controller';
 
 @Module({
   imports: [
@@ -153,6 +154,7 @@ export class AppModule implements NestModule {
       .forRoutes(
         CompanyPrivateController,
         CompanyOfferPrivateController,
+        CompanyPostPrivateController,
         CompanySubscriptionTokenController,
       );
   }

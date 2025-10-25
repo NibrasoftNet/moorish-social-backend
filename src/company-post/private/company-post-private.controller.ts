@@ -1,6 +1,5 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
   Param,
@@ -13,9 +12,8 @@ import {
   Request,
   Put,
 } from '@nestjs/common';
-import { CompanyPostService } from './company-post.service';
-import { CreateCompanyPostDto } from './dto/create-company-post.dto';
-import { UpdateCompanyPostDto } from './dto/update-company-post.dto';
+import { CreateCompanyPostDto } from '../dto/create-company-post.dto';
+import { UpdateCompanyPostDto } from '../dto/update-company-post.dto';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -25,22 +23,19 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from '../roles/roles.guard';
+import { RolesGuard } from '../../roles/roles.guard';
 import { InjectMapper, MapInterceptor } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
-import { Roles } from '../roles/roles.decorator';
+import { Roles } from '../../roles/roles.decorator';
 import { RoleCodeEnum } from '@/enums/roles.enum';
-import { CompanyPostEntity } from './entities/company-post.entity';
-import { CompanyPostDto } from './dto/company-post.dto';
+import { CompanyPostEntity } from '../entities/company-post.entity';
+import { CompanyPostDto } from '../dto/company-post.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { ParseFormdataPipe } from '../utils/pipes/parse-formdata.pipe';
-import { Utils } from '../utils/utils';
-import { AuthRequest } from '../utils/types/auth-request.type';
-import { ApiPaginationQuery, Paginate, PaginateQuery } from 'nestjs-paginate';
-import { PaginatedDto } from 'src/utils/serialization/paginated.dto';
-import { companyPostPaginationConfig } from './config/company-post-pagination-config';
-import { NullableType } from '../utils/types/nullable.type';
+import { ParseFormdataPipe } from '../../utils/pipes/parse-formdata.pipe';
+import { Utils } from '../../utils/utils';
+import { AuthRequest } from '../../utils/types/auth-request.type';
 import { DeleteResult } from 'typeorm';
+import { CompanyPostPrivateService } from './company-post-private.service';
 
 @ApiTags('Company Posts')
 @ApiBearerAuth()
@@ -49,9 +44,9 @@ import { DeleteResult } from 'typeorm';
   path: 'company-posts',
   version: '1',
 })
-export class CompanyPostController {
+export class CompanyPostPrivateController {
   constructor(
-    private readonly companyPostService: CompanyPostService,
+    private readonly companyPostService: CompanyPostPrivateService,
     @InjectMapper() private readonly mapper: Mapper,
   ) {}
 
@@ -95,32 +90,6 @@ export class CompanyPostController {
       createCompanyPostDto,
       files,
     );
-  }
-
-  @ApiPaginationQuery(companyPostPaginationConfig)
-  @Roles(RoleCodeEnum.TENANTADMIN, RoleCodeEnum.USER, RoleCodeEnum.SUPERADMIN)
-  @HttpCode(HttpStatus.OK)
-  @Get()
-  async findAll(
-    @Paginate() query: PaginateQuery,
-  ): Promise<PaginatedDto<CompanyPostEntity, CompanyPostDto>> {
-    const posts = await this.companyPostService.findAll(query);
-    return new PaginatedDto<CompanyPostEntity, CompanyPostDto>(
-      this.mapper,
-      posts,
-      CompanyPostEntity,
-      CompanyPostDto,
-    );
-  }
-
-  @Roles(RoleCodeEnum.TENANTADMIN, RoleCodeEnum.USER, RoleCodeEnum.SUPERADMIN)
-  @UseInterceptors(MapInterceptor(CompanyPostEntity, CompanyPostDto))
-  @HttpCode(HttpStatus.OK)
-  @Get(':id')
-  async findOne(
-    @Param('id') id: string,
-  ): Promise<NullableType<CompanyPostEntity>> {
-    return await this.companyPostService.findOne({ id });
   }
 
   @ApiConsumes('multipart/form-data')
