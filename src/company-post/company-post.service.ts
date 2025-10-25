@@ -11,20 +11,20 @@ import {
 } from 'typeorm';
 import { CompanyPostEntity } from './entities/company-post.entity';
 import { JwtPayloadType } from '../auth/strategies/types/jwt-payload.type';
-import { CompanyService } from '../company/company.service';
 import { UsersTenantService } from '../users-tenant/users-tenant.service';
 import { FilesService } from '../files/files.service';
 import { PostCategoryService } from '../post-category/post-category.service';
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { companyPostPaginationConfig } from './config/company-post-pagination-config';
 import { NullableType } from 'src/utils/types/nullable.type';
+import { CompanyPublicService } from '../company/public/company-public.service';
 
 @Injectable()
 export class CompanyPostService {
   constructor(
     @InjectRepository(CompanyPostEntity)
     private readonly companyPostRepository: Repository<CompanyPostEntity>,
-    private readonly companyService: CompanyService,
+    private readonly companyService: CompanyPublicService,
     private readonly userTenantService: UsersTenantService,
     private readonly filesService: FilesService,
     private readonly postCategoryService: PostCategoryService,

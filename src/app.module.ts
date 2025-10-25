@@ -36,7 +36,6 @@ import { TenantMiddleware } from './utils/repository/tenant-aware/tenant.middlew
 import { CompanySubscriptionTokenModule } from './company-subscription-token/company-subscription-token.module';
 import { CompanyModule } from './company/company.module';
 import { TokenCategoryModule } from './token-category/token-category.module';
-import { CompanyController } from './company/company.controller';
 import { CompanySubscriptionTokenController } from './company-subscription-token/company-subscription-token.controller';
 import { CompanyPostModule } from './company-post/company-post.module';
 import { PostCategoryModule } from './post-category/post-category.module';
@@ -52,6 +51,7 @@ import { UserTestimonialModule } from './user-testimonial/user-testimonial.modul
 import { SessionModule } from './session/session.module';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
+import { CompanyPrivateController } from './company/private/company-private.controller';
 
 @Module({
   imports: [
@@ -149,6 +149,6 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(TenantMiddleware)
-      .forRoutes(CompanyController, CompanySubscriptionTokenController);
+      .forRoutes(CompanyPrivateController, CompanySubscriptionTokenController);
   }
 }

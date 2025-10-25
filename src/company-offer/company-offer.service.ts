@@ -9,7 +9,6 @@ import {
 } from 'typeorm';
 import { CompanyOfferEntity } from './entities/company-offer.entity';
 import { JwtPayloadType } from '../auth/strategies/types/jwt-payload.type';
-import { CompanyService } from '../company/company.service';
 import { UsersTenantService } from '../users-tenant/users-tenant.service';
 import { FilesService } from '../files/files.service';
 import { PostCategoryService } from '../post-category/post-category.service';
@@ -18,13 +17,14 @@ import { companyOfferPaginationConfig } from './config/company-offer-pagination-
 import { NullableType } from 'src/utils/types/nullable.type';
 import { CreateCompanyOfferDto } from './dto/create-company-offer.dto';
 import { UpdateCompanyOfferDto } from './dto/update-company-offer.dto';
+import { CompanyPublicService } from '../company/public/company-public.service';
 
 @Injectable()
 export class CompanyOfferService {
   constructor(
     @InjectRepository(CompanyOfferEntity)
     private readonly companyOfferRepository: Repository<CompanyOfferEntity>,
-    private readonly companyService: CompanyService,
+    private readonly companyService: CompanyPublicService,
     private readonly userTenantService: UsersTenantService,
     private readonly filesService: FilesService,
     private readonly postCategoryService: PostCategoryService,

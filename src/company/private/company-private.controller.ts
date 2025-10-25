@@ -1,6 +1,5 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
   Param,
@@ -23,33 +22,29 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from '../roles/roles.guard';
+import { RolesGuard } from '../../roles/roles.guard';
 import { InjectMapper, MapInterceptor } from '@automapper/nestjs';
-import { Roles } from '../roles/roles.decorator';
+import { Roles } from '../../roles/roles.decorator';
 import { RoleCodeEnum } from '@/enums/roles.enum';
-import { ParseFormdataPipe } from '../utils/pipes/parse-formdata.pipe';
-import { Utils } from '../utils/utils';
-import { NullableType } from '../utils/types/nullable.type';
-import { ApiPaginationQuery, Paginate, PaginateQuery } from 'nestjs-paginate';
-import { PaginatedDto } from '../utils/serialization/paginated.dto';
+import { ParseFormdataPipe } from '../../utils/pipes/parse-formdata.pipe';
+import { Utils } from '../../utils/utils';
 import { Mapper } from '@automapper/core';
-import { IsCreatorPipe } from '../utils/pipes/is-creator.pipe';
+import { IsCreatorPipe } from '../../utils/pipes/is-creator.pipe';
 import { DeleteResult } from 'typeorm';
-import { CompanyEntity } from './entities/company.entity';
-import { CompanyDto } from './dto/company.dto';
-import { CompanyService } from './company.service';
-import { CreateCompanyDto } from './dto/create-company.dto';
-import { UpdateCompanyDto } from './dto/update-company.dto';
-import { companyPaginationConfig } from './config/company-pagination-config';
-import { AuthRequest } from 'src/utils/types/auth-request.type';
+import { CompanyEntity } from '../entities/company.entity';
+import { CompanyDto } from '../dto/company.dto';
+import { CompanyPrivateService } from './company-private.service';
+import { CreateCompanyDto } from '../dto/create-company.dto';
+import { UpdateCompanyDto } from '../dto/update-company.dto';
+import { AuthRequest } from '../../utils/types/auth-request.type';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Companies')
 @ApiBearerAuth()
 @Controller({ version: '1', path: 'companies' })
-export class CompanyController {
+export class CompanyPrivateController {
   constructor(
-    private readonly companyService: CompanyService,
+    private readonly companyService: CompanyPrivateService,
     @InjectMapper() private readonly mapper: Mapper,
   ) {}
 
@@ -92,31 +87,6 @@ export class CompanyController {
       request.user,
       createCompanyDto,
       file,
-    );
-  }
-
-  @ApiPaginationQuery(companyPaginationConfig)
-  @HttpCode(HttpStatus.OK)
-  @Get()
-  async findAll(
-    @Paginate() query: PaginateQuery,
-  ): Promise<PaginatedDto<CompanyEntity, CompanyDto>> {
-    const complexes = await this.companyService.findAll(query);
-    return new PaginatedDto<CompanyEntity, CompanyDto>(
-      this.mapper,
-      complexes,
-      CompanyEntity,
-      CompanyDto,
-    );
-  }
-
-  @UseInterceptors(MapInterceptor(CompanyEntity, CompanyDto))
-  @HttpCode(HttpStatus.OK)
-  @Get(':id')
-  async findOne(@Param('id') id: string): Promise<NullableType<CompanyEntity>> {
-    return await this.companyService.findOne(
-      { id },
-      { categories: { parent: true }, tenants: true },
     );
   }
 

@@ -1,38 +1,27 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import {
-  DeepPartial,
-  DeleteResult,
-  FindOptionsRelations,
-  FindOptionsSelect,
-  FindOptionsWhere,
-  Repository,
-} from 'typeorm';
-import { FilesService } from '../files/files.service';
-import { AddressService } from '../address/address.service';
-import { WinstonLoggerService } from '../logger/winston-logger.service';
-import { JwtPayloadType } from '../auth/strategies/types/jwt-payload.type';
-import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
-import { NullableType } from '../utils/types/nullable.type';
-import { InjectTenantAwareRepository } from '../utils/repository/tenant-aware/inject-tenant-aware-repository.decorator';
-import { CompanyEntity } from './entities/company.entity';
-import { TenantAwareRepository } from '../utils/repository/tenant-aware/tenant-aware.repository';
-import { CreateCompanyDto } from './dto/create-company.dto';
-import { UsersTenantService } from '../users-tenant/users-tenant.service';
-import { companyPaginationConfig } from './config/company-pagination-config';
-import { UpdateCompanyDto } from './dto/update-company.dto';
-import { CompanyCategoryService } from '../company-category/company-category.service';
-import { InjectRepository } from '@nestjs/typeorm';
+import { DeepPartial, DeleteResult } from 'typeorm';
+import { FilesService } from '../../files/files.service';
+import { AddressService } from '../../address/address.service';
+import { WinstonLoggerService } from '../../logger/winston-logger.service';
+import { JwtPayloadType } from '../../auth/strategies/types/jwt-payload.type';
+import { InjectTenantAwareRepository } from '../../utils/repository/tenant-aware/inject-tenant-aware-repository.decorator';
+import { CompanyEntity } from '../entities/company.entity';
+import { TenantAwareRepository } from '../../utils/repository/tenant-aware/tenant-aware.repository';
+import { CreateCompanyDto } from '../dto/create-company.dto';
+import { UsersTenantService } from '../../users-tenant/users-tenant.service';
+import { UpdateCompanyDto } from '../dto/update-company.dto';
+import { CompanyCategoryService } from '../../company-category/company-category.service';
 import { I18nContext, I18nService } from 'nestjs-i18n';
+import { CompanyPublicService } from '../public/company-public.service';
 
 @Injectable()
-export class CompanyService {
+export class CompanyPrivateService {
   constructor(
     @InjectTenantAwareRepository(CompanyEntity)
     private readonly companyRepository: TenantAwareRepository<CompanyEntity>,
-    @InjectRepository(CompanyEntity)
-    private readonly compRepository: Repository<CompanyEntity>,
     private readonly usersTenantService: UsersTenantService,
     private readonly companyCategoryService: CompanyCategoryService,
+    private readonly privateCompanyService: CompanyPublicService,
     private readonly fileService: FilesService,
     private readonly addressService: AddressService,
     private readonly logger: WinstonLoggerService,
@@ -46,7 +35,7 @@ export class CompanyService {
   ): Promise<CompanyEntity> {
     this.logger.info(`create-new-company`, {
       description: `Create a new Company`,
-      class: CompanyService.name,
+      class: CompanyPrivateService.name,
       function: 'create',
     });
     console.log('ssss', userJwtPayload, createCompanyDto);
@@ -84,45 +73,13 @@ export class CompanyService {
     return savedCompany;
   }
 
-  async findAll(query: PaginateQuery): Promise<Paginated<CompanyEntity>> {
-    return await paginate(
-      query,
-      this.companyRepository,
-      companyPaginationConfig,
-    );
-  }
-
-  async findOne(
-    fields: FindOptionsWhere<CompanyEntity>,
-    relations?: FindOptionsRelations<CompanyEntity>,
-    select?: FindOptionsSelect<CompanyEntity>,
-  ): Promise<NullableType<CompanyEntity>> {
-    return await this.compRepository.findOne({
-      where: fields,
-      relations,
-      select,
-    });
-  }
-
-  async findOneOrFail(
-    fields: FindOptionsWhere<CompanyEntity>,
-    relations?: FindOptionsRelations<CompanyEntity>,
-    select?: FindOptionsSelect<CompanyEntity>,
-  ): Promise<CompanyEntity> {
-    return await this.companyRepository.findOneOrFail({
-      where: fields,
-      relations,
-      select,
-    });
-  }
-
   async update(
     id: string,
     updateCompanyDto: UpdateCompanyDto,
     file?: Express.Multer.File | Express.MulterS3.File,
   ): Promise<CompanyEntity> {
     const { address, ...filteredUpdateCompanyDto } = updateCompanyDto;
-    const company = await this.findOneOrFail({ id });
+    const company = await this.privateCompanyService.findOneOrFail({ id });
     Object.assign(company, filteredUpdateCompanyDto);
     if (address) {
       company.address = await this.addressService.update(

@@ -17,14 +17,14 @@ import { UsersTenantService } from '../users-tenant/users-tenant.service';
 import { CompanyTenderEntity } from './entities/company-tender.entity';
 import { companyTenderPaginationConfig } from './config/company-tender-pagination.config';
 import { UpdateCompanyTenderDto } from './dto/update-company-tender.dto';
-import { CompanyService } from '../company/company.service';
+import { CompanyPublicService } from '../company/public/company-public.service';
 
 @Injectable()
 export class CompanyTenderService {
   constructor(
     @InjectRepository(CompanyTenderEntity)
     private readonly tenderRepository: Repository<CompanyTenderEntity>,
-    private readonly companyService: CompanyService,
+    private readonly companyService: CompanyPublicService,
     private readonly userTenantService: UsersTenantService,
     private readonly filesService: FilesService,
     private readonly tenderCategoryService: TenderCategoryService,

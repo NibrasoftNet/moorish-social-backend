@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
-import { CompanyService } from './company.service';
-import { CompanyController } from './company.controller';
+import { CompanyPrivateService } from './private/company-private.service';
+import { CompanyPublicService } from './public/company-public.service';
+import { CompanyPublicController } from './public/company-public.controller';
+import { CompanyPrivateController } from './private/company-private.controller';
 import { CompanySerializationProfile } from './serialization/company-serialization.profile';
 import { CompanyEntity } from './entities/company.entity';
 import { FilesModule } from '../files/files.module';
@@ -19,8 +21,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     UsersTenantModule,
     CompanyCategoryModule,
   ],
-  controllers: [CompanyController],
-  providers: [CompanyService, CompanySerializationProfile],
-  exports: [CompanyService],
+  controllers: [CompanyPublicController, CompanyPrivateController],
+  providers: [
+    CompanyPrivateService,
+    CompanyPublicService,
+    CompanySerializationProfile,
+  ],
+  exports: [CompanyPrivateService, CompanyPublicService],
 })
 export class CompanyModule {}

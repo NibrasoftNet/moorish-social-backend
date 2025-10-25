@@ -14,7 +14,6 @@ import { FilesService } from '../files/files.service';
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { NullableType } from '../utils/types/nullable.type';
 import { CompanyParticipationUserTenderEntity } from './entities/company-participation-user-tender.entity';
-import { CompanyService } from 'src/company/company.service';
 import { CreateCompanyParticipationUserTenderDto } from './dto/create-company-participation-user-tender.dto';
 import { companyParticipationUserTenderPaginationConfig } from './config/company-particiaption-user-tender-pagination-config';
 import { UserTenderService } from '../user-tender/user-tender.service';
@@ -30,6 +29,7 @@ import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { NotificationService } from '../notification/notification.service';
 import { UserTenderEntity } from '../user-tender/entities/user-tender.entity';
+import { CompanyPublicService } from '../company/public/company-public.service';
 
 @Injectable()
 export class CompanyParticipationUserTenderService {
@@ -38,7 +38,7 @@ export class CompanyParticipationUserTenderService {
     private readonly tenderParticipationRepository: Repository<CompanyParticipationUserTenderEntity>,
     private readonly userTenderService: UserTenderService,
     private readonly usersTenantService: UsersTenantService,
-    private readonly companyService: CompanyService,
+    private readonly companyService: CompanyPublicService,
     private readonly filesService: FilesService,
     private readonly notificationService: NotificationService,
     @InjectMapper() private readonly mapper: Mapper,
