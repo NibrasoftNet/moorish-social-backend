@@ -32,7 +32,7 @@ import { UsersTenantModule } from './users-tenant/users-tenant.module';
 import { FirebaseModule } from './utils/firabase-fcm/firebase.module';
 import { ChatModule } from './chat/chat.module';
 import { ClsModule } from 'nestjs-cls';
-import { TenantMiddleware } from './utils/repository/tenant-aware/tenant.middleware';
+import { TenantMiddleware } from './utils/repository/tenant-aware';
 import { CompanySubscriptionTokenModule } from './company-subscription-token/company-subscription-token.module';
 import { CompanyModule } from './company/company.module';
 import { TokenCategoryModule } from './token-category/token-category.module';
@@ -52,6 +52,7 @@ import { SessionModule } from './session/session.module';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { CompanyPrivateController } from './company/private/company-private.controller';
+import { CompanyOfferPrivateController } from './company-offer/private/company-offer-private.controller';
 
 @Module({
   imports: [
@@ -149,6 +150,10 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(TenantMiddleware)
-      .forRoutes(CompanyPrivateController, CompanySubscriptionTokenController);
+      .forRoutes(
+        CompanyPrivateController,
+        CompanyOfferPrivateController,
+        CompanySubscriptionTokenController,
+      );
   }
 }

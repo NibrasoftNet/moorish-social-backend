@@ -12,7 +12,7 @@ import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { JwtPayloadType } from '../auth/strategies/types/jwt-payload.type';
 import { UserRequestOfferEntity } from './entities/user-request-offer.entity';
-import { CompanyOfferService } from '../company-offer/company-offer.service';
+import { CompanyOfferPublicService } from '../company-offer/public/company-offer-public.service';
 import { UsersService } from '../users/users.service';
 import { CreateUserRequestOfferDto } from './dto/create-user-request-offer.dto';
 import { UsersTenantService } from '../users-tenant/users-tenant.service';
@@ -24,7 +24,7 @@ export class UserRequestOfferService {
   constructor(
     @InjectRepository(UserRequestOfferEntity)
     private readonly userRequestOfferRepository: Repository<UserRequestOfferEntity>,
-    private readonly companyOfferService: CompanyOfferService,
+    private readonly companyOfferService: CompanyOfferPublicService,
     private readonly userService: UsersService,
     private readonly userTenantService: UsersTenantService,
     //private readonly notificationService: NotificationService,

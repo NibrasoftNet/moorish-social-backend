@@ -1,30 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { DeepPartial, DeleteResult } from 'typeorm';
+import { CompanyOfferEntity } from '../entities/company-offer.entity';
+import { JwtPayloadType } from '../../auth/strategies/types/jwt-payload.type';
+import { UsersTenantService } from '../../users-tenant/users-tenant.service';
+import { FilesService } from '../../files/files.service';
+import { PostCategoryService } from '../../post-category/post-category.service';
+import { CreateCompanyOfferDto } from '../dto/create-company-offer.dto';
+import { UpdateCompanyOfferDto } from '../dto/update-company-offer.dto';
+import { CompanyPublicService } from '../../company/public/company-public.service';
 import {
-  DeepPartial,
-  DeleteResult,
-  FindOptionsRelations,
-  FindOptionsWhere,
-  Repository,
-} from 'typeorm';
-import { CompanyOfferEntity } from './entities/company-offer.entity';
-import { JwtPayloadType } from '../auth/strategies/types/jwt-payload.type';
-import { UsersTenantService } from '../users-tenant/users-tenant.service';
-import { FilesService } from '../files/files.service';
-import { PostCategoryService } from '../post-category/post-category.service';
-import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
-import { companyOfferPaginationConfig } from './config/company-offer-pagination-config';
-import { NullableType } from 'src/utils/types/nullable.type';
-import { CreateCompanyOfferDto } from './dto/create-company-offer.dto';
-import { UpdateCompanyOfferDto } from './dto/update-company-offer.dto';
-import { CompanyPublicService } from '../company/public/company-public.service';
+  InjectTenantAwareRepository,
+  TenantAwareRepository,
+} from '../../utils/repository/tenant-aware';
+import { CompanyOfferPublicService } from '../public/company-offer-public.service';
 
 @Injectable()
-export class CompanyOfferService {
+export class CompanyOfferPrivateService {
   constructor(
-    @InjectRepository(CompanyOfferEntity)
-    private readonly companyOfferRepository: Repository<CompanyOfferEntity>,
+    @InjectTenantAwareRepository(CompanyOfferEntity)
+    private readonly companyOfferRepository: TenantAwareRepository<CompanyOfferEntity>,
     private readonly companyService: CompanyPublicService,
+    private readonly companyOfferPublicService: CompanyOfferPublicService,
     private readonly userTenantService: UsersTenantService,
     private readonly filesService: FilesService,
     private readonly postCategoryService: PostCategoryService,
@@ -53,34 +49,6 @@ export class CompanyOfferService {
     return await this.companyOfferRepository.save(offer);
   }
 
-  async findAll(query: PaginateQuery): Promise<Paginated<CompanyOfferEntity>> {
-    return await paginate<CompanyOfferEntity>(
-      query,
-      this.companyOfferRepository,
-      companyOfferPaginationConfig,
-    );
-  }
-
-  async findOne(
-    field: FindOptionsWhere<CompanyOfferEntity>,
-    relations?: FindOptionsRelations<CompanyOfferEntity>,
-  ): Promise<NullableType<CompanyOfferEntity>> {
-    return await this.companyOfferRepository.findOne({
-      where: field,
-      relations,
-    });
-  }
-
-  async findOneOrFail(
-    field: FindOptionsWhere<CompanyOfferEntity>,
-    relations?: FindOptionsRelations<CompanyOfferEntity>,
-  ): Promise<CompanyOfferEntity> {
-    return await this.companyOfferRepository.findOneOrFail({
-      where: field,
-      relations,
-    });
-  }
-
   async update(
     id: string,
     updateCompanyOfferDto: UpdateCompanyOfferDto,
@@ -88,7 +56,7 @@ export class CompanyOfferService {
   ): Promise<CompanyOfferEntity> {
     const { categoryId, deleteImages, ...updateOfferDto } =
       updateCompanyOfferDto;
-    const offer = await this.findOneOrFail({ id });
+    const offer = await this.companyOfferPublicService.findOneOrFail({ id });
     Object.assign(offer, updateOfferDto);
     if (categoryId) {
       offer.category = await this.postCategoryService.findOneOrFail({
