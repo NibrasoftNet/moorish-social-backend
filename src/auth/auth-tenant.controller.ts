@@ -16,7 +16,9 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
+  ApiCreatedResponse,
   ApiExtraModels,
+  ApiOkResponse,
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
@@ -33,13 +35,17 @@ import { AuthTenantService } from './auth-tenant.service';
 import { SessionAdminResponseDto } from '../session/dto/session-admin-response.dto';
 import { UserTenantEntity } from '../users-tenant/entities/user-tenant.entity';
 import { UserTenantDto } from '../users-tenant/dto/user-tenant.dto';
-import { AuthAdminEmailLoginDto } from './dto-admin/auth-admin-email-login.dto';
+import {
+  AuthAdminEmailLoginApiResponseDto,
+  AuthAdminEmailLoginDto,
+} from './dto-admin/auth-admin-email-login.dto';
 import { AuthAdminForgotPasswordDto } from './dto-admin/auth-admin-forgot-password.dto';
 import { AuthRequest } from '../utils/types/auth-request.type';
 import { CreateUserTenantDto } from '../users-tenant/dto/create-user-tenant.dto';
 import { ConfirmOtpEmailDto } from '../otp/dto/confirm-otp-email.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthTenantUpdateDto } from './dto/tenant/auth-tenant-update.dto';
+import { ApiRegisterResponseDto } from './dto/auth-register-response.dto';
 
 @ApiTags('Auth tenants')
 @Controller({
@@ -53,6 +59,10 @@ export class AuthTenantController {
     private mapper: Mapper,
   ) {}
 
+  @ApiOkResponse({
+    description: 'Tenant successfully logged in',
+    type: AuthAdminEmailLoginApiResponseDto,
+  })
   @Post('email-login')
   @HttpCode(HttpStatus.OK)
   public async login(
@@ -61,6 +71,10 @@ export class AuthTenantController {
     return await this.authTenantService.validateLogin(loginDto);
   }
 
+  @ApiCreatedResponse({
+    description: 'User successfully registered',
+    type: ApiRegisterResponseDto,
+  })
   @Post('email-register')
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() createUserDto: CreateUserTenantDto): Promise<string> {

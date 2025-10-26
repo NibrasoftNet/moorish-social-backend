@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsNotEmpty,
   IsOptional,
@@ -9,6 +9,7 @@ import {
 import { Transform } from 'class-transformer';
 import { IsExist } from '../../utils/validators/is-exists.validator';
 import { lowerCaseTransformer } from '../../utils/transformers/lower-case.transformer';
+import { ApiResponseDto } from '@/domains/api-response.dto';
 
 export class AuthAdminEmailLoginDto {
   @ApiProperty({ example: 'test1@tenant.com' })
@@ -28,8 +29,13 @@ export class AuthAdminEmailLoginDto {
   })
   password: string;
 
-  @ApiProperty({ example: 'xe8emg58q2x27ohlfuz7n76u3btbzz4a' })
+  @ApiPropertyOptional({ example: 'xe8emg58q2x27ohlfuz7n76u3btbzz4a' })
   @IsString()
   @IsOptional()
   notificationsToken?: string;
+}
+
+export class AuthAdminEmailLoginApiResponseDto extends ApiResponseDto {
+  @ApiProperty({ type: AuthAdminEmailLoginDto })
+  result: AuthAdminEmailLoginDto;
 }

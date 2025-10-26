@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
@@ -40,12 +40,12 @@ export class CreateUserTenantDto {
   })
   password?: string;
 
-  @ApiProperty({ example: '0021655456398' })
+  @ApiPropertyOptional({ example: '0021655456398' })
   @IsOptional()
   @IsString()
   whatsApp?: string;
 
-  @ApiProperty({ example: 'Manager' })
+  @ApiPropertyOptional({ example: 'Manager' })
   @IsOptional()
   @IsString()
   position?: string;

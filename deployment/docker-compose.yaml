@@ -16,5 +16,13 @@ services:
     restart: always
     ports:
       - ${ADMINER_PORT}:8080
+  maildev:
+    container_name: moorish-maildev
+    build:
+      context: .
+      dockerfile: maildev.Dockerfile
+    ports:
+      - ${MAIL_CLIENT_PORT}:1080
+      - ${MAIL_PORT}:1025
 volumes:
   weavers-social-db:
