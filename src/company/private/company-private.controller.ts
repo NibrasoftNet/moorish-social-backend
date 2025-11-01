@@ -81,8 +81,10 @@ export class CompanyPrivateController {
     @Body('data', ParseFormdataPipe) data: any,
     @UploadedFile() file?: Express.Multer.File | Express.MulterS3.File,
   ): Promise<CompanyEntity> {
-    const createCompanyDto = new CreateCompanyDto(data);
-    await Utils.validateDtoOrFail(createCompanyDto);
+    const createCompanyDto = await Utils.validateDtoOrFail(
+      CreateCompanyDto,
+      data,
+    );
     return await this.companyService.create(
       request.user,
       createCompanyDto,
@@ -123,8 +125,10 @@ export class CompanyPrivateController {
     @Body('data', ParseFormdataPipe) data: any,
     @UploadedFile() file?: Express.Multer.File | Express.MulterS3.File,
   ): Promise<CompanyEntity> {
-    const updateComplexDto = new UpdateCompanyDto(data);
-    await Utils.validateDtoOrFail(updateComplexDto);
+    const updateComplexDto = await Utils.validateDtoOrFail(
+      UpdateCompanyDto,
+      data,
+    );
     return this.companyService.update(id, updateComplexDto, file);
   }
 

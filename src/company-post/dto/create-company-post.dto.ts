@@ -16,18 +16,4 @@ export class CreateCompanyPostDto {
   @IsNotEmpty()
   @IsString()
   content: string;
-
-  constructor({
-    title,
-    content,
-    hashTag,
-  }: {
-    title: string;
-    content: string;
-    hashTag: string;
-  }) {
-    this.title = title;
-    this.content = content;
-    this.hashTag = hashTag;
-  }
 }

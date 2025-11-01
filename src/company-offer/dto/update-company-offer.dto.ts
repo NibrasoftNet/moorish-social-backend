@@ -32,24 +32,4 @@ export class UpdateCompanyOfferDto {
   @IsArray()
   @IsObject({ each: true })
   deleteImages?: FileDto[];
-
-  constructor({
-    title,
-    content,
-    hashTag,
-    categoryId,
-    deleteImages,
-  }: {
-    title?: string;
-    content?: string;
-    hashTag?: string;
-    categoryId?: string;
-    deleteImages?: FileDto[];
-  }) {
-    this.title = title;
-    this.content = content;
-    this.hashTag = hashTag;
-    this.categoryId = categoryId;
-    this.deleteImages = deleteImages;
-  }
 }

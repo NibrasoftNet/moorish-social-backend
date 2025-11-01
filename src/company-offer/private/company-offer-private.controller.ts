@@ -81,8 +81,10 @@ export class CompanyOfferPrivateController {
     @Body('data', ParseFormdataPipe) data: any,
     @UploadedFiles() files?: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<CompanyOfferEntity> {
-    const createCompanyOfferDto = new CreateCompanyOfferDto(data);
-    await Utils.validateDtoOrFail(createCompanyOfferDto);
+    const createCompanyOfferDto = await Utils.validateDtoOrFail(
+      CreateCompanyOfferDto,
+      data,
+    );
     return this.companyOfferService.create(
       request.user,
       companyId,
@@ -120,8 +122,10 @@ export class CompanyOfferPrivateController {
     @Body('data', ParseFormdataPipe) data: any,
     @UploadedFiles() files?: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<CompanyOfferEntity> {
-    const updateCompanyOfferDto = new UpdateCompanyOfferDto(data);
-    await Utils.validateDtoOrFail(updateCompanyOfferDto);
+    const updateCompanyOfferDto = await Utils.validateDtoOrFail(
+      UpdateCompanyOfferDto,
+      data,
+    );
     return this.companyOfferService.update(id, updateCompanyOfferDto, files);
   }
 

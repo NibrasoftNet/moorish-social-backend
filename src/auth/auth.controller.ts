@@ -156,8 +156,7 @@ export class AuthController {
     @Body('data', ParseFormdataPipe) data: any,
     @UploadedFile() file?: Express.Multer.File | Express.MulterS3.File,
   ): Promise<NullableType<UserEntity>> {
-    const updateUserDto = new AuthUpdateDto(data);
-    await Utils.validateDtoOrFail(updateUserDto);
+    const updateUserDto = await Utils.validateDtoOrFail(AuthUpdateDto, data);
     return await this.service.update(request.user, updateUserDto, file);
   }
 

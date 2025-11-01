@@ -33,21 +33,4 @@ export class UpdateUserTenderDto {
   @IsArray()
   @IsObject({ each: true })
   deleteImages?: FileDto[];
-
-  constructor({
-    title,
-    content,
-    active,
-    deleteImages,
-  }: {
-    title?: string;
-    content?: string;
-    active?: boolean;
-    deleteImages?: FileDto[];
-  }) {
-    this.title = title;
-    this.content = content;
-    this.active = active;
-    this.deleteImages = deleteImages;
-  }
 }

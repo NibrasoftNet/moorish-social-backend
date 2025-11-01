@@ -3,6 +3,7 @@ import { validateOrReject } from 'class-validator';
 import { ObjectLiteral, Repository } from 'typeorm';
 import crypto from 'crypto';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
+import { plainToInstance } from 'class-transformer';
 
 export class Utils {
   static generateErrors(errors: ValidationError[]) {
@@ -18,24 +19,37 @@ export class Utils {
     );
   }
 
-  /* eslint-disable */
-  static async validateDtoOrFail<T extends Object>(dto: T): Promise<T> {
-    /* eslint-enable */
-    await validateOrReject(dto).catch((validationErrors: ValidationError[]) => {
-      const errors = Utils.generateErrors(validationErrors);
+  /**
+   * Validates a DTO instance using class-validator and rejects if invalid.
+   * @param dtoClass - The DTO class (e.g. CreateUserDto)
+   * @param data - The plain object to validate
+   * @returns The validated DTO instance
+   */
+  static async validateDtoOrFail<T extends object>(
+    dtoClass: new (...args: any[]) => T,
+    data: unknown,
+  ): Promise<T> {
+    const dto = plainToInstance(dtoClass, data);
+    try {
+      await validateOrReject(dto, {
+        whitelist: true,
+        forbidNonWhitelisted: true,
+      });
+      return dto;
+    } catch (errors) {
+      const formattedErrors = Utils.generateErrors(errors as ValidationError[]);
+
       throw new HttpException(
         {
           status: HttpStatus.PRECONDITION_FAILED,
           errors: {
-            validation: Object.values(errors).join('. ').trim(),
+            validation: Object.values(formattedErrors).join('. ').trim(),
           },
         },
         HttpStatus.PRECONDITION_FAILED,
       );
-    });
-    return dto;
+    }
   }
-
   static getKeyByValue<T>(myEnum: any, value: string) {
     const indexOfS = Object.values(myEnum).indexOf(value as unknown as T);
     return Object.keys(myEnum)[indexOfS];

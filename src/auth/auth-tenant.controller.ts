@@ -29,12 +29,14 @@ import { ParseFormdataPipe } from '../utils/pipes/parse-formdata.pipe';
 import { Utils } from '../utils/utils';
 import { AuthResetPasswordDto } from './dto/auth-reset-password.dto';
 import { AuthUpdateDto } from './dto/auth-update.dto';
-import { CreateUserDto } from '../users/user/create-user.dto';
 import { AuthNewPasswordDto } from './dto/auth-new-password.dto';
 import { AuthTenantService } from './auth-tenant.service';
 import { SessionAdminResponseDto } from '../session/dto/session-admin-response.dto';
 import { UserTenantEntity } from '../users-tenant/entities/user-tenant.entity';
-import { UserTenantDto } from '../users-tenant/dto/user-tenant.dto';
+import {
+  TenantApiResponseDto,
+  UserTenantDto,
+} from '../users-tenant/dto/user-tenant.dto';
 import {
   AuthAdminEmailLoginApiResponseDto,
   AuthAdminEmailLoginDto,
@@ -45,7 +47,8 @@ import { CreateUserTenantDto } from '../users-tenant/dto/create-user-tenant.dto'
 import { ConfirmOtpEmailDto } from '../otp/dto/confirm-otp-email.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthTenantUpdateDto } from './dto/tenant/auth-tenant-update.dto';
-import { ApiRegisterResponseDto } from './dto/auth-register-response.dto';
+import { ApiStringResponseDto } from '@/domains/api-string-response.dto';
+import { ApiBooleanResponseDto } from '@/domains/api-boolean-response.dto';
 
 @ApiTags('Auth tenants')
 @Controller({
@@ -73,7 +76,7 @@ export class AuthTenantController {
 
   @ApiCreatedResponse({
     description: 'User successfully registered',
-    type: ApiRegisterResponseDto,
+    type: ApiStringResponseDto,
   })
   @Post('email-register')
   @HttpCode(HttpStatus.CREATED)
@@ -89,19 +92,27 @@ export class AuthTenantController {
     return await this.authTenantService.confirmEmail(confirmOtpEmailDto);
   }
 
+  @ApiOkResponse({
+    description: 'Reset password with success',
+    type: ApiBooleanResponseDto,
+  })
   @Post('forgot-password')
   @HttpCode(HttpStatus.OK)
   async forgotPassword(
     @Body() forgotPasswordDto: AuthAdminForgotPasswordDto,
-  ): Promise<void> {
+  ): Promise<boolean> {
     return await this.authTenantService.forgotPassword(forgotPasswordDto.email);
   }
 
+  @ApiOkResponse({
+    description: 'Reset password with success',
+    type: ApiBooleanResponseDto,
+  })
   @Post('reset-password')
   @HttpCode(HttpStatus.OK)
   async resetPassword(
     @Body() resetPasswordDto: AuthResetPasswordDto,
-  ): Promise<void> {
+  ): Promise<boolean> {
     return await this.authTenantService.resetPassword(resetPasswordDto);
   }
 
@@ -148,7 +159,7 @@ export class AuthTenantController {
           format: 'binary',
         },
         data: {
-          $ref: getSchemaPath(CreateUserDto),
+          $ref: getSchemaPath(AuthUpdateDto),
         },
       },
     },
@@ -164,23 +175,30 @@ export class AuthTenantController {
     @Body('data', ParseFormdataPipe) data: any,
     @UploadedFile() file?: Express.Multer.File | Express.MulterS3.File,
   ): Promise<UserTenantEntity> {
-    const updateUserDto = new AuthTenantUpdateDto(data);
-    await Utils.validateDtoOrFail(updateUserDto);
+    const authTenantUpdateDto = await Utils.validateDtoOrFail(
+      AuthTenantUpdateDto,
+      data,
+    );
     return await this.authTenantService.update(
       request.user,
-      updateUserDto,
+      authTenantUpdateDto,
       file,
     );
   }
 
+  @ApiOkResponse({
+    description: 'Tenant successfully logged in',
+    type: TenantApiResponseDto,
+  })
   @ApiBearerAuth()
   @Put('me/new-password')
   @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(MapInterceptor(UserTenantEntity, UserTenantDto))
   @HttpCode(HttpStatus.OK)
   public async newPassword(
     @Request() request: AuthRequest,
     @Body() newPasswordDto: AuthNewPasswordDto,
-  ): Promise<void> {
+  ): Promise<UserTenantEntity> {
     return await this.authTenantService.newPassword(
       request.user,
       newPasswordDto,

@@ -32,21 +32,4 @@ export class CreateCompanyTenderDto {
   @IsNotEmpty()
   @IsDateString()
   lastSubmissionDate: Date;
-
-  constructor({
-    title,
-    content,
-    specifications,
-    lastSubmissionDate,
-  }: {
-    title: string;
-    content: string;
-    specifications?: SpecificationDto[];
-    lastSubmissionDate: Date;
-  }) {
-    this.title = title;
-    this.content = content;
-    this.specifications = specifications;
-    this.lastSubmissionDate = lastSubmissionDate;
-  }
 }

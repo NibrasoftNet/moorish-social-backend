@@ -19,18 +19,4 @@ export class UpdateCompanyDto {
   @ValidateNested()
   @Type(() => CreateAddressDto)
   address?: CreateAddressDto;
-
-  constructor({
-    name,
-    description,
-    address,
-  }: {
-    name?: string;
-    description?: string;
-    address?: CreateAddressDto;
-  }) {
-    this.name = name;
-    this.description = description;
-    this.address = address;
-  }
 }

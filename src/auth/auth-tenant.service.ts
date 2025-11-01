@@ -147,7 +147,7 @@ export class AuthTenantService {
     await user.save();
   }
 
-  async forgotPassword(email: string): Promise<void> {
+  async forgotPassword(email: string): Promise<boolean> {
     const user = await this.usersTenantService.findOne({
       email,
     });
@@ -166,9 +166,12 @@ export class AuthTenantService {
       );
     }
     await this.sendForgetPasswordEmail(email);
+    return true;
   }
 
-  async resetPassword(resetPasswordDto: AuthResetPasswordDto): Promise<void> {
+  async resetPassword(
+    resetPasswordDto: AuthResetPasswordDto,
+  ): Promise<boolean> {
     const user = await this.usersTenantService.findOneOrFail({
       email: resetPasswordDto.email,
     });
@@ -189,6 +192,7 @@ export class AuthTenantService {
     await this.otpService.validateVerification(resetPasswordDto.email);
     user.password = resetPasswordDto.password;
     await user.save();
+    return true;
   }
 
   async me(userJwtPayload: JwtPayloadType): Promise<SessionAdminResponseDto> {
@@ -227,7 +231,7 @@ export class AuthTenantService {
   async newPassword(
     userJwtPayload: JwtPayloadType,
     newPasswordDto: AuthNewPasswordDto,
-  ): Promise<void> {
+  ): Promise<UserTenantEntity> {
     const user = await this.usersTenantService.findOneOrFail({
       id: userJwtPayload.id,
     });
@@ -251,7 +255,7 @@ export class AuthTenantService {
     }
     console.log('wsxx', user);
     user.password = newPasswordDto.newPassword;
-    await user.save();
+    return await user.save();
   }
 
   async refreshToken(

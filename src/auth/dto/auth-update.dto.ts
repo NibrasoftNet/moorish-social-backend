@@ -33,27 +33,4 @@ export class AuthUpdateDto {
   @IsOptional()
   @IsString()
   notificationsToken?: string | null;
-
-  constructor({
-    userName,
-    address,
-    phone,
-    email,
-    password,
-    notificationsToken,
-  }: {
-    userName?: string;
-    address?: CreateAddressDto;
-    phone?: string;
-    email?: string;
-    password?: string;
-    notificationsToken?: string;
-  }) {
-    this.userName = userName;
-    this.address = address;
-    this.phone = phone;
-    this.email = email;
-    this.password = password;
-    this.notificationsToken = notificationsToken;
-  }
 }

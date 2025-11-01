@@ -85,8 +85,10 @@ export class UserTenderController {
     @Body('data', ParseFormdataPipe) data: any,
     @UploadedFiles() files?: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<UserTenderEntity> {
-    const createTenderDto = new CreateUserTenderDto(data);
-    await Utils.validateDtoOrFail(createTenderDto);
+    const createTenderDto = await Utils.validateDtoOrFail(
+      CreateUserTenderDto,
+      data,
+    );
     return await this.userTenderService.create(
       request.user,
       categoryId,
@@ -167,8 +169,10 @@ export class UserTenderController {
     @Body('data', ParseFormdataPipe) data: any,
     @UploadedFiles() files?: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<UserTenderEntity> {
-    const updateTenderDto = new UpdateUserTenderDto(data);
-    await Utils.validateDtoOrFail(updateTenderDto);
+    const updateTenderDto = await Utils.validateDtoOrFail(
+      UpdateUserTenderDto,
+      data,
+    );
     return this.userTenderService.update(id, updateTenderDto, files);
   }
 

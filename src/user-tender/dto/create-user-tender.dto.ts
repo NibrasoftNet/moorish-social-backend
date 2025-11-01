@@ -11,9 +11,4 @@ export class CreateUserTenderDto {
   @IsNotEmpty()
   @IsString()
   content: string;
-
-  constructor({ title, content }: { title: string; content: string }) {
-    this.title = title;
-    this.content = content;
-  }
 }

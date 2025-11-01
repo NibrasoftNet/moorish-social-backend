@@ -86,8 +86,10 @@ export class CompanyTenderController {
     @Body('data', ParseFormdataPipe) data: any,
     @UploadedFiles() files?: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<CompanyTenderEntity> {
-    const createTenderDto = new CreateCompanyTenderDto(data);
-    await Utils.validateDtoOrFail(createTenderDto);
+    const createTenderDto = await Utils.validateDtoOrFail(
+      CreateCompanyTenderDto,
+      data,
+    );
     return await this.companyTenderService.create(
       request.user,
       companyId,
@@ -195,8 +197,10 @@ export class CompanyTenderController {
     @Body('data', ParseFormdataPipe) data: any,
     @UploadedFiles() files?: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<CompanyTenderEntity> {
-    const updateTenderDto = new UpdateCompanyTenderDto(data);
-    await Utils.validateDtoOrFail(updateTenderDto);
+    const updateTenderDto = await Utils.validateDtoOrFail(
+      UpdateCompanyTenderDto,
+      data,
+    );
     return this.companyTenderService.update(id, updateTenderDto, files);
   }
 

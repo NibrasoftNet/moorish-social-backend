@@ -55,30 +55,4 @@ export class UpdateCompanyTenderDto {
   @IsOptional()
   @IsNumber()
   totalParticipation?: number;
-
-  constructor({
-    title,
-    content,
-    active,
-    deleteImages,
-    specifications,
-    lastSubmissionDate,
-    totalParticipation,
-  }: {
-    title?: string;
-    content?: string;
-    active?: boolean;
-    deleteImages?: FileDto[];
-    specifications?: SpecificationDto[];
-    lastSubmissionDate?: Date;
-    totalParticipation?: number;
-  }) {
-    this.title = title;
-    this.content = content;
-    this.active = active;
-    this.deleteImages = deleteImages;
-    this.specifications = specifications;
-    this.lastSubmissionDate = lastSubmissionDate;
-    this.totalParticipation = totalParticipation;
-  }
 }

@@ -34,21 +34,4 @@ export class UpdateCompanyParticipationCompanyTenderDto {
   @IsArray()
   @IsObject({ each: true })
   deleteImages?: FileDto[];
-
-  constructor({
-    title,
-    description,
-    status,
-    deleteImages,
-  }: {
-    title?: string;
-    description?: string;
-    status?: RequestStatusEnum;
-    deleteImages?: FileDto[];
-  }) {
-    this.title = title;
-    this.description = description;
-    this.status = status;
-    this.deleteImages = deleteImages;
-  }
 }

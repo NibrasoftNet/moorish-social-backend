@@ -81,8 +81,10 @@ export class CompanyPostPrivateController {
     @Body('data', ParseFormdataPipe) data: any,
     @UploadedFiles() files?: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<CompanyPostEntity> {
-    const createCompanyPostDto = new CreateCompanyPostDto(data);
-    await Utils.validateDtoOrFail(createCompanyPostDto);
+    const createCompanyPostDto = await Utils.validateDtoOrFail(
+      CreateCompanyPostDto,
+      data,
+    );
     return this.companyPostService.create(
       request.user,
       companyId,
@@ -121,8 +123,10 @@ export class CompanyPostPrivateController {
     @Body('data', ParseFormdataPipe) data: any,
     @UploadedFiles() files?: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<CompanyPostEntity> {
-    const updateCompanyPostDto = new UpdateCompanyPostDto(data);
-    await Utils.validateDtoOrFail(updateCompanyPostDto);
+    const updateCompanyPostDto = await Utils.validateDtoOrFail(
+      UpdateCompanyPostDto,
+      data,
+    );
     return this.companyPostService.update(id, updateCompanyPostDto, files);
   }
 
