@@ -20,6 +20,7 @@ import {
   ApiConsumes,
   ApiExtraModels,
   ApiTags,
+  ApiOkResponse,
   getSchemaPath,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
@@ -29,7 +30,7 @@ import { Mapper } from '@automapper/core';
 import { Roles } from '../../roles/roles.decorator';
 import { RoleCodeEnum } from '@/enums/roles.enum';
 import { CompanyOfferEntity } from '../entities/company-offer.entity';
-import { CompanyOfferDto } from '../dto/company-offer.dto';
+import { ApiCompanyOfferDto, CompanyOfferDto } from '../dto/company-offer.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ParseFormdataPipe } from '../../utils/pipes/parse-formdata.pipe';
 import { Utils } from '../../utils/utils';
@@ -69,6 +70,7 @@ export class CompanyOfferPrivateController {
       },
     },
   })
+  @ApiOkResponse({ description: "Create new company offer", type: ApiCompanyOfferDto })
   @Roles(RoleCodeEnum.TENANTADMIN)
   @UseInterceptors(MapInterceptor(CompanyOfferEntity, CompanyOfferDto))
   @UseInterceptors(FilesInterceptor('files', 10))
