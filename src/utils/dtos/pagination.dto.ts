@@ -1,43 +1,43 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class PaginatedMetaDto {
   @ApiProperty({ example: 10 })
   itemsPerPage: number;
 
-  @ApiProperty({ example: 120, required: false })
+  @ApiPropertyOptional({ example: 120, required: false })
   totalItems?: number;
 
-  @ApiProperty({ example: 1, required: false })
+  @ApiPropertyOptional({ example: 1, required: false })
   currentPage?: number;
 
-  @ApiProperty({ example: 12, required: false })
+  @ApiPropertyOptional({ example: 12, required: false })
   totalPages?: number;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Sorting order as [column, direction]',
     example: [['createdAt', 'DESC']],
     isArray: true,
   })
   sortBy: Record<string, 'ASC' | 'DESC'>[];
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'List of searchable columns',
     example: ['name', 'email'],
     isArray: true,
   })
   searchBy: Record<string, any>[];
 
-  @ApiProperty({ example: 'Acme', required: false })
+  @ApiPropertyOptional({ example: 'Acme', required: false })
   search: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Selected fields',
     example: ['id', 'name', 'email'],
     isArray: true,
   })
   select: string[];
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Filters applied on columns',
     example: { status: ['active', 'pending'] },
     required: false,
@@ -46,7 +46,7 @@ export class PaginatedMetaDto {
     [column: string]: string | string[];
   };
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Cursor for cursor-based pagination',
     example: 'eyJpZCI6MTIzfQ==',
     required: false,
@@ -55,19 +55,19 @@ export class PaginatedMetaDto {
 }
 
 export class PaginatedLinksDto {
-  @ApiProperty({ example: '/api/items?page=1', required: false })
+  @ApiPropertyOptional({ example: '/api/items?page=1', required: false })
   first?: string;
 
-  @ApiProperty({ example: '/api/items?page=2', required: false })
+  @ApiPropertyOptional({ example: '/api/items?page=2', required: false })
   previous?: string;
 
   @ApiProperty({ example: '/api/items?page=3' })
   current: string;
 
-  @ApiProperty({ example: '/api/items?page=4', required: false })
+  @ApiPropertyOptional({ example: '/api/items?page=4', required: false })
   next?: string;
 
-  @ApiProperty({ example: '/api/items?page=12', required: false })
+  @ApiPropertyOptional({ example: '/api/items?page=12', required: false })
   last?: string;
 }
 
