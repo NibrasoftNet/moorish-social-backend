@@ -18,6 +18,7 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
+  ApiCreatedResponse,
   ApiExtraModels,
   ApiTags,
   getSchemaPath,
@@ -29,7 +30,7 @@ import { Mapper } from '@automapper/core';
 import { Roles } from '../../roles/roles.decorator';
 import { RoleCodeEnum } from '@/enums/roles.enum';
 import { CompanyPostEntity } from '../entities/company-post.entity';
-import { CompanyPostDto } from '../dto/company-post.dto';
+import { ApiCompanyPostDto, CompanyPostDto } from '../dto/company-post.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ParseFormdataPipe } from '../../utils/pipes/parse-formdata.pipe';
 import { Utils } from '../../utils/utils';
@@ -69,6 +70,7 @@ export class CompanyPostPrivateController {
       },
     },
   })
+  @ApiCreatedResponse({ description: "Create new post offer", type: ApiCompanyPostDto })
   @Roles(RoleCodeEnum.TENANTADMIN)
   @UseInterceptors(MapInterceptor(CompanyPostEntity, CompanyPostDto))
   @UseInterceptors(FilesInterceptor('files', 10))
