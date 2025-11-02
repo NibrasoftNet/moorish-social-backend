@@ -8,7 +8,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { CompanyOfferPublicService } from './company-offer-public.service';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../../roles/roles.guard';
 import { InjectMapper, MapInterceptor } from '@automapper/nestjs';
@@ -16,7 +16,7 @@ import { Mapper } from '@automapper/core';
 import { Roles } from '../../roles/roles.decorator';
 import { RoleCodeEnum } from '@/enums/roles.enum';
 import { CompanyOfferEntity } from '../entities/company-offer.entity';
-import { CompanyOfferDto } from '../dto/company-offer.dto';
+import { ApiCompanyOfferPaginatedDto, CompanyOfferDto } from '../dto/company-offer.dto';
 import { ApiPaginationQuery, Paginate, PaginateQuery } from 'nestjs-paginate';
 import { PaginatedDto } from '../../utils/serialization/paginated.dto';
 import { companyOfferPaginationConfig } from '../config/company-offer-pagination-config';
@@ -35,6 +35,7 @@ export class CompanyOfferPublicController {
     @InjectMapper() private readonly mapper: Mapper,
   ) {}
 
+  @ApiOkResponse({ description: "Create new company offer", type: ApiCompanyOfferPaginatedDto })
   @ApiPaginationQuery(companyOfferPaginationConfig)
   @Roles(RoleCodeEnum.TENANTADMIN, RoleCodeEnum.USER, RoleCodeEnum.SUPERADMIN)
   @HttpCode(HttpStatus.OK)
