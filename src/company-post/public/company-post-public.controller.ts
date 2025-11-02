@@ -8,7 +8,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { CompanyPostPublicService } from './company-post-public.service';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../../roles/roles.guard';
 import { InjectMapper, MapInterceptor } from '@automapper/nestjs';
@@ -16,7 +16,7 @@ import { Mapper } from '@automapper/core';
 import { Roles } from '../../roles/roles.decorator';
 import { RoleCodeEnum } from '@/enums/roles.enum';
 import { CompanyPostEntity } from '../entities/company-post.entity';
-import { CompanyPostDto } from '../dto/company-post.dto';
+import { ApiCompanyPostPaginatedDto, CompanyPostDto } from '../dto/company-post.dto';
 import { ApiPaginationQuery, Paginate, PaginateQuery } from 'nestjs-paginate';
 import { PaginatedDto } from '../../utils/serialization/paginated.dto';
 import { companyPostPaginationConfig } from '../config/company-post-pagination-config';
@@ -35,6 +35,7 @@ export class CompanyPostPublicController {
     @InjectMapper() private readonly mapper: Mapper,
   ) {}
 
+  @ApiOkResponse({ description: "List single company posts", type: ApiCompanyPostPaginatedDto })
   @ApiPaginationQuery(companyPostPaginationConfig)
   @Roles(RoleCodeEnum.TENANTADMIN, RoleCodeEnum.USER, RoleCodeEnum.SUPERADMIN)
   @HttpCode(HttpStatus.OK)

@@ -7,6 +7,7 @@ import { EntityHelperDto } from '@/domains/entity-helper.dto';
 import { PostCategoryDto } from '../../post-category/dto/post-category.dto';
 import { Expose } from 'class-transformer';
 import { ApiResponseDto } from '@/domains/api-response.dto';
+import { PaginationDto } from '@/domains/pagination.dto';
 
 export class CompanyPostDto extends EntityHelperDto {
   @AutoMap()
@@ -62,4 +63,14 @@ export class CompanyPostDto extends EntityHelperDto {
 export class ApiCompanyPostDto extends ApiResponseDto {
   @ApiProperty({ type: CompanyPostDto })
   result: CompanyPostDto;
+}
+
+export class PaginatedCompanyPostDto extends PaginationDto {
+  @ApiProperty({ type: [CompanyPostDto] })
+  data: CompanyPostDto[];
+}
+
+export class ApiCompanyPostPaginatedDto extends ApiResponseDto {
+  @ApiProperty({ type: PaginatedCompanyPostDto })
+  result: PaginatedCompanyPostDto;
 }
