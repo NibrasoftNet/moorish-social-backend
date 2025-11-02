@@ -6,7 +6,7 @@ import { UserTenantDto } from '../../users-tenant/dto/user-tenant.dto';
 import { EntityHelperDto } from '@/domains/entity-helper.dto';
 import { PostCategoryDto } from '../../post-category/dto/post-category.dto';
 import { ApiResponseDto } from '@/domains/api-response.dto';
-import { Paginated } from 'nestjs-paginate';
+import { PaginationDto } from '@/domains/pagination.dto';
 
 export class CompanyOfferDto extends EntityHelperDto {
   @AutoMap()
@@ -50,8 +50,12 @@ export class ApiCompanyOfferDto extends ApiResponseDto {
   result: CompanyOfferDto;
 }
 
+export class PaginatedCompanyDto extends PaginationDto {
+  @ApiProperty({ type: [CompanyOfferDto] })
+  data: CompanyOfferDto[];
+}
 
 export class ApiCompanyOfferPaginatedDto extends ApiResponseDto {
-  @ApiProperty({ type: Paginated<CompanyOfferDto> })
-  result: Paginated<CompanyOfferDto>;
+  @ApiProperty({ type: PaginatedCompanyDto })
+  result: PaginatedCompanyDto;
 }
