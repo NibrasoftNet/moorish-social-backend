@@ -6,6 +6,7 @@ import {
   UseInterceptors,
   HttpCode,
   HttpStatus,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { CompanyPostPublicService } from './company-post-public.service';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
@@ -68,7 +69,7 @@ export class CompanyPostPublicController {
   @HttpCode(HttpStatus.OK)
   @Get(':id')
   async findOne(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
   ): Promise<NullableType<CompanyPostEntity>> {
     return await this.companyPostService.findOne({ id });
   }

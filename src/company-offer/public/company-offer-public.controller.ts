@@ -6,6 +6,7 @@ import {
   UseInterceptors,
   HttpCode,
   HttpStatus,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { CompanyOfferPublicService } from './company-offer-public.service';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
@@ -68,7 +69,7 @@ export class CompanyOfferPublicController {
   @HttpCode(HttpStatus.OK)
   @Get(':id')
   async findOne(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
   ): Promise<NullableType<CompanyOfferEntity>> {
     console.log('companyOfferId', id);
     return await this.companyOfferService.findOne({ id });

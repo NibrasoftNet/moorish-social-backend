@@ -11,7 +11,7 @@ import { FileEntity } from '../../files/entities/file.entity';
 import { AutoMap } from '@automapper/classes';
 import EntityHelper from '../../utils/entities/entity-helper';
 import { UserEntity } from '../../users/entities/user.entity';
-import { TenderCategoryEntity } from '../../tender-category/entities/tender-category.entity';
+import { CategoryTenderEntity } from '../../category-tender/entities/category-tender.entity';
 import { CompanyParticipationUserTenderEntity } from '../../company-participation-user-tender/entities/company-participation-user-tender.entity';
 
 @Entity({ name: 'user_tender' })
@@ -41,13 +41,13 @@ export class UserTenderEntity extends EntityHelper {
   })
   creator: UserEntity;
 
-  @AutoMap(() => TenderCategoryEntity)
-  @ManyToOne(() => TenderCategoryEntity, {
+  @AutoMap(() => CategoryTenderEntity)
+  @ManyToOne(() => CategoryTenderEntity, {
     onDelete: 'CASCADE',
     nullable: false,
     eager: true,
   })
-  category: TenderCategoryEntity;
+  category: CategoryTenderEntity;
 
   @AutoMap()
   @Column({ default: true })

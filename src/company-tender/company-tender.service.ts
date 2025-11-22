@@ -9,7 +9,7 @@ import {
   Repository,
 } from 'typeorm';
 import { FilesService } from '../files/files.service';
-import { TenderCategoryService } from '../tender-category/tender-category.service';
+import { CategoryTenderService } from '../category-tender/category-tender.service';
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { NullableType } from '../utils/types/nullable.type';
 import { CreateCompanyTenderDto } from './dto/create-company-tender.dto';
@@ -27,7 +27,7 @@ export class CompanyTenderService {
     private readonly companyService: CompanyPublicService,
     private readonly userTenantService: UsersTenantService,
     private readonly filesService: FilesService,
-    private readonly tenderCategoryService: TenderCategoryService,
+    private readonly tenderCategoryService: CategoryTenderService,
   ) {}
 
   async create(

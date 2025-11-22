@@ -12,7 +12,7 @@ import { AutoMap } from '@automapper/classes';
 import EntityHelper from '../../utils/entities/entity-helper';
 import { CompanyEntity } from '../../company/entities/company.entity';
 import { UserTenantEntity } from '../../users-tenant/entities/user-tenant.entity';
-import { PostCategoryEntity } from '../../post-category/entities/post-category.entity';
+import { CategoryPostOfferEntity } from '../../category-post-offer/entities/category-post-offer.entity';
 import { UserRequestOfferEntity } from '../../user-request-offer/entities/user-request-offer.entity';
 
 @Entity({ name: 'company_offer' })
@@ -58,13 +58,13 @@ export class CompanyOfferEntity extends EntityHelper {
   })
   creator: UserTenantEntity;
 
-  @AutoMap(() => PostCategoryEntity)
-  @ManyToOne(() => PostCategoryEntity, {
+  @AutoMap(() => CategoryPostOfferEntity)
+  @ManyToOne(() => CategoryPostOfferEntity, {
     eager: true,
     onDelete: 'CASCADE',
     nullable: false,
   })
-  category: PostCategoryEntity;
+  category: CategoryPostOfferEntity;
 
   @AutoMap(() => UserRequestOfferEntity)
   @OneToMany(() => UserRequestOfferEntity, (request) => request.offer, {

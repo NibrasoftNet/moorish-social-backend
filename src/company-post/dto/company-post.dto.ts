@@ -4,7 +4,7 @@ import { FileDto } from '../../files/dto/file.dto';
 import { CompanyDto } from '../../company/dto/company.dto';
 import { UserTenantDto } from '../../users-tenant/dto/user-tenant.dto';
 import { EntityHelperDto } from '@/domains/entity-helper.dto';
-import { PostCategoryDto } from '../../post-category/dto/post-category.dto';
+import { CategoryPostOfferDto } from '../../category-post-offer/dto/category-post-offer.dto';
 import { Expose } from 'class-transformer';
 import { ApiResponseDto } from '@/domains/api-response.dto';
 import { PaginationDto } from '@/domains/pagination.dto';
@@ -53,9 +53,9 @@ export class CompanyPostDto extends EntityHelperDto {
   @ApiProperty()
   creator: UserTenantDto;
 
-  @AutoMap(() => PostCategoryDto)
+  @AutoMap(() => CategoryPostOfferDto)
   @ApiProperty()
-  category: PostCategoryDto;
+  category: CategoryPostOfferDto;
 }
 
 export class ApiCompanyPostDto extends ApiResponseDto {

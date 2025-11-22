@@ -4,7 +4,7 @@ import { UserTenderController } from './user-tender.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserTenderEntity } from './entities/user-tender.entity';
 import { UsersModule } from '../users/users.module';
-import { TenderCategoryModule } from '../tender-category/tender-category.module';
+import { CategoryTenderModule } from '../category-tender/category-tender.module';
 import { FilesModule } from '../files/files.module';
 import { UserTenderSerializationProfile } from './serialization/user-tender-serialization.profile';
 
@@ -12,7 +12,7 @@ import { UserTenderSerializationProfile } from './serialization/user-tender-seri
   imports: [
     TypeOrmModule.forFeature([UserTenderEntity]),
     UsersModule,
-    TenderCategoryModule,
+    CategoryTenderModule,
     FilesModule,
   ],
   controllers: [UserTenderController],

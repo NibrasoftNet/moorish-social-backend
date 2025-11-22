@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import EntityHelper from '../../utils/entities/entity-helper';
 import { AutoMap } from '@automapper/classes';
 import { CompanyEntity } from '../../company/entities/company.entity';
-import { TokenCategoryEntity } from '../../token-category/entities/token-category.entity';
+import { CategoryTokenEntity } from '../../category-token/entities/category-token.entity';
 
 @Entity({ name: 'company_subscription_token' })
 export class CompanySubscriptionTokenEntity extends EntityHelper {
@@ -20,10 +20,10 @@ export class CompanySubscriptionTokenEntity extends EntityHelper {
   })
   company: CompanyEntity;
 
-  @AutoMap(() => TokenCategoryEntity)
-  @ManyToOne(() => TokenCategoryEntity, {
+  @AutoMap(() => CategoryTokenEntity)
+  @ManyToOne(() => CategoryTokenEntity, {
     eager: true,
     nullable: false,
   })
-  category: TokenCategoryEntity;
+  category: CategoryTokenEntity;
 }

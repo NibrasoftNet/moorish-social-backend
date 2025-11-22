@@ -35,15 +35,15 @@ import { ClsModule } from 'nestjs-cls';
 import { TenantMiddleware } from './utils/repository/tenant-aware';
 import { CompanySubscriptionTokenModule } from './company-subscription-token/company-subscription-token.module';
 import { CompanyModule } from './company/company.module';
-import { TokenCategoryModule } from './token-category/token-category.module';
+import { CategoryTokenModule } from './category-token/category-token.module';
 import { CompanySubscriptionTokenController } from './company-subscription-token/company-subscription-token.controller';
 import { CompanyPostModule } from './company-post/company-post.module';
-import { PostCategoryModule } from './post-category/post-category.module';
-import { CompanyCategoryModule } from './company-category/company-category.module';
+import { CategoryPostOfferModule } from './category-post-offer/category-post-offer.module';
+import { CategoryCompanyModule } from './category-company/category-company.module';
 import { CompanyOfferModule } from './company-offer/company-offer.module';
 import { UserRequestOfferModule } from './user-request-offer/user-request-offer.module';
 import { UserTenderModule } from './user-tender/user-tender.module';
-import { TenderCategoryModule } from './tender-category/tender-category.module';
+import { CategoryTenderModule } from './category-tender/category-tender.module';
 import { CompanyParticipationUserTenderModule } from './company-participation-user-tender/company-participation-user-tender.module';
 import { CompanyTenderModule } from './company-tender/company-tender.module';
 import { CompanyParticipationCompanyTenderModule } from './company-participation-company-tender/company-participation-company-tender.module';
@@ -118,7 +118,7 @@ import { CompanyPostPrivateController } from './company-post/private/company-pos
     AwsS3Module,
     ChatModule,
     CompanyModule,
-    CompanyCategoryModule,
+    CategoryCompanyModule,
     CompanyPostModule,
     CompanyOfferModule,
     CompanySubscriptionTokenModule,
@@ -132,11 +132,11 @@ import { CompanyPostPrivateController } from './company-post/private/company-pos
     NotificationModule,
     OauthModule,
     OtpModule,
-    PostCategoryModule,
+    CategoryPostOfferModule,
     SessionModule,
     SharedModule,
-    TokenCategoryModule,
-    TenderCategoryModule,
+    CategoryTokenModule,
+    CategoryTenderModule,
     UsersModule,
     UsersTenantModule,
     UserRequestOfferModule,

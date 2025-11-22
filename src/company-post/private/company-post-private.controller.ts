@@ -11,6 +11,7 @@ import {
   UploadedFiles,
   Request,
   Put,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { CreateCompanyPostDto } from '../dto/create-company-post.dto';
 import { UpdateCompanyPostDto } from '../dto/update-company-post.dto';
@@ -129,7 +130,7 @@ export class CompanyPostPrivateController {
   @HttpCode(HttpStatus.OK)
   @Put(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body('data', ParseFormdataPipe) data: any,
     @UploadedFiles() files?: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<CompanyPostEntity> {
@@ -143,7 +144,7 @@ export class CompanyPostPrivateController {
   @Roles(RoleCodeEnum.TENANTADMIN)
   @HttpCode(HttpStatus.OK)
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<DeleteResult> {
+  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<DeleteResult> {
     return this.companyPostService.remove(id);
   }
 }

@@ -12,11 +12,16 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { AddressService } from './address.service';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { InjectMapper, MapInterceptor } from '@automapper/nestjs';
 import { AddressEntity } from './entities/address.entity';
 import { Mapper } from '@automapper/core';
-import { AddressDto } from './dto/address.dto';
+import { AddressDto, ApiAddressDto } from './dto/address.dto';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
 import { NullableType } from '../utils/types/nullable.type';
@@ -30,6 +35,8 @@ export class AddressController {
     @InjectMapper() private readonly mapper: Mapper,
   ) {}
 
+  @ApiCreatedResponse({ type: ApiAddressDto, isArray: false })
+  @ApiBody({ type: CreateAddressDto, isArray: false })
   @UseInterceptors(MapInterceptor(AddressEntity, AddressDto))
   @HttpCode(HttpStatus.OK)
   @Post()
@@ -46,6 +53,7 @@ export class AddressController {
     return await this.addressService.findAll();
   }
 
+  @ApiOkResponse({ type: ApiAddressDto, isArray: false })
   @UseInterceptors(MapInterceptor(AddressEntity, AddressDto))
   @HttpCode(HttpStatus.OK)
   @Get(':id')
@@ -53,6 +61,7 @@ export class AddressController {
     return await this.addressService.findOne({ id });
   }
 
+  @ApiOkResponse({ type: ApiAddressDto, isArray: false })
   @UseInterceptors(MapInterceptor(AddressEntity, AddressDto))
   @HttpCode(HttpStatus.OK)
   @Put(':id')
@@ -63,6 +72,7 @@ export class AddressController {
     return await this.addressService.update(id, updateAddressDto);
   }
 
+  @ApiOkResponse({ type: ApiAddressDto, isArray: false })
   @HttpCode(HttpStatus.OK)
   @Delete(':id')
   async remove(@Param('id', ParseIntPipe) id: number): Promise<DeleteResult> {

@@ -3,15 +3,15 @@ import { CompanySubscriptionTokenService } from './company-subscription-token.se
 import { CompanySubscriptionTokenController } from './company-subscription-token.controller';
 import { CompanySubscriptionTokenSerializationProfile } from './serialization/company-subscription-token-serialization.profile';
 import { CompanySubscriptionTokenEntity } from './entities/company-subscription-token.entity';
-import { TokenCategoryModule } from '../token-category/token-category.module';
+import { CategoryTokenModule } from '../category-token/category-token.module';
 import { CompanyModule } from '../company/company.module';
-import { TenantAwareRepositoryModule } from '../utils/repository/tenant-aware/tenant-aware.module';
+import { TenantAwareRepositoryModule } from '../utils/repository/tenant-aware';
 
 @Module({
   imports: [
     TenantAwareRepositoryModule.forEntities([CompanySubscriptionTokenEntity]),
     CompanyModule,
-    TokenCategoryModule,
+    CategoryTokenModule,
   ],
   controllers: [CompanySubscriptionTokenController],
   providers: [

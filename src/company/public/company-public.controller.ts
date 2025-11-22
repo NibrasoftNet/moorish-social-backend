@@ -5,6 +5,7 @@ import {
   UseInterceptors,
   HttpCode,
   HttpStatus,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { InjectMapper, MapInterceptor } from '@automapper/nestjs';
@@ -56,7 +57,9 @@ export class CompanyPublicController {
   @UseInterceptors(MapInterceptor(CompanyEntity, CompanyDto))
   @HttpCode(HttpStatus.OK)
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<NullableType<CompanyEntity>> {
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<NullableType<CompanyEntity>> {
     return await this.companyService.findOne(
       { id },
       { categories: { parent: true }, tenants: true },

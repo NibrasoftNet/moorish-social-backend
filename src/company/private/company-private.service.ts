@@ -10,7 +10,7 @@ import { TenantAwareRepository } from '../../utils/repository/tenant-aware';
 import { CreateCompanyDto } from '../dto/create-company.dto';
 import { UsersTenantService } from '../../users-tenant/users-tenant.service';
 import { UpdateCompanyDto } from '../dto/update-company.dto';
-import { CompanyCategoryService } from '../../company-category/company-category.service';
+import { CategoryCompanyService } from '../../category-company/category-company.service';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { CompanyPublicService } from '../public/company-public.service';
 
@@ -20,7 +20,7 @@ export class CompanyPrivateService {
     @InjectTenantAwareRepository(CompanyEntity)
     private readonly companyRepository: TenantAwareRepository<CompanyEntity>,
     private readonly usersTenantService: UsersTenantService,
-    private readonly companyCategoryService: CompanyCategoryService,
+    private readonly companyCategoryService: CategoryCompanyService,
     private readonly privateCompanyService: CompanyPublicService,
     private readonly fileService: FilesService,
     private readonly addressService: AddressService,

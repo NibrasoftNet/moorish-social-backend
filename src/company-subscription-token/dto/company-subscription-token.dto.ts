@@ -1,6 +1,6 @@
 import { AutoMap } from '@automapper/classes';
 import { CompanyDto } from '../../company/dto/company.dto';
-import { TokenCategoryDto } from '../../token-category/dto/token-category.dto';
+import { CategoryTokenDto } from '../../category-token/dto/category-token.dto';
 import { EntityHelperDto } from '@/domains/entity-helper.dto';
 
 export class CompanySubscriptionTokenDto extends EntityHelperDto {
@@ -13,6 +13,6 @@ export class CompanySubscriptionTokenDto extends EntityHelperDto {
   @AutoMap(() => CompanyDto)
   company: CompanyDto;
 
-  @AutoMap(() => TokenCategoryDto)
-  category: TokenCategoryDto;
+  @AutoMap(() => CategoryTokenDto)
+  category: CategoryTokenDto;
 }

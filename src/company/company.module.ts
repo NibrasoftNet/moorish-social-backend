@@ -7,9 +7,9 @@ import { CompanySerializationProfile } from './serialization/company-serializati
 import { CompanyEntity } from './entities/company.entity';
 import { FilesModule } from '../files/files.module';
 import { UsersTenantModule } from '../users-tenant/users-tenant.module';
-import { TenantAwareRepositoryModule } from '../utils/repository/tenant-aware/tenant-aware.module';
+import { TenantAwareRepositoryModule } from '../utils/repository/tenant-aware';
 import { AddressModule } from '../address/address.module';
-import { CompanyCategoryModule } from '../company-category/company-category.module';
+import { CategoryCompanyModule } from '../category-company/category-company.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
@@ -19,7 +19,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     FilesModule,
     AddressModule,
     UsersTenantModule,
-    CompanyCategoryModule,
+    CategoryCompanyModule,
   ],
   controllers: [CompanyPublicController, CompanyPrivateController],
   providers: [

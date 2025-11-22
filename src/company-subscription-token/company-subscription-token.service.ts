@@ -11,10 +11,10 @@ import { NullableType } from '../utils/types/nullable.type';
 import { Mapper } from '@automapper/core';
 import { CreateCompanySubscriptionTokenDto } from './dto/create-company-subscription-token.dto';
 import { CompanySubscriptionTokenEntity } from './entities/company-subscription-token.entity';
-import { TokenCategoryService } from '../token-category/token-category.service';
-import { TenantAwareRepository } from '../utils/repository/tenant-aware/tenant-aware.repository';
+import { CategoryTokenService } from '../category-token/category-token.service';
+import { TenantAwareRepository } from '../utils/repository/tenant-aware';
 import { companySubscriptionTokenPaginationConfig } from './config/company-subscription-token-pagination-config';
-import { InjectTenantAwareRepository } from '../utils/repository/tenant-aware/inject-tenant-aware-repository.decorator';
+import { InjectTenantAwareRepository } from '../utils/repository/tenant-aware';
 import { CompanyPublicService } from '../company/public/company-public.service';
 
 @Injectable()
@@ -23,7 +23,7 @@ export class CompanySubscriptionTokenService {
     @InjectTenantAwareRepository(CompanySubscriptionTokenEntity)
     private readonly subscriptionTokenRepository: TenantAwareRepository<CompanySubscriptionTokenEntity>,
     private readonly companyService: CompanyPublicService,
-    private readonly tokenCategoryService: TokenCategoryService,
+    private readonly tokenCategoryService: CategoryTokenService,
     //private readonly notificationService: NotificationService,
     @InjectMapper() private readonly mapper: Mapper,
   ) {}

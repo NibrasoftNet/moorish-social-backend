@@ -4,7 +4,7 @@ import { CompanyOfferEntity } from '../entities/company-offer.entity';
 import { JwtPayloadType } from '../../auth/strategies/types/jwt-payload.type';
 import { UsersTenantService } from '../../users-tenant/users-tenant.service';
 import { FilesService } from '../../files/files.service';
-import { PostCategoryService } from '../../post-category/post-category.service';
+import { CategoryPostOfferService } from '../../category-post-offer/category-post-offer.service';
 import { CreateCompanyOfferDto } from '../dto/create-company-offer.dto';
 import { UpdateCompanyOfferDto } from '../dto/update-company-offer.dto';
 import { CompanyPublicService } from '../../company/public/company-public.service';
@@ -23,7 +23,7 @@ export class CompanyOfferPrivateService {
     private readonly companyOfferPublicService: CompanyOfferPublicService,
     private readonly userTenantService: UsersTenantService,
     private readonly filesService: FilesService,
-    private readonly postCategoryService: PostCategoryService,
+    private readonly postCategoryService: CategoryPostOfferService,
   ) {}
 
   async create(

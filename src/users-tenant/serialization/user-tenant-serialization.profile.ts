@@ -11,6 +11,7 @@ import {
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { UserTenantDto } from '../dto/user-tenant.dto';
 import { UserTenantEntity } from '../entities/user-tenant.entity';
+import { CompanyTenantDto } from '../../company/dto/company-tenant.dto';
 
 @Injectable()
 export class UsersTenantSerializationProfile extends AutomapperProfile {
@@ -32,6 +33,12 @@ export class UsersTenantSerializationProfile extends AutomapperProfile {
           (dto: UserTenantDto) => dto.role,
           mapFrom((source: UserTenantEntity) => source.role?.name),
         ),
+        typeConverter(Date, String, (date) => date.toDateString()),
+      );
+      createMap(
+        mapper,
+        UserTenantEntity,
+        CompanyTenantDto,
         typeConverter(Date, String, (date) => date.toDateString()),
       );
     };

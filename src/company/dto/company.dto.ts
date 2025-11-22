@@ -1,14 +1,14 @@
 import { AutoMap } from '@automapper/classes';
 import { Expose } from 'class-transformer';
 import { FileDto } from '../../files/dto/file.dto';
-import { UserTenantDto } from '../../users-tenant/dto/user-tenant.dto';
 import { EntityHelperDto } from '@/domains/entity-helper.dto';
 import { AddressDto } from '../../address/dto/address.dto';
 import { CompanySubscriptionTokenDto } from '../../company-subscription-token/dto/company-subscription-token.dto';
-import { CompanyCategoryDto } from '../../company-category/dto/company-category.dto';
+import { CategoryCompanyDto } from '../../category-company/dto/category-company.dto';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { ApiResponseDto } from '@/domains/api-response.dto';
 import { PaginationDto } from '@/domains/pagination.dto';
+import { CompanyTenantDto } from './company-tenant.dto';
 
 export class CompanyDto extends EntityHelperDto {
   @AutoMap()
@@ -35,10 +35,9 @@ export class CompanyDto extends EntityHelperDto {
   //@Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
   registrationNumber: string;
 
-  @AutoMap(() => [UserTenantDto])
-  @ApiPropertyOptional({ type: UserTenantDto, isArray: true, nullable: true })
-  //@Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
-  tenants: UserTenantDto[];
+  @AutoMap(() => [CompanyTenantDto])
+  @ApiProperty({ type: CompanyTenantDto, isArray: true })
+  tenants: CompanyTenantDto[];
 
   @AutoMap(() => FileDto)
   @ApiPropertyOptional({ type: FileDto, nullable: true })
@@ -46,7 +45,7 @@ export class CompanyDto extends EntityHelperDto {
   image: FileDto;
 
   @AutoMap(() => AddressDto)
-  //@Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
+  @ApiProperty({ type: AddressDto })
   address: AddressDto;
 
   @AutoMap()
@@ -64,10 +63,10 @@ export class CompanyDto extends EntityHelperDto {
   //@Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
   subscriptions: CompanySubscriptionTokenDto[];
 
-  @AutoMap(() => [CompanyCategoryDto])
-  @ApiProperty({ type: CompanyCategoryDto, isArray: true })
+  @AutoMap(() => [CategoryCompanyDto])
+  @ApiProperty({ type: CategoryCompanyDto, isArray: true })
   //@Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
-  categories: CompanyCategoryDto;
+  categories: CategoryCompanyDto[];
 
   @AutoMap()
   @ApiProperty()
@@ -91,7 +90,7 @@ export class ApiCompanyDto extends ApiResponseDto {
 }
 
 export class PaginatedCompanyDto extends PaginationDto {
-  @ApiProperty({ type: [CompanyDto] })
+  @ApiProperty({ type: CompanyDto, isArray: true })
   data: CompanyDto[];
 }
 

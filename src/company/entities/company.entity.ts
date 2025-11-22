@@ -15,7 +15,7 @@ import { AutoMap } from '@automapper/classes';
 import { FileEntity } from '../../files/entities/file.entity';
 import { UserTenantEntity } from '../../users-tenant/entities/user-tenant.entity';
 import { AddressEntity } from '../../address/entities/address.entity';
-import { CompanyCategoryEntity } from '../../company-category/entities/company-category.entity';
+import { CategoryCompanyEntity } from '../../category-company/entities/category-company.entity';
 
 @Entity({ name: 'company' })
 export class CompanyEntity extends EntityHelper {
@@ -62,13 +62,13 @@ export class CompanyEntity extends EntityHelper {
   @Column({ type: Number, nullable: false, default: 100 })
   availableSubscriptionTokens: number;
 
-  @AutoMap(() => [CompanyCategoryEntity])
-  @ManyToMany(() => CompanyCategoryEntity, {
+  @AutoMap(() => [CategoryCompanyEntity])
+  @ManyToMany(() => CategoryCompanyEntity, {
     eager: true,
     nullable: false,
   })
   @JoinTable()
-  categories: CompanyCategoryEntity[];
+  categories: CategoryCompanyEntity[];
 
   @AutoMap()
   @Column({ type: 'varchar', length: 7, default: '#5bb450' })

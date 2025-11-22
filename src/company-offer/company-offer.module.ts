@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CompanyModule } from '../company/company.module';
 import { UsersTenantModule } from '../users-tenant/users-tenant.module';
 import { CompanyOfferEntity } from './entities/company-offer.entity';
-import { PostCategoryModule } from '../post-category/post-category.module';
+import { CategoryPostOfferModule } from '../category-post-offer/category-post-offer.module';
 import { FilesModule } from '../files/files.module';
 import { CompanyOfferSerializationProfile } from './serialization/company-offer-serialization.profile';
 import { CompanyOfferPrivateService } from './private/company-offer-private.service';
@@ -18,7 +18,7 @@ import { CompanyOfferPrivateController } from './private/company-offer-private.c
     TypeOrmModule.forFeature([CompanyOfferEntity]),
     CompanyModule,
     UsersTenantModule,
-    PostCategoryModule,
+    CategoryPostOfferModule,
     FilesModule,
   ],
   controllers: [CompanyOfferPublicController, CompanyOfferPrivateController],

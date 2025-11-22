@@ -11,6 +11,7 @@ import {
   Put,
   Request,
   UploadedFile,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -126,7 +127,7 @@ export class CompanyPrivateController {
   @HttpCode(HttpStatus.OK)
   @Put(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body('data', ParseFormdataPipe) data: any,
     @UploadedFile() file?: Express.Multer.File | Express.MulterS3.File,
   ): Promise<CompanyEntity> {

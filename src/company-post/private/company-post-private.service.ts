@@ -11,7 +11,7 @@ import { CompanyPostEntity } from '../entities/company-post.entity';
 import { JwtPayloadType } from '../../auth/strategies/types/jwt-payload.type';
 import { UsersTenantService } from '../../users-tenant/users-tenant.service';
 import { FilesService } from '../../files/files.service';
-import { PostCategoryService } from '../../post-category/post-category.service';
+import { CategoryPostOfferService } from '../../category-post-offer/category-post-offer.service';
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { companyPostPaginationConfig } from '../config/company-post-pagination-config';
 import { NullableType } from '../../utils/types/nullable.type';
@@ -29,7 +29,7 @@ export class CompanyPostPrivateService {
     private readonly companyService: CompanyPublicService,
     private readonly userTenantService: UsersTenantService,
     private readonly filesService: FilesService,
-    private readonly postCategoryService: PostCategoryService,
+    private readonly postCategoryService: CategoryPostOfferService,
   ) {}
 
   async create(

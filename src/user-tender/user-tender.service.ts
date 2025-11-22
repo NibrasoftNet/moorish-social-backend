@@ -13,7 +13,7 @@ import {
 import { FilesService } from '../files/files.service';
 import { UsersService } from '../users/users.service';
 import { UserTenderEntity } from './entities/user-tender.entity';
-import { TenderCategoryService } from '../tender-category/tender-category.service';
+import { CategoryTenderService } from '../category-tender/category-tender.service';
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { userTenderPaginationConfig } from './config/user-tender-pagination.config';
 import { NullableType } from '../utils/types/nullable.type';
@@ -25,7 +25,7 @@ export class UserTenderService {
     private readonly tenderRepository: Repository<UserTenderEntity>,
     private readonly userService: UsersService,
     private readonly filesService: FilesService,
-    private readonly tenderCategoryService: TenderCategoryService,
+    private readonly tenderCategoryService: CategoryTenderService,
   ) {}
 
   async create(

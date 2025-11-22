@@ -2,7 +2,7 @@ import { AutoMap } from '@automapper/classes';
 import { FileEntity } from '../../files/entities/file.entity';
 import { FileDto } from '../../files/dto/file.dto';
 import { EntityHelperDto } from '@/domains/entity-helper.dto';
-import { TenderCategoryDto } from '../../tender-category/dto/tender-category.dto';
+import { CategoryTenderDto } from '../../category-tender/dto/category-tender.dto';
 import { UserTenantDto } from '../../users-tenant/dto/user-tenant.dto';
 import { CompanyDto } from '../../company/dto/company.dto';
 import { CompanyParticipationCompanyTenderDto } from '../../company-participation-company-tender/dto/company-participation-company-tender.dto';
@@ -29,8 +29,8 @@ export class CompanyTenderDto extends EntityHelperDto {
   @AutoMap(() => UserTenantDto)
   creator: UserTenantDto;
 
-  @AutoMap(() => TenderCategoryDto)
-  category: TenderCategoryDto;
+  @AutoMap(() => CategoryTenderDto)
+  category: CategoryTenderDto;
 
   @AutoMap(() => [Object])
   specifications: { key: string; value: string };

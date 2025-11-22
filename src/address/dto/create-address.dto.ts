@@ -26,18 +26,4 @@ export class CreateAddressDto {
   @IsString()
   @IsNotEmpty()
   street: string;
-
-  constructor(
-    country: string,
-    city: string,
-    longitude: number,
-    latitude: number,
-    street: string,
-  ) {
-    this.country = country;
-    this.city = city;
-    this.longitude = longitude;
-    this.latitude = latitude;
-    this.street = street;
-  }
 }

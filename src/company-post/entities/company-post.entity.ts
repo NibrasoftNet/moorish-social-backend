@@ -11,7 +11,7 @@ import { AutoMap } from '@automapper/classes';
 import EntityHelper from '../../utils/entities/entity-helper';
 import { CompanyEntity } from '../../company/entities/company.entity';
 import { UserTenantEntity } from '../../users-tenant/entities/user-tenant.entity';
-import { PostCategoryEntity } from '../../post-category/entities/post-category.entity';
+import { CategoryPostOfferEntity } from '../../category-post-offer/entities/category-post-offer.entity';
 
 @Entity({ name: 'company_post' })
 export class CompanyPostEntity extends EntityHelper {
@@ -60,11 +60,11 @@ export class CompanyPostEntity extends EntityHelper {
   })
   creator: UserTenantEntity;
 
-  @AutoMap(() => PostCategoryEntity)
-  @ManyToOne(() => PostCategoryEntity, {
+  @AutoMap(() => CategoryPostOfferEntity)
+  @ManyToOne(() => CategoryPostOfferEntity, {
     eager: true,
     onDelete: 'SET NULL',
     nullable: false,
   })
-  category: PostCategoryEntity;
+  category: CategoryPostOfferEntity;
 }

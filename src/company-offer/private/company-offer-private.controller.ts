@@ -11,6 +11,7 @@ import {
   UploadedFiles,
   Request,
   Put,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { CreateCompanyOfferDto } from '../dto/create-company-offer.dto';
 import { UpdateCompanyOfferDto } from '../dto/update-company-offer.dto';
@@ -129,7 +130,7 @@ export class CompanyOfferPrivateController {
   @HttpCode(HttpStatus.CREATED)
   @Put(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body('data', ParseFormdataPipe) data: any,
     @UploadedFiles() files?: Array<Express.Multer.File | Express.MulterS3.File>,
   ): Promise<CompanyOfferEntity> {
@@ -141,7 +142,7 @@ export class CompanyOfferPrivateController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<DeleteResult> {
+  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<DeleteResult> {
     return this.companyOfferService.remove(id);
   }
 }
