@@ -1,49 +1,47 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsArray,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+import { FileDto } from '../../files/dto/file.dto';
 
 export class UpdateCompanyPostDto {
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   title?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   hashTag?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   content?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional({ nullable: true })
   @IsOptional()
   @IsNumber()
   boostScore?: number;
 
-  @ApiProperty()
+  @ApiPropertyOptional({ nullable: true })
   @IsOptional()
-  @IsBoolean()
-  active?: boolean;
+  @IsString()
+  categoryId?: string;
 
-  constructor({
-    title,
-    content,
-    hashTag,
-    boostScore,
-    active,
-  }: {
-    title?: string;
-    content?: string;
-    hashTag?: string;
-    boostScore?: number;
-    active?: boolean;
-  }) {
-    this.title = title;
-    this.content = content;
-    this.hashTag = hashTag;
-    this.boostScore = boostScore;
-    this.active = active;
-  }
+  @ApiPropertyOptional({
+    description: 'Array of attachments to delete',
+    required: false,
+    type: [FileDto],
+    nullable: true,
+  })
+  @IsOptional()
+  @IsArray()
+  @IsObject({ each: true })
+  deleteImages?: FileDto[];
 }

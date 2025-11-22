@@ -14,7 +14,7 @@ export class CompanyOfferDto extends EntityHelperDto {
   id: string;
 
   @AutoMap(() => [FileDto])
-  @ApiProperty()
+  @ApiProperty({ type: FileDto, isArray: true })
   files: FileDto[];
 
   @AutoMap()
@@ -44,18 +44,22 @@ export class CompanyOfferDto extends EntityHelperDto {
   @AutoMap(() => PostCategoryDto)
   @ApiProperty()
   category: PostCategoryDto;
+
+  @AutoMap()
+  @ApiProperty()
+  active: boolean;
 }
 export class ApiCompanyOfferDto extends ApiResponseDto {
   @ApiProperty({ type: CompanyOfferDto })
   result: CompanyOfferDto;
 }
 
-export class PaginatedCompanyDto extends PaginationDto {
+export class PaginatedCompanyOfferDto extends PaginationDto {
   @ApiProperty({ type: [CompanyOfferDto] })
   data: CompanyOfferDto[];
 }
 
 export class ApiCompanyOfferPaginatedDto extends ApiResponseDto {
-  @ApiProperty({ type: PaginatedCompanyDto })
-  result: PaginatedCompanyDto;
+  @ApiProperty({ type: PaginatedCompanyOfferDto })
+  result: PaginatedCompanyOfferDto;
 }

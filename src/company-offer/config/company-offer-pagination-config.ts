@@ -5,9 +5,12 @@ export const companyOfferPaginationConfig: PaginateConfig<CompanyOfferEntity> =
   {
     defaultSortBy: [['createdAt', 'DESC']],
     relations: [
+      'company',
+      'company.categories',
       'creator',
-      'creator.company',
-      'creator.company.image',
+      'creator.image',
+      'creator.role',
+      'creator.status',
       'files',
       'category',
     ],

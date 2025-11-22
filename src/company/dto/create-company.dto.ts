@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsArray,
@@ -21,7 +21,7 @@ export class CreateCompanyDto {
   @IsString()
   description: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: CreateAddressDto, nullable: false })
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => CreateAddressDto)
@@ -38,31 +38,8 @@ export class CreateCompanyDto {
   @IsString({ each: true })
   categories: string[];
 
-  @ApiProperty()
+  @ApiPropertyOptional({ nullable: true })
   @IsOptional()
   @IsString()
   registrationNumber?: string;
-
-  constructor({
-    name,
-    description,
-    address,
-    hexColor,
-    categories,
-    registrationNumber,
-  }: {
-    name: string;
-    description: string;
-    address: CreateAddressDto;
-    hexColor: string;
-    categories: string[];
-    registrationNumber?: string;
-  }) {
-    this.name = name;
-    this.description = description;
-    this.address = address;
-    this.hexColor = hexColor;
-    this.categories = categories;
-    this.registrationNumber = registrationNumber;
-  }
 }

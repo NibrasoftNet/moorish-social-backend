@@ -25,7 +25,7 @@ import { I18nService } from 'nestjs-i18n';
 import { ParameterObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import * as fs from 'fs';
 
-const logger = new Logger('Weavers-social');
+const logger = new Logger('Moorish-social');
 const whitelist = [
   'http://localhost:5000',
   'http://localhost:5001',
@@ -33,8 +33,8 @@ const whitelist = [
   'http://127.0.0.1:5001',
   'http://147.79.117.125:5000',
   'http://147.79.117.125:5001',
-  'https://api-weavers.nibrasoft.com',
-  'https://dashboard-weavers.nibrasoft.com',
+  'https://moorish-api.nibrasoft.com',
+  'https://moorish.nibrasoft.com',
 ];
 
 async function bootstrap() {

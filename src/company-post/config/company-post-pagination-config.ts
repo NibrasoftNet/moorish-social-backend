@@ -3,7 +3,16 @@ import { CompanyPostEntity } from '../entities/company-post.entity';
 
 export const companyPostPaginationConfig: PaginateConfig<CompanyPostEntity> = {
   defaultSortBy: [['createdAt', 'DESC']],
-  relations: ['company', 'creator', 'creator.image', 'images', 'category'],
+  relations: [
+    'company',
+    'company.categories',
+    'creator',
+    'creator.image',
+    'creator.role',
+    'creator.status',
+    'images',
+    'category',
+  ],
   searchableColumns: ['title'],
   sortableColumns: ['createdAt', 'updatedAt', 'title'],
   maxLimit: 100,

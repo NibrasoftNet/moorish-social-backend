@@ -20,6 +20,7 @@ import {
   ApiConsumes,
   ApiCreatedResponse,
   ApiExtraModels,
+  ApiOkResponse,
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
@@ -70,7 +71,10 @@ export class CompanyPostPrivateController {
       },
     },
   })
-  @ApiCreatedResponse({ description: "Create new post offer", type: ApiCompanyPostDto })
+  @ApiCreatedResponse({
+    description: 'Create new post comapny',
+    type: ApiCompanyPostDto,
+  })
   @Roles(RoleCodeEnum.TENANTADMIN)
   @UseInterceptors(MapInterceptor(CompanyPostEntity, CompanyPostDto))
   @UseInterceptors(FilesInterceptor('files', 10))
@@ -97,7 +101,7 @@ export class CompanyPostPrivateController {
   }
 
   @ApiConsumes('multipart/form-data')
-  @ApiExtraModels(CreateCompanyPostDto)
+  @ApiExtraModels(UpdateCompanyPostDto)
   @ApiBody({
     schema: {
       type: 'object',
@@ -110,10 +114,14 @@ export class CompanyPostPrivateController {
           },
         },
         data: {
-          $ref: getSchemaPath(CreateCompanyPostDto),
+          $ref: getSchemaPath(UpdateCompanyPostDto),
         },
       },
     },
+  })
+  @ApiOkResponse({
+    description: 'Update post company by ID',
+    type: ApiCompanyPostDto,
   })
   @Roles(RoleCodeEnum.TENANTADMIN)
   @UseInterceptors(MapInterceptor(CompanyPostEntity, CompanyPostDto))

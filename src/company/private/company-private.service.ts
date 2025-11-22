@@ -4,9 +4,9 @@ import { FilesService } from '../../files/files.service';
 import { AddressService } from '../../address/address.service';
 import { WinstonLoggerService } from '../../logger/winston-logger.service';
 import { JwtPayloadType } from '../../auth/strategies/types/jwt-payload.type';
-import { InjectTenantAwareRepository } from '../../utils/repository/tenant-aware/inject-tenant-aware-repository.decorator';
+import { InjectTenantAwareRepository } from '../../utils/repository/tenant-aware';
 import { CompanyEntity } from '../entities/company.entity';
-import { TenantAwareRepository } from '../../utils/repository/tenant-aware/tenant-aware.repository';
+import { TenantAwareRepository } from '../../utils/repository/tenant-aware';
 import { CreateCompanyDto } from '../dto/create-company.dto';
 import { UsersTenantService } from '../../users-tenant/users-tenant.service';
 import { UpdateCompanyDto } from '../dto/update-company.dto';
@@ -38,7 +38,6 @@ export class CompanyPrivateService {
       class: CompanyPrivateService.name,
       function: 'create',
     });
-    console.log('ssss', userJwtPayload, createCompanyDto);
     const { categories, ...filteredCreateCompanyDto } = createCompanyDto;
     const company = this.companyRepository.createTenantContext(
       filteredCreateCompanyDto as DeepPartial<CompanyEntity>,

@@ -28,19 +28,18 @@ import { Mapper } from '@automapper/core';
 import { ParseFormdataPipe } from '../utils/pipes/parse-formdata.pipe';
 import { Utils } from '../utils/utils';
 import { AuthResetPasswordDto } from './dto/auth-reset-password.dto';
-import { AuthUpdateDto } from './dto/auth-update.dto';
 import { AuthNewPasswordDto } from './dto/auth-new-password.dto';
 import { AuthTenantService } from './auth-tenant.service';
-import { SessionAdminResponseDto } from '../session/dto/session-admin-response.dto';
+import {
+  SessionAdminApiResponseDto,
+  SessionAdminResponseDto,
+} from '../session/dto/session-admin-response.dto';
 import { UserTenantEntity } from '../users-tenant/entities/user-tenant.entity';
 import {
   TenantApiResponseDto,
   UserTenantDto,
 } from '../users-tenant/dto/user-tenant.dto';
-import {
-  AuthAdminEmailLoginApiResponseDto,
-  AuthAdminEmailLoginDto,
-} from './dto-admin/auth-admin-email-login.dto';
+import { AuthAdminEmailLoginDto } from './dto-admin/auth-admin-email-login.dto';
 import { AuthAdminForgotPasswordDto } from './dto-admin/auth-admin-forgot-password.dto';
 import { AuthRequest } from '../utils/types/auth-request.type';
 import { CreateUserTenantDto } from '../users-tenant/dto/create-user-tenant.dto';
@@ -64,7 +63,7 @@ export class AuthTenantController {
 
   @ApiOkResponse({
     description: 'Tenant successfully logged in',
-    type: AuthAdminEmailLoginApiResponseDto,
+    type: SessionAdminApiResponseDto,
   })
   @Post('email-login')
   @HttpCode(HttpStatus.OK)
@@ -81,6 +80,7 @@ export class AuthTenantController {
   @Post('email-register')
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() createUserDto: CreateUserTenantDto): Promise<string> {
+    console.log('createUserDto', createUserDto);
     return await this.authTenantService.register(createUserDto);
   }
 
@@ -93,14 +93,14 @@ export class AuthTenantController {
   }
 
   @ApiOkResponse({
-    description: 'Reset password with success',
-    type: ApiBooleanResponseDto,
+    description: 'Forgot password with success',
+    type: ApiStringResponseDto,
   })
   @Post('forgot-password')
   @HttpCode(HttpStatus.OK)
   async forgotPassword(
     @Body() forgotPasswordDto: AuthAdminForgotPasswordDto,
-  ): Promise<boolean> {
+  ): Promise<string> {
     return await this.authTenantService.forgotPassword(forgotPasswordDto.email);
   }
 
@@ -149,7 +149,7 @@ export class AuthTenantController {
   }
 
   @ApiConsumes('multipart/form-data')
-  @ApiExtraModels(AuthUpdateDto)
+  @ApiExtraModels(AuthTenantUpdateDto)
   @ApiBody({
     schema: {
       type: 'object',
@@ -159,10 +159,14 @@ export class AuthTenantController {
           format: 'binary',
         },
         data: {
-          $ref: getSchemaPath(AuthUpdateDto),
+          $ref: getSchemaPath(AuthTenantUpdateDto),
         },
       },
     },
+  })
+  @ApiOkResponse({
+    description: 'User successfully registered',
+    type: TenantApiResponseDto,
   })
   @ApiBearerAuth()
   @Put('me')

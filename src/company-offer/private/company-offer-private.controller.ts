@@ -22,6 +22,7 @@ import {
   ApiTags,
   getSchemaPath,
   ApiCreatedResponse,
+  ApiOkResponse,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../../roles/roles.guard';
@@ -70,7 +71,10 @@ export class CompanyOfferPrivateController {
       },
     },
   })
-  @ApiCreatedResponse({ description: "Create new company offer", type: ApiCompanyOfferDto })
+  @ApiCreatedResponse({
+    description: 'Create new company offer',
+    type: ApiCompanyOfferDto,
+  })
   @Roles(RoleCodeEnum.TENANTADMIN)
   @UseInterceptors(MapInterceptor(CompanyOfferEntity, CompanyOfferDto))
   @UseInterceptors(FilesInterceptor('files', 10))
@@ -114,6 +118,10 @@ export class CompanyOfferPrivateController {
         },
       },
     },
+  })
+  @ApiOkResponse({
+    description: 'Update post company by ID',
+    type: ApiCompanyOfferDto,
   })
   @Roles(RoleCodeEnum.TENANTADMIN)
   @UseInterceptors(MapInterceptor(CompanyOfferEntity, CompanyOfferDto))

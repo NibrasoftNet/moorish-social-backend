@@ -11,7 +11,7 @@ import {
   UseGuards,
   Put,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { MapInterceptor } from '@automapper/nestjs';
 import { NullableType } from '../utils/types/nullable.type';
 import { Roles } from '../roles/roles.decorator';
@@ -21,7 +21,10 @@ import { RolesGuard } from '../roles/roles.guard';
 import { DeleteResult } from 'typeorm';
 import { TenderCategoryService } from './tender-category.service';
 import { TenderCategoryEntity } from './entities/tender-category.entity';
-import { TenderCategoryDto } from './dto/tender-category.dto';
+import {
+  ApiTenderCategoryDto,
+  TenderCategoryDto,
+} from './dto/tender-category.dto';
 import { CreateTenderCategoryDto } from './dto/create-tender-category.dto';
 import { UpdateTenderCategoryDto } from './dto/update-tender-category.dto';
 
@@ -42,6 +45,10 @@ export class TenderCategoryController {
     return await this.tenderCategoryService.create(createTenderCategoryDto);
   }
 
+  @ApiOkResponse({
+    type: ApiTenderCategoryDto,
+    description: 'List of tender categories',
+  })
   @UseInterceptors(
     MapInterceptor(TenderCategoryEntity, TenderCategoryDto, { isArray: true }),
   )

@@ -16,6 +16,7 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
+  ApiCreatedResponse,
   ApiExtraModels,
   ApiHeader,
   ApiTags,
@@ -32,7 +33,7 @@ import { Mapper } from '@automapper/core';
 import { IsCreatorPipe } from '../../utils/pipes/is-creator.pipe';
 import { DeleteResult } from 'typeorm';
 import { CompanyEntity } from '../entities/company.entity';
-import { CompanyDto } from '../dto/company.dto';
+import { ApiCompanyDto, CompanyDto } from '../dto/company.dto';
 import { CompanyPrivateService } from './company-private.service';
 import { CreateCompanyDto } from '../dto/create-company.dto';
 import { UpdateCompanyDto } from '../dto/update-company.dto';
@@ -48,12 +49,11 @@ export class CompanyPrivateController {
     @InjectMapper() private readonly mapper: Mapper,
   ) {}
 
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiHeader({
     name: 'tenant-id',
     required: true,
     description: 'Tenant-Id header',
-    schema: { type: 'string' },
+    schema: { type: 'unknown' },
   })
   @ApiConsumes('multipart/form-data')
   @ApiExtraModels(CreateCompanyDto)
@@ -71,6 +71,11 @@ export class CompanyPrivateController {
       },
     },
   })
+  @ApiCreatedResponse({
+    type: ApiCompanyDto,
+    description: 'Create new company',
+  })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @UseInterceptors(MapInterceptor(CompanyEntity, CompanyDto))
   @UseInterceptors(FileInterceptor('file'))
   @Roles(RoleCodeEnum.TENANTADMIN)

@@ -71,4 +71,8 @@ export class CompanyOfferEntity extends EntityHelper {
     nullable: false,
   })
   request: UserRequestOfferEntity;
+
+  @AutoMap()
+  @Column({ default: true })
+  active: boolean;
 }

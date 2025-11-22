@@ -77,7 +77,7 @@ export class OtpService {
    * @returns {id} otp is for confirmation
    * @param resendVerifyOtpDto
    */
-  async resendOtp(resendVerifyOtpDto: ResendVerifyOtpDto): Promise<void> {
+  async resendOtp(resendVerifyOtpDto: ResendVerifyOtpDto): Promise<boolean> {
     //Create new OTP instance if email not found
     const oldOtp = await this.findOne({ email: resendVerifyOtpDto.email });
     const otp = oldOtp
@@ -103,6 +103,7 @@ export class OtpService {
     });
     // Save resent Otp entity
     await this.otpRepository.save(otp);
+    return true;
   }
 
   async createOtp(createOtpDto: CreateOtpDto): Promise<string> {
@@ -144,7 +145,7 @@ export class OtpService {
   async verifyOtp(
     confirmOtpEmailDto: ConfirmOtpEmailDto,
     deleteOtp?: boolean,
-  ): Promise<void> {
+  ): Promise<boolean> {
     const otpRecord = await this.otpRepository.findOne({
       where: { email: confirmOtpEmailDto.email },
     });
@@ -203,6 +204,7 @@ export class OtpService {
     } else {
       await this.otpRepository.save(otpRecord);
     }
+    return true;
   }
 
   async validateVerification(email: string) {

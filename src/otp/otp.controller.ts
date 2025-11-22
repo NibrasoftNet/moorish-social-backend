@@ -11,11 +11,17 @@ import {
   Put,
 } from '@nestjs/common';
 import { OtpService } from './otp.service';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { OtpEntity } from './entities/otp.entity';
 import { DeleteResult } from 'typeorm';
 import { ConfirmOtpEmailDto } from './dto/confirm-otp-email.dto';
 import { ResendVerifyOtpDto } from './dto/verifyotp.dto';
+import { ApiBooleanResponseDto } from '@/domains/api-boolean-response.dto';
 
 @ApiTags('Otp')
 @Controller({
@@ -25,13 +31,21 @@ import { ResendVerifyOtpDto } from './dto/verifyotp.dto';
 export class OtpController {
   constructor(private readonly otpService: OtpService) {}
 
+  @ApiBody({
+    description: 'Confirm OTP verification code',
+    type: ConfirmOtpEmailDto,
+  })
+  @ApiCreatedResponse({
+    description: ' Create OTP verification code',
+    type: ApiBooleanResponseDto,
+  })
   @Post('verify')
   @HttpCode(HttpStatus.CREATED)
   async verifyOtp(
     @Body() confirmOtpEmailDto: ConfirmOtpEmailDto,
     deleteOtp?: boolean,
-  ): Promise<void> {
-    await this.otpService.verifyOtp(confirmOtpEmailDto, deleteOtp);
+  ): Promise<boolean> {
+    return await this.otpService.verifyOtp(confirmOtpEmailDto, deleteOtp);
   }
   /**
    * Get all not confirmed otp
@@ -64,11 +78,19 @@ export class OtpController {
    * @param resendVerifyOtpDto
    */
 
+  @ApiBody({
+    description: 'Resend OTP verification code',
+    type: ResendVerifyOtpDto,
+  })
+  @ApiOkResponse({
+    description: ' OTP send with success',
+    type: ApiBooleanResponseDto,
+  })
   @Put('resend')
   @HttpCode(HttpStatus.CREATED)
   async resendOtp(
     @Body() resendVerifyOtpDto: ResendVerifyOtpDto,
-  ): Promise<void> {
-    await this.otpService.resendOtp(resendVerifyOtpDto);
+  ): Promise<boolean> {
+    return await this.otpService.resendOtp(resendVerifyOtpDto);
   }
 }

@@ -16,7 +16,11 @@ import { Mapper } from '@automapper/core';
 import { Roles } from '../../roles/roles.decorator';
 import { RoleCodeEnum } from '@/enums/roles.enum';
 import { CompanyOfferEntity } from '../entities/company-offer.entity';
-import { ApiCompanyOfferPaginatedDto, CompanyOfferDto } from '../dto/company-offer.dto';
+import {
+  ApiCompanyOfferDto,
+  ApiCompanyOfferPaginatedDto,
+  CompanyOfferDto,
+} from '../dto/company-offer.dto';
 import { ApiPaginationQuery, Paginate, PaginateQuery } from 'nestjs-paginate';
 import { PaginatedDto } from '../../utils/serialization/paginated.dto';
 import { companyOfferPaginationConfig } from '../config/company-offer-pagination-config';
@@ -35,7 +39,10 @@ export class CompanyOfferPublicController {
     @InjectMapper() private readonly mapper: Mapper,
   ) {}
 
-  @ApiOkResponse({ description: "Create new company offer", type: ApiCompanyOfferPaginatedDto })
+  @ApiOkResponse({
+    description: 'Create new company offer',
+    type: ApiCompanyOfferPaginatedDto,
+  })
   @ApiPaginationQuery(companyOfferPaginationConfig)
   @Roles(RoleCodeEnum.TENANTADMIN, RoleCodeEnum.USER, RoleCodeEnum.SUPERADMIN)
   @HttpCode(HttpStatus.OK)
@@ -52,6 +59,10 @@ export class CompanyOfferPublicController {
     );
   }
 
+  @ApiOkResponse({
+    description: 'Single company offer',
+    type: ApiCompanyOfferDto,
+  })
   @Roles(RoleCodeEnum.TENANTADMIN, RoleCodeEnum.USER, RoleCodeEnum.SUPERADMIN)
   @UseInterceptors(MapInterceptor(CompanyOfferEntity, CompanyOfferDto))
   @HttpCode(HttpStatus.OK)
@@ -59,6 +70,7 @@ export class CompanyOfferPublicController {
   async findOne(
     @Param('id') id: string,
   ): Promise<NullableType<CompanyOfferEntity>> {
+    console.log('companyOfferId', id);
     return await this.companyOfferService.findOne({ id });
   }
 }

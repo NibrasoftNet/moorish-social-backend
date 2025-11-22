@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
-import { plainToClass } from 'class-transformer';
+import { plainToClass, plainToInstance } from 'class-transformer';
 import { MailService } from '../mail/mail.service';
 import { JwtRefreshPayloadType } from './strategies/types/jwt-refresh-payload.type';
 import { JwtPayloadType } from './strategies/types/jwt-payload.type';
@@ -112,7 +112,7 @@ export class AuthTenantService {
       userId: user.id,
       refreshToken: refreshToken,
     });
-    return new SessionAdminResponseDto({
+    return plainToInstance(SessionAdminResponseDto, {
       accessToken,
       refreshToken,
       tokenExpires,
@@ -147,11 +147,10 @@ export class AuthTenantService {
     await user.save();
   }
 
-  async forgotPassword(email: string): Promise<boolean> {
+  async forgotPassword(email: string): Promise<string> {
     const user = await this.usersTenantService.findOne({
       email,
     });
-
     if (!user) {
       throw new HttpException(
         {
@@ -166,7 +165,7 @@ export class AuthTenantService {
       );
     }
     await this.sendForgetPasswordEmail(email);
-    return true;
+    return email;
   }
 
   async resetPassword(
@@ -208,7 +207,7 @@ export class AuthTenantService {
     const session = await this.sessionService.findOneOrFail({
       userId: user.id,
     });
-    return new SessionAdminResponseDto({
+    return plainToInstance(SessionAdminResponseDto, {
       accessToken,
       refreshToken: session.refreshToken,
       tokenExpires,
@@ -274,7 +273,7 @@ export class AuthTenantService {
     const session = await this.sessionService.findOneOrFail({
       userId: user.id,
     });
-    return new SessionAdminResponseDto({
+    return plainToInstance(SessionAdminResponseDto, {
       accessToken,
       refreshToken: session.refreshToken,
       tokenExpires,

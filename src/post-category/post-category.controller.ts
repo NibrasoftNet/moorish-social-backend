@@ -11,7 +11,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { NullableType } from '../utils/types/nullable.type';
 import { DeleteResult } from 'typeorm';
@@ -21,7 +21,7 @@ import { MapInterceptor } from '@automapper/nestjs';
 import { RoleCodeEnum } from '@/enums/roles.enum';
 import { PostCategoryService } from './post-category.service';
 import { PostCategoryEntity } from './entities/post-category.entity';
-import { PostCategoryDto } from './dto/post-category.dto';
+import { ApiPostCategoryDto, PostCategoryDto } from './dto/post-category.dto';
 import { CreatePostCategoryDto } from './dto/create-post-category.dto';
 import { UpdatePostCategoryDto } from './dto/update-post-category.dto';
 
@@ -47,6 +47,10 @@ export class PostCategoryController {
     );
   }
 
+  @ApiOkResponse({
+    type: ApiPostCategoryDto,
+    description: 'List of posts categories',
+  })
   @UseInterceptors(
     MapInterceptor(PostCategoryEntity, PostCategoryDto, { isArray: true }),
   )

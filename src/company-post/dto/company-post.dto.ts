@@ -1,5 +1,5 @@
 import { AutoMap } from '@automapper/classes';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { FileDto } from '../../files/dto/file.dto';
 import { CompanyDto } from '../../company/dto/company.dto';
 import { UserTenantDto } from '../../users-tenant/dto/user-tenant.dto';
@@ -16,7 +16,7 @@ export class CompanyPostDto extends EntityHelperDto {
   id: string;
 
   @AutoMap(() => [FileDto])
-  @ApiProperty()
+  @ApiPropertyOptional({ type: FileDto, isArray: true, nullable: true })
   @Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
   images: FileDto[];
 
@@ -51,12 +51,10 @@ export class CompanyPostDto extends EntityHelperDto {
 
   @AutoMap(() => UserTenantDto)
   @ApiProperty()
-  @Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
   creator: UserTenantDto;
 
   @AutoMap(() => PostCategoryDto)
   @ApiProperty()
-  @Expose({ groups: ['ADMIN', 'USER', 'SUPERADMIN'] })
   category: PostCategoryDto;
 }
 

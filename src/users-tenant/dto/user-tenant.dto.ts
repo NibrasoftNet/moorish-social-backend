@@ -6,7 +6,7 @@ import { EntityHelperDto } from '@/domains/entity-helper.dto';
 import { UserSocketDto } from '../../chat/dto/user-socket.dto';
 import { CompanyDto } from '../../company/dto/company.dto';
 import { ApiResponseDto } from '@/domains/api-response.dto';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UserTenantDto extends EntityHelperDto {
   @AutoMap()
@@ -30,15 +30,15 @@ export class UserTenantDto extends EntityHelperDto {
   lastName: string;
 
   @AutoMap()
-  @ApiProperty()
-  position: string;
+  @ApiPropertyOptional({ type: String, nullable: true })
+  position: string | null;
 
   @AutoMap()
-  @ApiProperty()
+  @ApiPropertyOptional({ type: String, nullable: true })
   whatsApp: string;
 
   @AutoMap(() => FileDto)
-  @ApiProperty()
+  @ApiPropertyOptional({ type: FileDto, nullable: true })
   image: FileDto;
 
   @AutoMap(() => RoleDto)
@@ -50,19 +50,19 @@ export class UserTenantDto extends EntityHelperDto {
   status: string;
 
   @AutoMap(() => CompanyDto)
-  @ApiProperty()
+  @ApiPropertyOptional({ type: CompanyDto, nullable: true })
   company: CompanyDto;
 
   @AutoMap(() => Date)
-  @ApiProperty()
+  @ApiPropertyOptional({ nullable: true })
   deletedAt: string;
 
   @AutoMap()
-  @ApiProperty()
+  @ApiPropertyOptional({ type: String, nullable: true })
   notificationsToken: string;
 
   @AutoMap(() => UserSocketDto)
-  @ApiProperty()
+  @ApiPropertyOptional({ type: UserSocketDto, nullable: true })
   socket: UserSocketDto;
 }
 

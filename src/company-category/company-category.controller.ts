@@ -14,7 +14,7 @@ import {
 import { CompanyCategoryService } from './company-category.service';
 import { CreateCompanyCategoryDto } from './dto/create-company-category.dto';
 import { UpdateCompanyCategoryDto } from './dto/update-company-category.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiPaginationQuery, Paginate, PaginateQuery } from 'nestjs-paginate';
 import { companyCategoryPaginationConfig } from './config/company-category-pagination-config';
@@ -24,7 +24,10 @@ import { Roles } from '../roles/roles.decorator';
 import { RolesGuard } from '../roles/roles.guard';
 import { InjectMapper, MapInterceptor } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
-import { CompanyCategoryDto } from './dto/company-category.dto';
+import {
+  ApiCompanyCategoryDto,
+  CompanyCategoryDto,
+} from './dto/company-category.dto';
 import { PaginatedDto } from '../utils/serialization/paginated.dto';
 import { RoleCodeEnum } from '@/enums/roles.enum';
 import { CompanyCategoryEntity } from './entities/company-category.entity';
@@ -100,6 +103,10 @@ export class CompanyCategoryController {
     );
   }
 
+  @ApiOkResponse({
+    type: ApiCompanyCategoryDto,
+    description: 'List of all company sub category',
+  })
   @UseInterceptors(
     MapInterceptor(CompanyCategoryEntity, CompanyCategoryDto, {
       isArray: true,

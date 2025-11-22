@@ -1,32 +1,44 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsObject, IsOptional, IsString } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsArray,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { FileDto } from '../../files/dto/file.dto';
 
 export class UpdateCompanyOfferDto {
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   title?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   hashTag?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   content?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @IsNumber()
+  boostScore?: number;
+
+  @ApiPropertyOptional({ nullable: true })
   @IsOptional()
   @IsString()
   categoryId?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Array of attachments to delete',
     required: false,
     type: [FileDto],
+    nullable: true,
   })
   @IsOptional()
   @IsArray()
